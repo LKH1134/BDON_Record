@@ -2,7 +2,7 @@
 
 ## 공개 범위
 
-사용자의 2026-10-26 배포 요청에 따라 <https://lkh1134.github.io/BDON_Record/>에 읽기 전용 미리보기를 제공합니다. 운영 계정 저장 페이지는 별도 주소 <https://bdon-record.kh12.workers.dev>입니다. 최근 확인한 네이비 테마 커밋 `22c08e3`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/40315790205)는 성공했습니다.
+사용자의 2026-10-26 배포 요청에 따라 <https://lkh1134.github.io/BDON_Record/>에 읽기 전용 미리보기를 제공합니다. 운영 계정 저장 페이지는 별도 주소 <https://bdon-record.kh12.workers.dev>입니다. 최근 확인한 밴드 로고 커밋 `c5126c6`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/40323291800)는 성공했습니다.
 
 - 공개본: 91곡 목록, 난이도 탭, 곡명·원문·밴드 검색, 밴드·기록 필터, 레벨 정렬. 개인 기록이 없는 미리보기이므로 기록 필터의 clear/fc/ap 결과는 비어 있습니다.
 - 공개본의 계정 로그인과 체크박스 저장은 비활성화합니다. 개인 레이팅과 기록 수는 `—`로 표시합니다.
@@ -40,7 +40,7 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 ## 검증 기록
 
-- 밴드 로고 적용 후 전체 테스트: 52개 통과, 실패 0개. 초기 Pages 작업 때의 21개는 이전 단계의 결과입니다. 네이비 테마 커밋의 CI에서는 테스트·Workers dry-run·Pages 빌드·배포가 성공했습니다.
+- 밴드 로고 적용 후 전체 테스트: 52개 통과, 실패 0개. 해당 커밋의 CI에서 테스트·Workers dry-run·Pages 빌드·배포가 성공했습니다. 초기 단계의 테스트 수는 현재 기준이 아닙니다.
 - 배포 자산의 허용 목록, 저장소 하위 경로 자산 링크, 원본 HTML의 로컬 모드 유지, 예상하지 않은 파일의 공개 방지를 자동 테스트합니다.
 - `/BDON_Record/` 하위 경로를 재현한 정적 서버에서 91곡 로딩, 로그인·체크박스 비활성, 기타 필터의 CRYCHIC 유지, 레벨 정렬과 곡 검색을 확인했습니다.
 
@@ -51,5 +51,7 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 Cloudflare 계정 API·D1 저장과 네이비 테마는 이미 운영에 반영되어 있습니다. Workers 업데이트 방법은 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
 
 밴드 로고 5개의 교체는 완료했습니다. `scripts/build-pages.mjs`는 로고 폴더와 파일명도 검증하고 `tests/pages.test.mjs`는 파일 보존과 미허용 자산 거부를 확인합니다. 향후 이미지 추가 시 양쪽 허용 목록과 복사 로직, 저장소 하위 경로에서의 로딩을 함께 점검합니다. 상세 매핑은 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
+
+다음 시작 시 안내할 앨범 재킷 포함 여부와 레이팅 2배 변경은 [별도 메모](NEXT_STEPS.md)에 기록되어 있으며 아직 구현·배포하지 않았습니다. 재킷을 추가하게 되면 정적 자산 허용 목록·복사·하위 경로 로딩 검증을 함께 갱신합니다.
 
 공식 참고: [GitHub Pages custom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [GitHub Pages REST API](https://docs.github.com/en/rest/pages/pages).
