@@ -24,7 +24,8 @@
 
 | 문서 | 내용 |
 | --- | --- |
-| [README.md](README.md) | 실행, 사용 방법, 데이터와 백업 |
+| [README.md](README.md) | Workers 운영 페이지 소개, 사용 방법, 레이팅, Workers 개발·배포 |
+| [Legacy/README.md](Legacy/README.md) | 로컬 서버·Pages를 함께 설명하던 이전 README 보관본 |
 | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 파일별 역할, 데이터 구조, API, 개발·검증 방법 |
 | [docs/UID_API_RESEARCH.md](docs/UID_API_RESEARCH.md) | UID 연동 조사 결과, 확인된 범위와 미확인 사항 |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Pages 공개 범위, 빌드·배포 설정과 확인 방법 |
