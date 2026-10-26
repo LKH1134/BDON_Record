@@ -3,7 +3,7 @@ import { calculateRating, calculateChartRating } from './rating.js';
 const $ = id => document.getElementById(id);
 const staticPreview = document.querySelector('meta[name="bdon-mode"]')?.content === 'static';
 const cloudMode = document.querySelector('meta[name="bdon-mode"]')?.content === 'cloud';
-const state = { catalog: null, user: null, records: new Map(), difficulty: 'expert', ready: false, pending: new Set(), authMode: 'login' };
+const state = { catalog: null, user: null, records: new Map(), difficulty: 'expert', ready: false, baseline: null, saving: false, authMode: 'login' };
 const difficultyNames = { expert: 'Expert', hard: 'Hard', normal: 'Normal', easy: 'Easy' };
 const statusNames = { clear: '클리어', fc: '풀콤보', ap: '올퍼펙트' };
 const bandStyle = {
@@ -26,6 +26,30 @@ function saveLabel(message, error = false) {
   node.replaceChildren(Object.assign(document.createElement('span'), {}), document.createTextNode(message));
   node.classList.toggle('error', error);
 }
+function recordChanges() {
+  if (!state.baseline) return [];
+  return [...new Set([...state.baseline.keys(), ...state.records.keys()])].flatMap(key => {
+    const status = state.records.get(key) ?? null;
+    if (status === (state.baseline.get(key) ?? null)) return [];
+    const [songId, difficulty] = key.split(':');
+    return [{ songId: Number(songId), difficulty, status }];
+  });
+}
+function renderEditor() {
+  const editing = !!state.baseline;
+  $('edit-controls').hidden = staticPreview;
+  $('edit-button').hidden = editing;
+  $('edit-button').disabled = !state.ready;
+  $('save-button').hidden = !editing;
+  $('cancel-button').hidden = !editing;
+  $('save-button').disabled = state.saving;
+  $('cancel-button').disabled = state.saving;
+  $('save-button').textContent = state.saving ? '저장 중…' : '저장';
+  $('edit-bar').classList.toggle('is-editing', editing);
+  if (!staticPreview) saveLabel(state.saving ? '기록 저장 중' : editing
+    ? `편집 중 · ${recordChanges().length}개 변경 · 아직 저장되지 않음`
+    : state.user ? '모든 기록 저장됨' : '로그인 후 기록 가능');
+}
 async function api(path, options = {}) {
   if (staticPreview) {
     if (path === '/api/me') return { user: null };
@@ -45,6 +69,7 @@ async function api(path, options = {}) {
   return result;
 }
 function renderAccount() {
+  renderEditor();
   if (staticPreview) {
     $('account-button').textContent = '미리보기';
     $('account-button').disabled = true;
@@ -115,45 +140,48 @@ function renderSongs() {
       <td class="song-cell"><div class="song-main"><div class="track-art ${style}" aria-hidden="true">${monogram}</div><div class="song-text"><div class="song-name">${escapeHtml(title)}</div>${name.translated && name.translated !== name.original ? `<div class="song-original">${escapeHtml(name.original)}</div>` : ''}<div class="band-name">${escapeHtml(song.band)}</div></div></div></td>
       <td class="rating-cell"><span class="chart-rating${status ? ' earned' : ''}">${chartRating}</span></td>
       <td class="level-cell"><span class="level-badge" aria-label="${difficultyNames[state.difficulty]} 레벨 ${song.levels[state.difficulty]}">${song.levels[state.difficulty]}</span></td>
-      ${['clear','fc','ap'].map(value => `<td class="check-cell"><label class="record-check"><input type="checkbox" data-song="${song.id}" data-status="${value}" aria-label="${escapeHtml(title)} ${difficultyNames[state.difficulty]} ${statusNames[value]}" ${status === value ? 'checked' : ''} ${staticPreview || !state.ready || state.pending.has(recordKey(song.id)) ? 'disabled' : ''}></label></td>`).join('')}
+      ${['clear','fc','ap'].map(value => `<td class="check-cell"><label class="record-check"><input type="checkbox" data-song="${song.id}" data-status="${value}" aria-label="${escapeHtml(title)} ${difficultyNames[state.difficulty]} ${statusNames[value]}" ${status === value ? 'checked' : ''} ${staticPreview || !state.ready || !state.baseline || state.saving ? 'disabled' : ''}></label></td>`).join('')}
     </tr>`;
   }).join('') : '<tr><td colspan="7" class="empty-state">조건에 맞는 곡이 없습니다.<br>검색어나 필터를 바꿔보세요.</td></tr>';
   if (focusTarget) document.querySelector(`#song-list input[data-song="${focusTarget.song}"][data-status="${focusTarget.status}"]`)?.focus({ preventScroll: true });
 }
-async function saveRecord(input) {
-  if (!state.user) { input.checked = false; openAuth(); return; }
-  const songId = Number(input.dataset.song);
-  const difficulty = state.difficulty;
-  const key = recordKey(songId, difficulty);
-  const heldFocus = document.activeElement === input;
-  if (state.pending.has(key)) return;
-  const next = input.checked ? input.dataset.status : null;
-  // Keep a single selected box even while the server acknowledges the change.
-  for (const sibling of input.closest('tr').querySelectorAll('input')) {
-    sibling.checked = next === sibling.dataset.status;
-    sibling.disabled = true;
+function editRecord(input) {
+  if (!state.baseline || state.saving) return;
+  const key = recordKey(Number(input.dataset.song));
+  input.checked ? state.records.set(key, input.dataset.status) : state.records.delete(key);
+  renderEditor(); renderSongs(); renderStats();
+}
+function finishEditing(cancel = false) {
+  if (cancel) state.records = state.baseline;
+  state.baseline = null;
+  if (state.sessionExpired) {
+    state.user = null;
+    state.records.clear();
+    state.sessionExpired = false;
+    renderAccount();
+    openAuth();
   }
-  state.pending.add(key);
-  saveLabel('기록 저장 중');
+  renderEditor(); renderSongs(); renderStats();
+  $('edit-button').focus({ preventScroll: true });
+}
+async function saveEdits() {
+  if (!state.baseline || state.saving) return;
+  const records = recordChanges();
+  if (!records.length) { finishEditing(); return; }
+  state.saving = true;
+  renderEditor(); renderSongs();
   try {
-    await api(`/api/records/${songId}/${difficulty}`, { method: 'PUT', body: JSON.stringify({ status: next }) });
-    next === null ? state.records.delete(key) : state.records.set(key, next);
-    saveLabel(state.pending.size > 1 ? '기록 저장 중' : '모든 기록 저장됨');
+    await api('/api/records', { method: 'PUT', body: JSON.stringify({ records }) });
+    state.saving = false;
+    state.sessionExpired = false;
+    finishEditing();
+    toast(`${records.length}개 기록을 저장했습니다.`);
   } catch (error) {
-    if (error.status === 401) {
-      state.user = null;
-      state.records.clear();
-      renderAccount();
-      openAuth();
-    }
-    saveLabel('저장 실패 · 다시 선택해 주세요', true);
+    state.saving = false;
+    if (error.status === 401) state.sessionExpired = true;
+    renderEditor(); renderSongs();
+    saveLabel(error.status === 401 ? '로그인 만료 · 편집 취소 후 다시 로그인해 주세요' : '저장 실패 · 변경 내용 유지 중 · 다시 저장해 주세요', true);
     toast(error.message, true);
-  } finally {
-    state.pending.delete(key);
-    renderSongs();
-    renderStats();
-    if (heldFocus && document.activeElement === document.body && state.difficulty === difficulty)
-      document.querySelector(`#song-list input[data-song="${songId}"][data-status="${input.dataset.status}"]`)?.focus({ preventScroll: true });
   }
 }
 function setAuthMode(mode) {
@@ -166,13 +194,13 @@ function setAuthMode(mode) {
   $('password').autocomplete = mode === 'login' ? 'current-password' : 'new-password';
   $('auth-submit').textContent = mode === 'login' ? '로그인 →' : '계정 만들고 시작하기 →';
 }
-function openAuth() { if (state.ready && !state.pending.size) { setAuthMode('login'); $('auth-dialog').showModal(); } }
+function openAuth() { if (state.ready && !state.baseline) { setAuthMode('login'); $('auth-dialog').showModal(); } }
 async function loadRecords() {
   const result = await api('/api/records');
   state.records = new Map(result.records.map(r => [recordKey(r.songId, r.difficulty), r.status]));
 }
 $('account-button').addEventListener('click', () => {
-  if (state.pending.size) return toast('기록 저장이 끝난 후 다시 시도해 주세요.');
+  if (state.baseline) return toast('편집 내용을 저장하거나 취소한 후 계정을 변경해 주세요.');
   if (!state.user) return openAuth();
   $('account-title').textContent = `${state.user.username} 님`;
   $('account-dialog').showModal();
@@ -206,6 +234,7 @@ $('auth-form').addEventListener('submit', async event => {
   } finally { button.disabled = false; }
 });
 $('logout-button').addEventListener('click', async () => {
+  if (state.baseline) return;
   const button = $('logout-button');
   button.disabled = true;
   try {
@@ -227,7 +256,19 @@ for (const button of document.querySelectorAll('[data-difficulty]')) button.addE
   renderStats(); renderSongs();
 });
 for (const id of ['search','band-filter','record-filter','level-sort']) $(id).addEventListener(id === 'search' ? 'input' : 'change', renderSongs);
-$('song-list').addEventListener('change', event => { if (event.target.matches('input[type="checkbox"]')) saveRecord(event.target); });
+$('edit-button').addEventListener('click', () => {
+  if (!state.ready || staticPreview || state.baseline) return;
+  if (!state.user) return openAuth();
+  state.baseline = new Map(state.records);
+  renderEditor(); renderSongs();
+  $('save-button').focus({ preventScroll: true });
+});
+$('save-button').addEventListener('click', saveEdits);
+$('cancel-button').addEventListener('click', () => { if (state.baseline && !state.saving) finishEditing(true); });
+$('song-list').addEventListener('change', event => { if (event.target.matches('input[type="checkbox"]')) editRecord(event.target); });
+window.addEventListener('beforeunload', event => {
+  if (state.saving || recordChanges().length) { event.preventDefault(); event.returnValue = ''; }
+});
 document.addEventListener('keydown', event => {
   if (event.key === '/' && !event.ctrlKey && !event.metaKey && !['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName) && !document.querySelector('dialog[open]')) {
     event.preventDefault(); $('search').focus();

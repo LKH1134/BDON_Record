@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { readFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateRecordChanges, batchBodyLimit, deleteRecordsSql, upsertRecordsSql } from '../shared/record-changes.mjs';
 
 const scrypt = promisify(rawScrypt);
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -69,13 +70,13 @@ export function createApp({ dbPath = resolve(root, '.local/bdon.sqlite'), catalo
     loginAttempts.set(key, entry);
     if (entry.count > 20) throw new HttpError(429, '시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.');
   }
-  async function body(req) {
+  async function body(req, limit = 4096) {
     if (!/^application\/json(?:;|$)/i.test(req.headers['content-type'] || '')) throw new HttpError(415, 'JSON 요청이 필요합니다.');
     let length = 0;
     const chunks = [];
     for await (const chunk of req) {
       length += chunk.length;
-      if (length > 4096) throw new HttpError(413, '요청이 너무 큽니다.');
+      if (length > limit) throw new HttpError(413, '요청이 너무 큽니다.');
       chunks.push(chunk);
     }
     try {
@@ -143,6 +144,20 @@ export function createApp({ dbPath = resolve(root, '.local/bdon.sqlite'), catalo
         const user = requireUser(req);
         const records = db.prepare('SELECT song_id AS songId, difficulty, status, updated_at AS updatedAt FROM records WHERE user_id = ?').all(user.id);
         return json(res, 200, { records });
+      }
+      if (req.method === 'PUT' && url.pathname === '/api/records') {
+        const user = requireUser(req);
+        const records = validateRecordChanges(await body(req, batchBodyLimit), songIds);
+        if (records.length) {
+          const changes = JSON.stringify(records);
+          db.exec('BEGIN');
+          try {
+            db.prepare(deleteRecordsSql).run(user.id, changes);
+            db.prepare(upsertRecordsSql).run(user.id, new Date().toISOString(), changes);
+            db.exec('COMMIT');
+          } catch (error) { db.exec('ROLLBACK'); throw error; }
+        }
+        return json(res, 200, { ok: true });
       }
       const recordPath = /^\/api\/records\/(\d+)\/([a-z]+)$/.exec(url.pathname);
       if (req.method === 'PUT' && recordPath) {

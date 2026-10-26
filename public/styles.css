@@ -12,3 +12,11 @@
 .stats .stat-label{font-weight:600}.stats .stat-label>span{font-weight:400}.stats .stat:not(.stat-total) .stat-bottom{justify-content:flex-end}
 .rating-col{width:86px;text-align:center}.rating-cell{text-align:center}.chart-rating{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted)}.chart-rating.earned{color:var(--accent)}
 @media(max-width:760px){.rating-col{width:50px;font-size:9px}.chart-rating{font-size:10px}.level-col{width:40px}.check-col{width:44px}}
+
+.edit-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px;padding:12px 16px;border:1px solid var(--line);border-radius:8px;background:var(--surface,#171a20)}
+.edit-bar.is-editing{position:sticky;top:8px;z-index:10;border-color:var(--accent);box-shadow:0 6px 24px #0005}
+.edit-controls{display:flex;gap:8px;flex-shrink:0}.edit-controls[hidden],.edit-controls button[hidden]{display:none}
+.edit-controls .button{min-height:36px;padding:8px 16px}.edit-controls .save-button{background:var(--accent);color:#141710;border-color:var(--accent);font-weight:700}
+.edit-bar .save-state{white-space:normal;line-height:1.7}.edit-bar .save-state>span{flex-shrink:0}
+.record-check input:disabled{cursor:default}
+@media(max-width:760px){.edit-bar{padding:10px;gap:10px}.edit-controls{gap:6px}.edit-controls .button{padding:8px 12px}.edit-bar .save-state{font-size:10px}}

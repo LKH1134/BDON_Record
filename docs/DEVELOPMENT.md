@@ -8,7 +8,8 @@
 | --- | --- |
 | `public/index.html` | 화면 구조, 문구, 요약 카드·필터·표·로그인 모달 |
 | `public/styles.css` | 색상, 배치, 반응형 화면, 기록 체크박스 |
-| `public/app.js` | API 호출, 로그인 상태, 필터·정렬·화면 렌더링·자동 저장 |
+| `public/app.js` | API 호출, 로그인 상태, 필터·정렬·화면 렌더링·편집 모드와 일괄 저장 |
+| `shared/record-changes.mjs` | 일괄 변경 검증 및 Node·D1 공통 JSON SQL |
 | `public/rating.js` | 난이도별 및 계정 전체 레이팅 계산 |
 | `server/app.mjs` | HTTP 라우팅, 인증, 입력 검증, DB 스키마와 기록 저장 |
 | `server/index.mjs` | 서버 시작, 환경변수, 종료 처리 |
@@ -83,7 +84,7 @@ JSON의 `songs`는 `{ id, nameId, band, levels }`, `strings`는 `{ id, original,
 
 ## HTTP API
 
-응답은 JSON이며 오류는 `{ "error": "사용자에게 표시할 메시지" }` 형식입니다. 수정 요청에는 동일 출처 `Origin`이 필요합니다. JSON 본문은 `Content-Type: application/json`이며 최대 4096바이트입니다. `Host`는 실제 실행 포트의 `127.0.0.1` 또는 `localhost`만 허용합니다.
+응답은 JSON이며 오류는 `{ "error": "사용자에게 표시할 메시지" }` 형식입니다. 수정 요청에는 동일 출처 `Origin`이 필요합니다. JSON 본문은 `Content-Type: application/json`이며 기본 최대 4096바이트, 일괄 저장만 최대 1MiB입니다. `Host`는 실제 실행 포트의 `127.0.0.1` 또는 `localhost`만 허용합니다.
 
 | 메서드 | 경로 | 입력 / 결과 |
 | --- | --- | --- |
@@ -93,6 +94,7 @@ JSON의 `songs`는 `{ id, nameId, band, levels }`, `strings`는 `{ id, original,
 | POST | `/api/login` | `{ username, password }`; 200, 로그인 쿠키 발급 |
 | POST | `/api/logout` | 프런트엔드는 `{}` 전송; 세션 삭제, `{ ok: true }` |
 | GET | `/api/records` | 로그인 필요; `{ records: [{ songId, difficulty, status, updatedAt }] }` |
+| PUT | `/api/records` | 로그인 필요; `{ records: [{ songId, difficulty, status }] }`; 변경분 일괄 반영 후 `{ ok: true }` |
 | PUT | `/api/records/{songId}/{difficulty}` | 로그인 필요; `{ status: "clear" / "fc" / "ap" / null }`; 교체 또는 삭제 후 `{ record: { songId, difficulty, status, updatedAt } }` |
 
 가입·로그인은 IP별 60초 동안 합계 20회까지 허용하는 메모리 제한을 사용합니다. 사용자 ID는 클라이언트 입력 대신 세션에서 결정합니다. 알려진 정적 자산만 제공하며 DB·엑셀·서버 소스는 HTTP로 제공하지 않습니다.
@@ -103,11 +105,21 @@ JSON의 `songs`는 `{ id, nameId, band, levels }`, `strings`는 `{ id, original,
 
 UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
-1. 비로그인 카탈로그 표시, 로그인 후 자동 저장, 로그아웃 후 기록 비표시.
+1. 비로그인 카탈로그 표시, 로그인 후 편집·저장·취소, 로그아웃 후 기록 비표시.
 2. 같은 행에서 상태 교체·해제, 난이도 탭 전환, 새로고침 후 기록 유지.
 3. 레벨 정렬, 검색·필터, `기타` 선택 시 CRYCHIC 악곡 표시 및 실제 밴드명 유지.
 4. 행 레이팅의 레벨 왼쪽 표시와 갱신, 요약 오른쪽의 전체 레이팅 및 집계 기준.
 5. 데스크톱·모바일에서 체크박스 접근과 가로 넘침 여부.
+
+### 편집 모드와 일괄 저장
+
+로그인 후 `기록 편집`을 누르면 저장 당시 Map을 복사해 기준값으로 보관합니다. 체크는 화면의 Map만 수정하고 요약·레이팅·행을 즉시 다시 계산합니다. `저장`은 모든 난이도에서 기준값과 다른 항목만 한 번의 `PUT /api/records`로 전송합니다. 여러 번 바꾼 항목은 최종 상태만 보내고, 원래대로 되돌린 항목은 보내지 않습니다. 빈 변경분과 취소는 HTTP 요청을 만들지 않습니다.
+
+저장 성공 시 편집을 종료하고 체크박스를 비활성화합니다. 실패 시 기준값·임시 기록을 유지해 재시도할 수 있습니다. 저장 중에는 체크·저장·취소를 비활성화해 중복 요청을 방지합니다. 계정 전환과 로그아웃은 편집 종료 후 허용하며, 로그인 만료 오류도 임시 기록을 유지합니다. 이때 명시적으로 취소하면 임시 기록을 버리고 로그인 창을 엽니다. 새로고침 전 미저장 경고만 제공하며 자동 임시 저장은 없습니다.
+
+일괄 API는 카탈로그의 악곡·난이도·상태·중복 키와 최대 항목 수(곡 수 × 4)를 전부 검증한 뒤 쓰기 작업을 시작합니다. `null`은 해당 계정의 해당 차트만 삭제하며 생략한 차트는 유지합니다. JSON 입력을 사용하는 삭제·upsert 두 SQL문을 SQLite 트랜잭션 또는 D1 `batch()`로 원자적으로 실행하므로 전체 364차트도 SQL 쿼리 수가 늘지 않습니다. 단건 PUT은 기존 클라이언트 호환을 위해 유지합니다.
+
+`tests/editor.test.mjs`는 실제 프런트엔드 코드를 jsdom에서 실행해 체크·필터·난이도 변경 시 통신 0회, 저장 1회, 취소·무변경 0회, 실패 후 재시도·중복 저장 방지·만료 세션을 검증합니다. `tests/batch-contract.mjs`는 같은 계약을 Node와 실제 D1에 적용해 전체 차트 저장, 계정 분리, 잘못된 요청 전체 거부와 강제 DB 오류 시 롤백을 검증합니다. 개발 의존성을 설치해 테스트하려면 Node.js 24.15 이상을 사용합니다.
 
 ## 클라우드 전환 인계
 

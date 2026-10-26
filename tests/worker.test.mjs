@@ -7,6 +7,7 @@ import { build } from 'esbuild';
 import { Miniflare, Log, LogLevel, convertV4MiniflareOptions } from 'miniflare';
 import { buildWorker } from '../scripts/build-worker.mjs';
 import { calculateRating } from '../public/rating.js';
+import { batchContract } from './batch-contract.mjs';
 
 test('Workers API with a real local D1 database', { timeout: 120000 }, async t => {
   const directory = await mkdtemp(join(tmpdir(), 'bdon-worker-test-'));
@@ -128,6 +129,11 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { 'Content-Type': 'text/plain' }, expected: 415 });
     assert.equal((await alice.request('/api/records')).records[0].status, 'ap');
     assert.equal((await mf.dispatchFetch('http://bdon.example/api/me')).status, 400);
+  });
+  await t.test('bulk record API', async t => {
+    let nextIp = 10;
+    await batchContract(t, { client: () => client(`192.0.2.${nextIp++}`), catalog: await guest.request('/api/catalog'),
+      exec: sql => db.prepare(sql).run() });
   });
   await t.test('logout invalidates tokens and login rotates an existing session', async () => {
     const old = alice.cookie;

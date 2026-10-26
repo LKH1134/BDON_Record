@@ -1,6 +1,7 @@
 import { randomBytes, createHash, scrypt as rawScrypt, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 import catalog from '../data/catalog.json' with { type: 'json' };
+import { validateRecordChanges, batchBodyLimit, deleteRecordsSql, upsertRecordsSql } from '../shared/record-changes.mjs';
 
 const scrypt = promisify(rawScrypt);
 const songIds = new Set(catalog.songs.map(song => song.id));
@@ -40,7 +41,7 @@ async function requireUser(request, url, db) {
   if (!user) throw new HttpError(401, '로그인이 필요합니다.');
   return user;
 }
-async function body(request) {
+async function body(request, limit = 4096) {
   if (!/^application\/json(?:;|$)/i.test(request.headers.get('Content-Type') || ''))
     throw new HttpError(415, 'JSON 요청이 필요합니다.');
   const chunks = [];
@@ -52,7 +53,7 @@ async function body(request) {
         const { done, value } = await reader.read();
         if (done) break;
         size += value.byteLength;
-        if (size > 4096) {
+        if (size > limit) {
           await reader.cancel();
           throw new HttpError(413, '요청이 너무 큽니다.');
         }
@@ -134,6 +135,18 @@ async function api(request, url, env) {
     const { results } = await db.prepare(`SELECT song_id AS songId, difficulty, status, updated_at AS updatedAt
       FROM records WHERE user_id = ? ORDER BY song_id, difficulty`).bind(user.id).all();
     return json(200, { records: results });
+  }
+  if (request.method === 'PUT' && url.pathname === '/api/records') {
+    const user = await requireUser(request, url, db);
+    const records = validateRecordChanges(await body(request, batchBodyLimit), songIds);
+    if (records.length) {
+      const changes = JSON.stringify(records);
+      await db.batch([
+        db.prepare(deleteRecordsSql).bind(user.id, changes),
+        db.prepare(upsertRecordsSql).bind(user.id, new Date().toISOString(), changes)
+      ]);
+    }
+    return json(200, { ok: true });
   }
   const match = /^\/api\/records\/(\d+)\/([a-z]+)$/.exec(url.pathname);
   if (request.method === 'PUT' && match) {

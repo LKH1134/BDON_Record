@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { once } from 'node:events';
 import { createApp } from '../server/app.mjs';
+import { batchContract } from './batch-contract.mjs';
 
 test('local accounts and play records', async t => {
   const directory = await mkdtemp(join(tmpdir(), 'bdon-test-'));
@@ -132,6 +133,9 @@ test('local accounts and play records', async t => {
     assert.equal((await alice.request('/api/me')).user.username, 'Alice');
     assert.equal((await alice.request('/api/records')).records.length, 2);
     assert.equal((await bob.request('/api/records')).records[0].status, 'clear');
+  });
+  await t.test('bulk record API', async t => {
+    await batchContract(t, { client, catalog: await guest.request('/api/catalog'), exec: sql => app.db.exec(sql) });
   });
   await t.test('expired sessions cannot read records', async () => {
     const userId = (await bob.request('/api/me')).user.id;
