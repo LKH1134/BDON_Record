@@ -9,14 +9,26 @@ export function calculateChartRating(level, status) {
   return chartRatingHundredths(level, status) / 100;
 }
 
-export function calculateRating(songs, records) {
-  const scores = [];
+export function getRatingBreakdown(songs, records) {
+  const bestCharts = [];
   for (const song of songs) {
-    let bestScore = 0;
+    let best = null;
     for (const [difficulty, level] of Object.entries(song.levels)) {
-      bestScore = Math.max(bestScore, chartRatingHundredths(level, records.get(`${song.id}:${difficulty}`)));
+      const status = records.get(`${song.id}:${difficulty}`);
+      const score = chartRatingHundredths(level, status);
+      // On a tie, preserve the catalog's difficulty order (Expert first).
+      if (score > (best?.score ?? 0)) best = { songId: song.id, difficulty, level, status, score };
     }
-    if (bestScore) scores.push(bestScore);
+    if (best) bestCharts.push(best);
   }
-  return scores.sort((a, b) => b - a).slice(0, 50).reduce((total, score) => total + score, 0) / 100;
+  // Stable sorting also preserves catalog order when songs have equal scores.
+  const top = bestCharts.sort((a, b) => b.score - a.score).slice(0, 50);
+  return {
+    total: top.reduce((total, chart) => total + chart.score, 0) / 100,
+    entries: top.map(({ score, ...chart }) => ({ ...chart, rating: score / 100 }))
+  };
+}
+
+export function calculateRating(songs, records) {
+  return getRatingBreakdown(songs, records).total;
 }

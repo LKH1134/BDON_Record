@@ -1,4 +1,4 @@
-import { calculateRating, calculateChartRating } from './rating.js';
+import { getRatingBreakdown, calculateChartRating } from './rating.js';
 
 const $ = id => document.getElementById(id);
 const staticPreview = document.querySelector('meta[name="bdon-mode"]')?.content === 'static';
@@ -96,13 +96,36 @@ function renderStats() {
   const counts = { clear: current.filter(Boolean).length, fc: current.filter(value => value === 'fc' || value === 'ap').length, ap: current.filter(value => value === 'ap').length };
   $('stat-total').textContent = total;
   $('difficulty-caption').textContent = `${difficultyNames[state.difficulty]} 기준`;
-  $('stat-rating').textContent = state.user ? calculateRating(state.catalog.songs, state.records).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) : '—';
+  const breakdown = state.user ? getRatingBreakdown(state.catalog.songs, state.records) : null;
+  $('stat-rating').textContent = breakdown ? formatRating(breakdown.total) : '—';
+  $('rating-details-button').disabled = !state.ready || !state.user;
+  if ($('rating-dialog').open || !state.user) renderRatingDetails(breakdown);
   for (const status of ['clear','fc','ap']) {
     const percentage = state.user ? Math.round(counts[status] / total * 100) : 0;
     $(`stat-${status}`).textContent = state.user ? counts[status] : '—';
     $(`percent-${status}`).textContent = state.user ? `${percentage}%` : '—';
     $(`progress-${status}`).style.width = `${percentage}%`;
   }
+}
+const formatRating = value => value.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+function renderRatingDetails(breakdown) {
+  const entries = breakdown?.entries ?? [];
+  $('rating-details-count').textContent = `${entries.length} / 50곡`;
+  $('rating-details-total').textContent = breakdown ? formatRating(breakdown.total) : '—';
+  $('rating-draft-note').hidden = !state.baseline;
+  const songs = new Map(state.catalog.songs.map(song => [song.id, song]));
+  $('rating-details-list').innerHTML = entries.length ? entries.map((entry, index) => {
+    const song = songs.get(entry.songId);
+    const name = state.catalog.names.get(song.nameId);
+    return `<li class="rating-entry" data-song="${entry.songId}" data-difficulty="${entry.difficulty}">
+      <span class="rating-entry-rank" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+      <div class="rating-entry-song"><div class="song-name">${escapeHtml(name.translated || name.original)}</div>
+        ${name.translated && name.translated !== name.original ? `<div class="song-original">${escapeHtml(name.original)}</div>` : ''}
+        <div class="rating-entry-meta"><span>${escapeHtml(song.band)}</span><span>${difficultyNames[entry.difficulty]} · Lv.${entry.level}</span><span class="rating-entry-status ${entry.status}">${statusNames[entry.status]}</span></div>
+      </div><strong class="rating-entry-score">${formatRating(entry.rating)}</strong>
+    </li>`;
+  }).join('') : '<li class="rating-details-empty">아직 레이팅에 반영할 기록이 없습니다.<br>기록 편집에서 플레이 기록을 추가해 보세요.</li>';
+  if (!state.user && $('rating-dialog').open) $('rating-dialog').close();
 }
 function visibleSongs() {
   const query = $('search').value.normalize('NFKC').trim().toLocaleLowerCase();
@@ -208,6 +231,13 @@ $('account-button').addEventListener('click', () => {
 $('banner-login').addEventListener('click', openAuth);
 $('close-auth').addEventListener('click', () => $('auth-dialog').close());
 $('close-account').addEventListener('click', () => $('account-dialog').close());
+$('rating-details-button').addEventListener('click', () => {
+  if (!state.ready || !state.user) return;
+  renderRatingDetails(getRatingBreakdown(state.catalog.songs, state.records));
+  $('rating-dialog').showModal();
+  $('rating-details-list').parentElement.scrollTop = 0;
+});
+$('close-rating').addEventListener('click', () => $('rating-dialog').close());
 $('login-tab').addEventListener('click', () => setAuthMode('login'));
 $('register-tab').addEventListener('click', () => setAuthMode('register'));
 $('auth-form').addEventListener('submit', async event => {

@@ -14,7 +14,7 @@ async function until(predicate) {
   }
   assert.fail('UI did not reach the expected state');
 }
-async function editor(t, { guest = false, preview = false } = {}) {
+async function editor(t, { guest = false, preview = false, initialRecords = [{ songId: 1001, difficulty: 'expert', status: 'clear' }] } = {}) {
   const html = preview ? sourceHtml.replace('<head>', '<head><meta name="bdon-mode" content="static">') : sourceHtml;
   const dom = new JSDOM(html, { url: 'http://localhost:3000/', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
@@ -24,7 +24,7 @@ async function editor(t, { guest = false, preview = false } = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   const requests = [];
-  let saved = [{ songId: 1001, difficulty: 'expert', status: 'clear' }];
+  let saved = structuredClone(initialRecords);
   let failure, release;
   window.fetch = async (url, options = {}) => {
     const path = new URL(url, window.location.href).pathname;
@@ -164,8 +164,58 @@ test('guests enter login from Edit and static previews remain read-only', async 
   assert.ok(guest.$('auth-dialog').open);
   assert.ok(guest.check(1001, 'clear').disabled);
   assert.equal(guest.requests.length, 0);
+  assert.ok(guest.$('rating-details-button').disabled);
   const preview = await editor(t, { preview: true });
   assert.ok(preview.$('edit-controls').hidden);
   assert.ok(preview.check(1001, 'clear').disabled);
   assert.equal(preview.requests.length, 0);
+  assert.ok(preview.$('rating-details-button').disabled);
+});
+
+test('rating details show only 50 contributing songs independently of library filters with no requests', async t => {
+  const initialRecords = catalog.songs.slice(0, 60).map(song => ({ songId: song.id, difficulty: 'expert', status: 'ap' }));
+  initialRecords.push({ songId: 1001, difficulty: 'hard', status: 'fc' });
+  const ui = await editor(t, { initialRecords });
+  ui.difficulty('easy');
+  ui.$('search').value = 'no matching song';
+  ui.$('search').dispatchEvent(new ui.window.Event('input'));
+  ui.$('rating-details-button').click();
+  assert.ok(ui.$('rating-dialog').open);
+  const rows = [...ui.$('rating-details-list').querySelectorAll('.rating-entry')];
+  assert.equal(rows.length, 50);
+  const expected = catalog.songs.slice(0, 60).toSorted((a, b) => b.levels.expert - a.levels.expert).slice(0, 50);
+  assert.deepEqual(rows.map(row => Number(row.dataset.song)), expected.map(song => song.id));
+  assert.equal(new Set(rows.map(row => row.dataset.song)).size, 50);
+  assert.ok(rows.every(row => row.dataset.difficulty === 'expert'));
+  assert.equal(ui.$('rating-details-total').textContent, ui.$('stat-rating').textContent);
+  assert.equal(ui.$('rating-details-count').textContent, '50 / 50곡');
+  assert.ok(ui.$('rating-draft-note').hidden);
+  ui.$('close-rating').click();
+  assert.equal(ui.$('rating-dialog').open, false);
+  assert.equal(ui.requests.length, 0);
+});
+
+test('rating details follow draft changes and cancellation, including empty accounts', async t => {
+  const ui = await editor(t, { initialRecords: [] });
+  ui.$('rating-details-button').click();
+  assert.equal(ui.$('rating-details-count').textContent, '0 / 50곡');
+  assert.equal(ui.$('rating-details-total').textContent, '0');
+  assert.match(ui.$('rating-details-list').textContent, /반영할 기록이 없습니다/);
+  ui.$('close-rating').click();
+  ui.$('edit-button').click();
+  ui.check(1001, 'clear').click();
+  ui.difficulty('hard');
+  ui.check(1001, 'ap').click();
+  ui.check(1002, 'fc').click();
+  ui.$('rating-details-button').click();
+  assert.equal(ui.$('rating-details-count').textContent, '2 / 50곡');
+  assert.equal(ui.$('rating-draft-note').hidden, false);
+  assert.equal(ui.$('rating-details-total').textContent, ui.$('stat-rating').textContent);
+  assert.equal(ui.$('rating-details-list').querySelectorAll('[data-song="1001"]').length, 1);
+  ui.$('close-rating').click();
+  ui.$('cancel-button').click();
+  ui.$('rating-details-button').click();
+  assert.equal(ui.$('rating-details-count').textContent, '0 / 50곡');
+  assert.ok(ui.$('rating-draft-note').hidden);
+  assert.equal(ui.requests.length, 0);
 });
