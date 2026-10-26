@@ -34,24 +34,33 @@
 
 `public/styles.css`의 `:root`에서 네이비·블루 팔레트를 관리합니다. 배경 `--bg: #0c1424`, 패널 `--surface: #14233b`, 강조 글자 `--accent: #8fb8ee`, 버튼 바탕 `--accent-solid: #315c96`, 버튼 hover `--accent-hover: #3e70b0`, 버튼 글자 `--on-accent: #f4f8ff`입니다. 글자 강조와 버튼 배경의 변수를 구분해 어두운 버튼에서 글자가 묻히지 않게 합니다. AP는 `#9daef5`, FC는 라벤더, 클리어는 하늘색입니다. HTML의 theme-color와 favicon도 블루로 맞춰져 있습니다.
 
-## 다음 UI 작업: 곡 앞 아이콘 교체
+<a name="다음-ui-작업-곡-앞-아이콘-교체"></a>
 
-사용자가 다음 작업으로 지정한 항목이며 **아직 구현하지 않았습니다**. 교체 대상은 곡명 왼쪽의 `.track-art` 임시 약어 아이콘입니다. 헤더 캐릭터 이미지 `.brand-mark` / `public/brand-icon.webp`는 이미 적용되어 있습니다.
+## 곡 앞 밴드 로고
 
-| 위치 | 현재 구현 / 다음 작업 시 확인 |
+사용자가 제공한 5개 밴드 로고를 악곡 목록에 적용했습니다. 제공된 WebP 파일 모두 RGBA 투명 배경이 포함되어 있어 이미지 재생성·배경 재처리 없이 원본을 그대로 복사했습니다. 웹에서 사용하는 원본은 `public/band-logos/`에 보관합니다.
+
+| 실제 밴드명 | 로고 파일 |
 | --- | --- |
-| `public/app.js`의 `bandStyle` | 밴드별 CSS 클래스와 약어를 지정: MG / AM / MT / ms / DR / CC, 미등록 밴드는 ♪ |
-| `public/app.js`의 `renderSongs()` | `.song-main` 안에서 `.track-art`를 생성. 현재 실제 이미지나 곡별 이미지 매핑은 없음 |
-| `public/styles.css`의 `.track-art` | 데스크톱 39×39px, 둥근 모서리, 밴드별 색상과 장식 원. 이미지로 바꾸면 크기·잘림·비율·장식을 점검 |
-| 같은 파일의 `@media(max-width:760px)` | 아이콘을 `display:none`으로 숨김. 모바일 표시 여부는 사용자 지시/디자인 결정 필요 |
-| `server/app.mjs`의 `assets` | Node 로컬 서버는 경로 허용 목록을 사용. 새 이미지 경로·MIME 제공을 추가해야 함 |
-| `scripts/build-pages.mjs` | 현재 공개 자산 7개만 허용·복사. 새 이미지 또는 폴더를 허용하고 실제로 복사하도록 둘 다 수정 |
-| `scripts/build-worker.mjs` | Pages 빌드를 재사용하므로 이미지가 `dist-worker/`에도 들어가는지 확인 |
-| `tests/pages.test.mjs` | 현재 파일 7개를 정확히 검사. 새 자산 목록 및 `/BDON_Record/` 하위 경로에서의 로딩 검증을 갱신 |
+| MyGO!!!!! | `public/band-logos/mygo.webp` |
+| Ave Mujica | `public/band-logos/avemujica.webp` |
+| 무겐다이 뮤타입 | `public/band-logos/ymmt.webp` |
+| millsage | `public/band-logos/millsage.webp` |
+| 일가 Dumb Rock! | `public/band-logos/dr.webp` |
 
-사용할 이미지와 밴드별/곡별 매핑 기준은 아직 정해지지 않았습니다. 곡별 이미지라면 기존 `song.id`로 연결하고 기존 곡·스트링 ID, 엑셀·기록 스키마를 불필요하게 바꾸지 않습니다. 자산 경로는 Pages 하위 경로를 고려해 상대 경로를 사용합니다. 이미지 누락 시 대체 표시 방법도 구현 단계에서 결정합니다.
+`public/app.js`의 `bandLogos`가 실제 밴드명으로 이미지 파일을 연결하고 `renderSongs()`가 상대 경로 `./band-logos/...`를 렌더링합니다. 원본 밴드명과 곡·문자열 ID는 변경하지 않았습니다. 로고가 제공되지 않은 CRYCHIC은 기존 CC 아이콘을 유지하며 필터에서는 계속 기타로 분류합니다. 헤더 캐릭터 이미지 `public/brand-icon.webp`는 별도입니다.
 
-교체 후 Node·Pages·Workers에서 이미지 로딩과 누락 자산, 긴 곡명의 배치, 모바일 정책, 검색·밴드 필터·정렬 후 곡/아이콘 대응을 확인합니다. 편집·저장·취소와 레이팅 상세 보기, 네이비 테마도 유지해야 합니다. 아이콘 교체는 후속 작업으로 남아 있으며 현재 UI는 임시 약어 아이콘을 사용합니다.
+`public/styles.css`의 `.track-art.band-logo-frame`은 흰 바탕, `--accent` 블루 2px 테두리, 둥근 모서리를 사용합니다. 데스크톱 액자는 112×56px, 모바일은 84×42px입니다. `object-fit: contain`으로 로고 전체와 비율을 보존합니다. 모바일에서는 로고를 숨기지 않고 곡명 위에 배치합니다. 기존 장식 원은 로고 액자에서 제거했습니다.
+
+이미지 추가·교체 시 다음 위치를 함께 점검합니다.
+
+- `public/app.js`: 밴드별 파일 매핑과 상대 경로
+- `server/app.mjs`: Node 정적 경로 허용 목록과 WebP MIME
+- `scripts/build-pages.mjs`: 로고 폴더·파일 허용 목록과 복사 로직. 기본 공개 파일 7개와 로고 5개, 총 12개를 빌드하며 로고 폴더 내부의 예상하지 않은 파일도 거부합니다.
+- `scripts/build-worker.mjs`: Pages 빌드를 재사용하므로 같은 로고가 Workers 출력에도 포함됩니다.
+- `tests/pages.test.mjs`, `tests/server.test.mjs`, `tests/worker.test.mjs`: 빌드의 로고 원본 보존, 미허용 파일 거부와 실제 HTTP 제공을 검증합니다.
+
+PC·모바일에서 흰 바탕과 테두리, 비율 보존, 검색·필터·정렬 후 밴드 대응과 로딩을 확인합니다. 편집·저장·취소와 레이팅 상세 보기는 기존 동작을 유지합니다.
 
 ## 레이팅 상세 보기
 

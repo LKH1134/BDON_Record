@@ -16,7 +16,7 @@ npm test
 npm run build:pages
 ```
 
-`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `brand-icon.webp`, `catalog.json`, `.nojekyll`만 생성합니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다. 헤더 아이콘 원본은 `public/brand-icon.webp`입니다.
+`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `brand-icon.webp`, `catalog.json`, `.nojekyll`과 `band-logos/` 안의 밴드 로고 5개를 생성합니다. 총 공개 파일은 12개입니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다. 헤더 아이콘 원본은 `public/brand-icon.webp`입니다.
 
 원본 HTML 대신 배포용 HTML에만 `<meta name="bdon-mode" content="static">`을 삽입합니다. `public/app.js`는 이 표식을 읽어 카탈로그를 같은 폴더의 `catalog.json`에서 불러오고 계정 API 요청을 하지 않습니다. `/BDON_Record/` 하위 경로에서 동작하도록 HTML 자산·홈 링크는 상대 경로를 사용합니다. 원본 HTML을 제공하는 로컬 서버는 기존 `/api/...` 경로를 계속 사용합니다.
 
@@ -40,7 +40,7 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 ## 검증 기록
 
-- 최근 전체 테스트: 47개 통과, 실패 0개. 초기 Pages 작업 때의 21개는 이전 단계의 결과입니다. 네이비 테마 커밋의 CI에서는 테스트·Workers dry-run·Pages 빌드·배포가 성공했습니다.
+- 밴드 로고 적용 후 전체 테스트: 52개 통과, 실패 0개. 초기 Pages 작업 때의 21개는 이전 단계의 결과입니다. 네이비 테마 커밋의 CI에서는 테스트·Workers dry-run·Pages 빌드·배포가 성공했습니다.
 - 배포 자산의 허용 목록, 저장소 하위 경로 자산 링크, 원본 HTML의 로컬 모드 유지, 예상하지 않은 파일의 공개 방지를 자동 테스트합니다.
 - `/BDON_Record/` 하위 경로를 재현한 정적 서버에서 91곡 로딩, 로그인·체크박스 비활성, 기타 필터의 CRYCHIC 유지, 레벨 정렬과 곡 검색을 확인했습니다.
 
@@ -50,6 +50,6 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 Cloudflare 계정 API·D1 저장과 네이비 테마는 이미 운영에 반영되어 있습니다. Workers 업데이트 방법은 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
 
-다음 작업은 곡명 앞 임시 아이콘 교체입니다. 새 자산을 추가하면 `scripts/build-pages.mjs`의 허용 목록과 복사 로직, `tests/pages.test.mjs`의 정확한 자산 목록을 함께 수정합니다. 현재 7개라는 파일 수는 그때 갱신해야 하며, 저장소 하위 경로에서 이미지가 로딩되는지 확인합니다. 상세 위치는 [개발 인계](DEVELOPMENT.md#다음-ui-작업-곡-앞-아이콘-교체)에 있습니다.
+밴드 로고 5개의 교체는 완료했습니다. `scripts/build-pages.mjs`는 로고 폴더와 파일명도 검증하고 `tests/pages.test.mjs`는 파일 보존과 미허용 자산 거부를 확인합니다. 향후 이미지 추가 시 양쪽 허용 목록과 복사 로직, 저장소 하위 경로에서의 로딩을 함께 점검합니다. 상세 매핑은 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
 
 공식 참고: [GitHub Pages custom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [GitHub Pages REST API](https://docs.github.com/en/rest/pages/pages).

@@ -24,6 +24,11 @@
 .edit-controls .save-button:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
 .record-check input:disabled:checked{opacity:.8}
 
+.track-art.band-logo-frame{display:flex;align-items:center;justify-content:center;width:112px;height:56px;padding:6px;background:#fff;border:2px solid var(--accent);border-radius:8px;box-shadow:0 0 0 1px #315c964d,0 2px 8px #0003}
+.track-art.band-logo-frame::after{display:none}
+.band-logo-frame img{display:block;width:100%;height:100%;object-fit:contain}
+@media(max-width:760px){.song-main:has(.band-logo-frame){flex-direction:column;align-items:flex-start;gap:7px}.track-art.band-logo-frame{display:flex;width:84px;max-width:100%;height:42px;padding:4px;border-radius:6px}}
+
 .rating-details-button{margin-left:auto;flex-shrink:0;padding:4px 8px;min-height:29px;border:1px solid #8fb8ee59;border-radius:5px;background:#8fb8ee0d;color:var(--accent);font-size:10px;font-weight:600;line-height:1.4;white-space:nowrap}
 .rating-details-button:hover:enabled{background:var(--accent-solid);border-color:var(--accent-solid);color:var(--on-accent)}
 .rating-details-button:disabled{cursor:default}

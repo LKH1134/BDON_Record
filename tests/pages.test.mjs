@@ -9,7 +9,11 @@ test('Pages artifact contains only public assets and works under a repository pa
   const directory = await mkdtemp(join(tmpdir(), 'bdon-pages-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   await buildPages(directory);
-  assert.deepEqual((await readdir(directory)).sort(), ['.nojekyll', 'app.js', 'brand-icon.webp', 'catalog.json', 'index.html', 'rating.js', 'styles.css']);
+  assert.deepEqual((await readdir(directory)).sort(), ['.nojekyll', 'app.js', 'band-logos', 'brand-icon.webp', 'catalog.json', 'index.html', 'rating.js', 'styles.css']);
+  assert.deepEqual((await readdir(join(directory, 'band-logos'))).sort(), ['avemujica.webp', 'dr.webp', 'millsage.webp', 'mygo.webp', 'ymmt.webp']);
+  for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr']) {
+    assert.deepEqual(await readFile(join(directory, 'band-logos', `${name}.webp`)), await readFile(new URL(`../public/band-logos/${name}.webp`, import.meta.url)));
+  }
   const html = await readFile(join(directory, 'index.html'), 'utf8');
   assert.match(html, /<meta name="bdon-mode" content="static">/);
   const base = 'https://example.github.io/BDON_Record/';
@@ -27,4 +31,12 @@ test('Pages build refuses to publish unexpected files', async t => {
   t.after(() => rm(directory, { recursive: true, force: true }));
   await writeFile(join(directory, 'private.txt'), 'test fixture');
   await assert.rejects(buildPages(directory), /Unexpected file in Pages output/);
+});
+
+test('Pages build refuses unexpected files inside the band logo directory', async t => {
+  const directory = await mkdtemp(join(tmpdir(), 'bdon-pages-logos-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  await buildPages(directory);
+  await writeFile(join(directory, 'band-logos', 'private.txt'), 'test fixture');
+  await assert.rejects(buildPages(directory), /Unexpected file in Pages output: band-logos\/private.txt/);
 });

@@ -10,6 +10,10 @@ const bandStyle = {
   'MyGO!!!!!': ['mygo','MG'], 'Ave Mujica': ['ave','AM'], '무겐다이 뮤타입': ['mugen','MT'],
   millsage: ['millsage','ms'], '일가 Dumb Rock!': ['ikka','DR'], CRYCHIC: ['crychic','CC']
 };
+const bandLogos = {
+  'MyGO!!!!!': 'mygo.webp', 'Ave Mujica': 'avemujica.webp', '무겐다이 뮤타입': 'ymmt.webp',
+  millsage: 'millsage.webp', '일가 Dumb Rock!': 'dr.webp'
+};
 const getBandCategory = band => band === 'CRYCHIC' ? '기타' : band;
 const recordKey = (songId, difficulty = state.difficulty) => `${songId}:${difficulty}`;
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -156,11 +160,12 @@ function renderSongs() {
     const title = name.translated || name.original;
     const status = state.records.get(recordKey(song.id));
     const [style, monogram] = bandStyle[song.band] || ['', '♪'];
+    const logo = bandLogos[song.band];
     const songNumber = state.catalog.songs.indexOf(song) + 1;
     const chartRating = state.user ? calculateChartRating(song.levels[state.difficulty], status).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) : '—';
     return `<tr data-song="${song.id}">
       <td class="number-cell">${String(songNumber).padStart(2,'0')}</td>
-      <td class="song-cell"><div class="song-main"><div class="track-art ${style}" aria-hidden="true">${monogram}</div><div class="song-text"><div class="song-name">${escapeHtml(title)}</div>${name.translated && name.translated !== name.original ? `<div class="song-original">${escapeHtml(name.original)}</div>` : ''}<div class="band-name">${escapeHtml(song.band)}</div></div></div></td>
+      <td class="song-cell"><div class="song-main"><div class="track-art ${style}${logo ? ' band-logo-frame' : ''}" aria-hidden="true">${logo ? `<img src="./band-logos/${logo}" alt="" width="96" height="38" loading="lazy" decoding="async">` : monogram}</div><div class="song-text"><div class="song-name">${escapeHtml(title)}</div>${name.translated && name.translated !== name.original ? `<div class="song-original">${escapeHtml(name.original)}</div>` : ''}<div class="band-name">${escapeHtml(song.band)}</div></div></div></td>
       <td class="rating-cell"><span class="chart-rating${status ? ' earned' : ''}">${chartRating}</span></td>
       <td class="level-cell"><span class="level-badge" aria-label="${difficultyNames[state.difficulty]} 레벨 ${song.levels[state.difficulty]}">${song.levels[state.difficulty]}</span></td>
       ${['clear','fc','ap'].map(value => `<td class="check-cell"><label class="record-check"><input type="checkbox" data-song="${song.id}" data-status="${value}" aria-label="${escapeHtml(title)} ${difficultyNames[state.difficulty]} ${statusNames[value]}" ${status === value ? 'checked' : ''} ${staticPreview || !state.ready || !state.baseline || state.saving ? 'disabled' : ''}></label></td>`).join('')}

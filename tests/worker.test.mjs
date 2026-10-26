@@ -74,6 +74,12 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     assert.equal(image.status, 200);
     assert.match(image.headers.get('content-type'), /image\/webp/);
     assert.ok((await image.arrayBuffer()).byteLength > 0);
+    for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr']) {
+      const logo = await mf.dispatchFetch(origin + `/band-logos/${name}.webp`);
+      assert.equal(logo.status, 200);
+      assert.match(logo.headers.get('content-type'), /image\/webp/);
+      assert.deepEqual(Buffer.from(await logo.arrayBuffer()), await readFile(new URL(`../public/band-logos/${name}.webp`, import.meta.url)));
+    }
     for (const path of ['/Data.xlsx', '/wrangler.jsonc', '/worker/index.mjs', '/.git/config', '/.local/bdon.sqlite'])
       assert.equal((await mf.dispatchFetch(origin + path)).status, 404);
     const catalog = await guest.request('/api/catalog');
