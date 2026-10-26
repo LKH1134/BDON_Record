@@ -4,7 +4,7 @@
 
 현재 편집 모드에서는 체크 변경을 브라우저에 보관하고 저장할 때만 변경분을 한 요청으로 보냅니다. Node와 Worker 모두 `PUT /api/records`를 제공하며 D1에서는 검증 후 삭제·upsert를 단일 batch 트랜잭션으로 적용합니다. **이번 편집 모드 업데이트에는 DB 스키마 변경이 없으므로 새 migration이 필요하지 않습니다.** 기존 운영 DB를 초기화하지 않습니다.
 
-편집 모드 업데이트 배포 주소: <https://bdon-record.kh12.workers.dev>. 47개 테스트, Workers dry-run·Pages 빌드 및 로컬 Workers 브라우저 검증 후 운영에 반영했습니다. 운영에서는 악곡 로딩·편집 버튼·로그인 진입을 확인했으며, 실제 사용자 기록을 수정하는 테스트는 하지 않았습니다.
+운영 주소: <https://bdon-record.kh12.workers.dev>. 최근 확인한 배포는 네이비·블루 테마(`22c08e3`), Worker 버전 `dec4b95f-212e-491f-a849-c227ca4b2729`입니다. 앞서 편집 모드·일괄 저장도 반영했습니다. 운영에서는 악곡 로딩·테마·편집 버튼·로그인 진입을 확인했으며, 실제 사용자 기록을 수정하는 테스트는 하지 않았습니다. 곡명 앞 임시 아이콘 교체는 [다음 작업](DEVELOPMENT.md#다음-ui-작업-곡-앞-아이콘-교체)으로 남아 있습니다.
 
 ## 연결할 리소스
 
@@ -49,7 +49,7 @@ npm run check:worker
 
 `npm test`의 Workers 테스트는 Miniflare와 임시 D1을 사용합니다. 가입, 비밀번호 해시, HTTPS 쿠키, 사용자별 기록 격리, 저장·해제, 요청 검증, 로그아웃·토큰 교체·만료, 재시작 후 계정·기록·로그인 시도 제한 유지를 검증합니다.
 
-2026-10-26 코드 준비 작업에서 전체 테스트 30개와 두 빌드 검증을 통과했습니다. 실제 Wrangler 개발 서버에서도 가입·AP 저장·레이팅 27.5·새로고침 후 유지 및 로컬 Cron HTTP 200을 확인했습니다.
+최근 확인한 전체 테스트는 47개 통과입니다. 전체 364차트 일괄 저장과 강제 DB 오류 시 전체 롤백도 검증합니다. 실제 Wrangler 개발 서버에서 편집 중 PUT 0회·저장 시 PUT 1회·새로고침 후 유지, 모바일 편집·취소를 확인했습니다. 네이비 테마의 PC·모바일·계정 창, Workers dry-run·Pages 빌드도 확인했습니다. 과거 로컬 Cron 실행은 HTTP 200이었습니다. 최신 확인한 CI 실행은 [네이비 테마 커밋의 성공 실행](https://github.com/LKH1134/BDON_Record/actions/runs/40315790205)입니다.
 
 ## 2. Cloudflare 로그인
 
@@ -102,9 +102,11 @@ npm run deploy:worker
 - 빌드 명령: `npm run build:worker`
 - 배포 명령: `npx wrangler deploy`
 
-빌드 환경은 Node.js 24 이상을 사용하고 `npm ci`로 lockfile에 맞는 개발 의존성을 설치해야 합니다. 저장소의 `data/catalog.json`을 빌드에 사용합니다. 엑셀 변경 시 JSON도 변환해 함께 커밋합니다. DB migration은 자동 배포와 분리해 필요한 시점에 대상 DB를 확인한 뒤 적용합니다.
+빌드 환경은 Node.js 24.15 이상을 사용하고 `npm ci`로 lockfile에 맞는 개발 의존성을 설치해야 합니다. 저장소의 `data/catalog.json`을 빌드에 사용합니다. 엑셀 변경 시 JSON도 변환해 함께 커밋합니다. DB migration은 자동 배포와 분리해 필요한 시점에 대상 DB를 확인한 뒤 적용합니다.
 
 GitHub Pages workflow는 계속 읽기 전용 미리보기를 배포합니다. Cloudflare 자동 배포를 연결하기 전에는 GitHub에 푸시해도 Workers가 자동 배포되지 않습니다.
+
+현재까지 확인한 Workers 업데이트는 CLI의 `npm run deploy:worker`를 사용했습니다. Cloudflare 대시보드의 Git 자동 배포 연결 여부는 확인되지 않았으므로 푸시만으로 운영 반영이 끝났다고 기록하지 않습니다. 문서만 정리한 변경은 Workers 재배포가 필요하지 않습니다.
 
 ## 데이터·인증 동작
 

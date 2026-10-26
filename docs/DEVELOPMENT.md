@@ -2,7 +2,7 @@
 
 ## 구성과 편집 위치
 
-기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. Cloudflare용 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild를 사용하며 `npm ci`로 설치합니다.
+기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild·jsdom을 사용하며 Node.js 24.15 이상에서 `npm ci`로 설치합니다.
 
 | 파일 | 역할 |
 | --- | --- |
@@ -25,8 +25,33 @@
 | `migrations/0001_accounts.sql` | 새 D1용 계정·세션·기록·로그인 제한 테이블 |
 | `scripts/build-worker.mjs` | CLOUD MODE 화면을 `dist-worker/`에 준비 |
 | `tests/worker.test.mjs` | 실제 Workers 런타임·임시 D1 통합 검증 |
+| `tests/editor.test.mjs` | 프런트엔드 jsdom 편집·취소·일괄 저장·실패 복구 검증 |
+| `tests/batch-contract.mjs` | Node·D1 공통 일괄 저장 계약과 원자성 검증 |
 
-`index.html`을 파일로 직접 여는 방식이 아니라 서버를 실행해 접속해야 계정·기록 API가 동작합니다. 정적 파일을 추가하면 `server/app.mjs`의 `assets` 경로 목록도 확장해야 합니다.
+`index.html`을 파일로 직접 여는 방식이 아니라 서버를 실행해 접속해야 계정·기록 API가 동작합니다. 정적 파일 추가 시 로컬 서버와 배포 빌드의 허용 목록을 함께 점검합니다. 아래 아이콘 교체 인계를 참고합니다.
+
+## 현재 테마
+
+`public/styles.css`의 `:root`에서 네이비·블루 팔레트를 관리합니다. 배경 `--bg: #0c1424`, 패널 `--surface: #14233b`, 강조 글자 `--accent: #8fb8ee`, 버튼 바탕 `--accent-solid: #315c96`, 버튼 hover `--accent-hover: #3e70b0`, 버튼 글자 `--on-accent: #f4f8ff`입니다. 글자 강조와 버튼 배경의 변수를 구분해 어두운 버튼에서 글자가 묻히지 않게 합니다. AP는 `#9daef5`, FC는 라벤더, 클리어는 하늘색입니다. HTML의 theme-color와 favicon도 블루로 맞춰져 있습니다.
+
+## 다음 UI 작업: 곡 앞 아이콘 교체
+
+사용자가 다음 작업으로 지정한 항목이며 **아직 구현하지 않았습니다**. 교체 대상은 곡명 왼쪽의 `.track-art` 임시 약어 아이콘입니다. 헤더 캐릭터 이미지 `.brand-mark` / `public/brand-icon.webp`는 이미 적용되어 있습니다.
+
+| 위치 | 현재 구현 / 다음 작업 시 확인 |
+| --- | --- |
+| `public/app.js`의 `bandStyle` | 밴드별 CSS 클래스와 약어를 지정: MG / AM / MT / ms / DR / CC, 미등록 밴드는 ♪ |
+| `public/app.js`의 `renderSongs()` | `.song-main` 안에서 `.track-art`를 생성. 현재 실제 이미지나 곡별 이미지 매핑은 없음 |
+| `public/styles.css`의 `.track-art` | 데스크톱 39×39px, 둥근 모서리, 밴드별 색상과 장식 원. 이미지로 바꾸면 크기·잘림·비율·장식을 점검 |
+| 같은 파일의 `@media(max-width:760px)` | 아이콘을 `display:none`으로 숨김. 모바일 표시 여부는 사용자 지시/디자인 결정 필요 |
+| `server/app.mjs`의 `assets` | Node 로컬 서버는 경로 허용 목록을 사용. 새 이미지 경로·MIME 제공을 추가해야 함 |
+| `scripts/build-pages.mjs` | 현재 공개 자산 7개만 허용·복사. 새 이미지 또는 폴더를 허용하고 실제로 복사하도록 둘 다 수정 |
+| `scripts/build-worker.mjs` | Pages 빌드를 재사용하므로 이미지가 `dist-worker/`에도 들어가는지 확인 |
+| `tests/pages.test.mjs` | 현재 파일 7개를 정확히 검사. 새 자산 목록 및 `/BDON_Record/` 하위 경로에서의 로딩 검증을 갱신 |
+
+사용할 이미지와 밴드별/곡별 매핑 기준은 아직 정해지지 않았습니다. 곡별 이미지라면 기존 `song.id`로 연결하고 기존 곡·스트링 ID, 엑셀·기록 스키마를 불필요하게 바꾸지 않습니다. 자산 경로는 Pages 하위 경로를 고려해 상대 경로를 사용합니다. 이미지 누락 시 대체 표시 방법도 구현 단계에서 결정합니다.
+
+교체 후 Node·Pages·Workers에서 이미지 로딩과 누락 자산, 긴 곡명의 배치, 모바일 정책, 검색·밴드 필터·정렬 후 곡/아이콘 대응을 확인합니다. 편집·저장·취소와 레이팅, 네이비 테마도 유지해야 합니다. 이번 인계 정리는 문서만 변경하며 아이콘 파일이나 UI 코드는 변경하지 않습니다.
 
 ## 실행 명령과 환경변수
 
@@ -121,13 +146,13 @@ UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
 `tests/editor.test.mjs`는 실제 프런트엔드 코드를 jsdom에서 실행해 체크·필터·난이도 변경 시 통신 0회, 저장 1회, 취소·무변경 0회, 실패 후 재시도·중복 저장 방지·만료 세션을 검증합니다. `tests/batch-contract.mjs`는 같은 계약을 Node와 실제 D1에 적용해 전체 차트 저장, 계정 분리, 잘못된 요청 전체 거부와 강제 DB 오류 시 롤백을 검증합니다. 개발 의존성을 설치해 테스트하려면 Node.js 24.15 이상을 사용합니다.
 
-## 클라우드 전환 인계
+## 클라우드 운영 인계
 
-사용자가 제공한 D1 `bdon-record`에 연결하도록 Workers 코드를 준비했습니다. 실제 원격 테이블 생성·Cloudflare 배포와 로컬 DB 이전은 별도입니다. 명령과 연결 ID는 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다.
+Workers·D1 계정 저장은 <https://bdon-record.kh12.workers.dev>에 배포되어 있습니다. 사용자가 초기 D1 생성·migration·첫 배포를 완료했으며 편집 모드와 네이비 테마도 이후 반영했습니다. 기존 로컬 DB를 D1으로 이전하는 기능은 아직 없습니다. 명령과 연결 ID는 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다.
 
 - Workers 코드는 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존하고 D1 비동기 접근을 사용합니다. 새 D1용 migration은 준비했으며 기존 로컬 DB 데이터 이전은 아직 없습니다.
 - Workers는 화면과 API를 동일 출처에서 제공하고 HTTPS 세션 쿠키·Origin 검사·D1 로그인 제한을 적용합니다. 기존 Node 서버의 루프백 Host 제한은 그대로 유지합니다.
-- 프런트엔드는 사용자의 후속 요청에 따라 GitHub Pages 정적 미리보기로 구성했습니다. 자산은 상대 경로로 제공하며 API는 공개본에서 사용하지 않습니다. 실제 백엔드 연결 시 API 주소 처리가 필요합니다.
+- GitHub Pages는 상대 자산 경로를 사용하는 읽기 전용 미리보기입니다. Cloudflare 버전은 화면과 API를 동일 출처에서 제공하므로 별도 API URL이나 CORS 설정 없이 동작합니다.
 - 실제 운영 환경에서 DB 백업과 이전, 비밀번호 해시 호환성, 계정별 기록 격리, 로그아웃·만료·CPU 제한 동작을 확인해야 합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
 - UID 불러오기는 [별도 조사 문서](UID_API_RESEARCH.md)를 기준으로 실제 데이터 접근 방법과 곡 ID 대응표부터 검증합니다. UID 자체를 사이트 로그인 수단이나 계정 소유 증명으로 사용하지 않습니다.
 

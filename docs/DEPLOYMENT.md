@@ -2,7 +2,7 @@
 
 ## 공개 범위
 
-사용자의 2026-10-26 배포 요청에 따라 현재 화면을 GitHub Pages의 정적 미리보기로 제공합니다. 예상 기본 주소는 <https://lkh1134.github.io/BDON_Record/>이며, 실제 배포 상태는 저장소 Actions와 Pages 화면에서 확인합니다.
+사용자의 2026-10-26 배포 요청에 따라 <https://lkh1134.github.io/BDON_Record/>에 읽기 전용 미리보기를 제공합니다. 운영 계정 저장 페이지는 별도 주소 <https://bdon-record.kh12.workers.dev>입니다. 최근 확인한 네이비 테마 커밋 `22c08e3`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/40315790205)는 성공했습니다.
 
 - 공개본: 91곡 목록, 난이도 탭, 곡명·원문·밴드 검색, 밴드·기록 필터, 레벨 정렬. 개인 기록이 없는 미리보기이므로 기록 필터의 clear/fc/ap 결과는 비어 있습니다.
 - 공개본의 계정 로그인과 체크박스 저장은 비활성화합니다. 개인 레이팅과 기록 수는 `—`로 표시합니다.
@@ -23,13 +23,13 @@ npm run build:pages
 `.github/workflows/pages.yml` 흐름:
 
 1. `main` 푸시 또는 `workflow_dispatch`로 실행합니다.
-2. Node.js 24와 Python 3.13을 준비하고 엑셀을 변환합니다.
-3. 테스트를 통과한 경우 정적 빌드 결과만 Pages artifact로 업로드합니다.
+2. Node.js 24와 Python 3.13을 준비하고 `npm ci` 후 엑셀을 변환합니다.
+3. 전체 테스트와 Workers dry-run, Pages 빌드를 통과하면 정적 결과만 Pages artifact로 업로드합니다. Workers dry-run은 실제 Cloudflare 배포를 실행하지 않습니다.
 4. 별도 deploy job이 `github-pages` 환경에 배포합니다. 이 job에만 `pages: write`, `id-token: write` 권한을 부여합니다.
 
 ## 저장소 설정 및 확인
 
-GitHub 연결 도구는 코드 작성 기능을 제공하지만 Pages 설정 변경 기능은 제공하지 않습니다. 인증된 브라우저 또는 Pages 관리 권한이 있는 별도 API 인증으로 아래 초기 설정을 한 번 적용해야 합니다.
+사용자가 Source를 **GitHub Actions**로 설정했으며 Pages 배포 성공을 확인했습니다. 새 저장소에 옮길 때는 아래 초기 설정을 적용합니다.
 
 1. [저장소 Pages 설정](https://github.com/LKH1134/BDON_Record/settings/pages)을 엽니다.
 2. Build and deployment → Source를 **GitHub Actions**로 선택합니다.
@@ -40,7 +40,7 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 ## 검증 기록
 
-- 로컬 Node.js v24.16.0에서 `npm test`: 21개 통과, 실패 0개.
+- 최근 전체 테스트: 47개 통과, 실패 0개. 초기 Pages 작업 때의 21개는 이전 단계의 결과입니다. 네이비 테마 커밋의 CI에서는 테스트·Workers dry-run·Pages 빌드·배포가 성공했습니다.
 - 배포 자산의 허용 목록, 저장소 하위 경로 자산 링크, 원본 HTML의 로컬 모드 유지, 예상하지 않은 파일의 공개 방지를 자동 테스트합니다.
 - `/BDON_Record/` 하위 경로를 재현한 정적 서버에서 91곡 로딩, 로그인·체크박스 비활성, 기타 필터의 CRYCHIC 유지, 레벨 정렬과 곡 검색을 확인했습니다.
 
@@ -48,6 +48,8 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 프런트엔드 편집은 기존 `public/` 파일에서 수행합니다. 데이터는 `Data.xlsx`를 편집합니다. `main`에 푸시하면 동일 파이프라인이 갱신합니다. 배포 출력물을 직접 수정하지 않습니다.
 
-Cloudflare용 계정 API·화면·D1 설정은 이후 작업에서 준비했습니다. [Cloudflare 안내](CLOUDFLARE.md)를 따라 원격 테이블 생성과 Workers 배포를 완료하면 별도 Cloudflare 주소에서 로그인·저장을 사용할 수 있습니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
+Cloudflare 계정 API·D1 저장과 네이비 테마는 이미 운영에 반영되어 있습니다. Workers 업데이트 방법은 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
+
+다음 작업은 곡명 앞 임시 아이콘 교체입니다. 새 자산을 추가하면 `scripts/build-pages.mjs`의 허용 목록과 복사 로직, `tests/pages.test.mjs`의 정확한 자산 목록을 함께 수정합니다. 현재 7개라는 파일 수는 그때 갱신해야 하며, 저장소 하위 경로에서 이미지가 로딩되는지 확인합니다. 상세 위치는 [개발 인계](DEVELOPMENT.md#다음-ui-작업-곡-앞-아이콘-교체)에 있습니다.
 
 공식 참고: [GitHub Pages custom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [GitHub Pages REST API](https://docs.github.com/en/rest/pages/pages).
