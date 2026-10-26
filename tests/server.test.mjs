@@ -114,7 +114,7 @@ test('local accounts and play records', async t => {
     assert.equal(response.status, 200);
     assert.match(response.headers.get('content-security-policy'), /frame-ancestors 'none'/);
     assert.match(await response.text(), /곡 라이브러리/);
-    for (const path of ['/app.js','/rating.js','/styles.css']) assert.equal((await fetch(origin + path)).status, 200);
+    for (const path of ['/app.js','/rating.js','/styles.css','/brand-icon.webp']) assert.equal((await fetch(origin + path)).status, 200);
     for (const path of ['/.local/bdon.sqlite','/Data.xlsx','/server/app.mjs','/.git/config']) assert.equal((await fetch(origin + path)).status, 404);
   });
   await t.test('logout invalidates session and login restores stored records', async () => {

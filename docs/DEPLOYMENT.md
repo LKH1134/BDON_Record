@@ -16,7 +16,7 @@ npm test
 npm run build:pages
 ```
 
-`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `catalog.json`, `.nojekyll`만 생성합니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다.
+`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `brand-icon.webp`, `catalog.json`, `.nojekyll`만 생성합니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다. 헤더 아이콘 원본은 `public/brand-icon.webp`입니다.
 
 원본 HTML 대신 배포용 HTML에만 `<meta name="bdon-mode" content="static">`을 삽입합니다. `public/app.js`는 이 표식을 읽어 카탈로그를 같은 폴더의 `catalog.json`에서 불러오고 계정 API 요청을 하지 않습니다. `/BDON_Record/` 하위 경로에서 동작하도록 HTML 자산·홈 링크는 상대 경로를 사용합니다. 원본 HTML을 제공하는 로컬 서버는 기존 `/api/...` 경로를 계속 사용합니다.
 

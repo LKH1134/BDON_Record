@@ -3,7 +3,7 @@ import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const filenames = ['index.html', 'app.js', 'rating.js', 'styles.css', 'catalog.json', '.nojekyll'];
+const filenames = ['index.html', 'app.js', 'rating.js', 'styles.css', 'brand-icon.webp', 'catalog.json', '.nojekyll'];
 
 export async function buildPages(outputDirectory = resolve(root, 'dist')) {
   await mkdir(outputDirectory, { recursive: true });
@@ -13,7 +13,7 @@ export async function buildPages(outputDirectory = resolve(root, 'dist')) {
   }
   const html = await readFile(resolve(root, 'public/index.html'), 'utf8');
   await writeFile(join(outputDirectory, 'index.html'), html.replace('<head>', '<head>\n  <meta name="bdon-mode" content="static">'));
-  for (const name of ['app.js', 'rating.js', 'styles.css'])
+  for (const name of ['app.js', 'rating.js', 'styles.css', 'brand-icon.webp'])
     await copyFile(resolve(root, 'public', name), join(outputDirectory, name));
   await copyFile(resolve(root, 'data/catalog.json'), join(outputDirectory, 'catalog.json'));
   await writeFile(join(outputDirectory, '.nojekyll'), '');

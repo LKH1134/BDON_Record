@@ -9,7 +9,7 @@ test('Pages artifact contains only public assets and works under a repository pa
   const directory = await mkdtemp(join(tmpdir(), 'bdon-pages-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   await buildPages(directory);
-  assert.deepEqual((await readdir(directory)).sort(), ['.nojekyll', 'app.js', 'catalog.json', 'index.html', 'rating.js', 'styles.css']);
+  assert.deepEqual((await readdir(directory)).sort(), ['.nojekyll', 'app.js', 'brand-icon.webp', 'catalog.json', 'index.html', 'rating.js', 'styles.css']);
   const html = await readFile(join(directory, 'index.html'), 'utf8');
   assert.match(html, /<meta name="bdon-mode" content="static">/);
   const base = 'https://example.github.io/BDON_Record/';
@@ -18,6 +18,7 @@ test('Pages artifact contains only public assets and works under a repository pa
     assert.ok(new URL(match[1], base).href.startsWith(base), match[1]);
   }
   assert.equal(await readFile(join(directory, 'catalog.json'), 'utf8'), await readFile(new URL('../data/catalog.json', import.meta.url), 'utf8'));
+  assert.deepEqual(await readFile(join(directory, 'brand-icon.webp')), await readFile(new URL('../public/brand-icon.webp', import.meta.url)));
   assert.doesNotMatch(await readFile(new URL('../public/index.html', import.meta.url), 'utf8'), /name="bdon-mode"/);
 });
 

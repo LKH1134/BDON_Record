@@ -159,7 +159,7 @@ export function createApp({ dbPath = resolve(root, '.local/bdon.sqlite'), catalo
           .run(user.id, songId, difficulty, status, updatedAt);
         return json(res, 200, { record: { songId, difficulty, status, updatedAt } });
       }
-      const assets = { '/': ['index.html','text/html'], '/app.js': ['app.js','text/javascript'], '/rating.js': ['rating.js','text/javascript'], '/styles.css': ['styles.css','text/css'] };
+      const assets = { '/': ['index.html','text/html'], '/app.js': ['app.js','text/javascript'], '/rating.js': ['rating.js','text/javascript'], '/styles.css': ['styles.css','text/css'], '/brand-icon.webp': ['brand-icon.webp','image/webp'] };
       if (req.method === 'GET' && assets[url.pathname]) {
         const [filename, type] = assets[url.pathname];
         res.writeHead(200, { 'Content-Type': `${type}; charset=utf-8`, 'Cache-Control': 'no-cache' });

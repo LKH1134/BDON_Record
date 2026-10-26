@@ -59,6 +59,6 @@ npm run sync-data
 npm run build:pages
 ```
 
-`dist/`에 공개 자산 6개만 생성합니다. 계정 DB, 엑셀, 서버 코드, 인계 문서는 배포 파일에 포함하지 않습니다. 기존 출력 폴더에 예상하지 않은 파일이 있으면 빌드는 공개를 중단합니다.
+`dist/`에 헤더 아이콘을 포함한 공개 자산 7개만 생성합니다. 계정 DB, 엑셀, 서버 코드, 인계 문서는 배포 파일에 포함하지 않습니다. 기존 출력 폴더에 예상하지 않은 파일이 있으면 빌드는 공개를 중단합니다.
 
 `.github/workflows/pages.yml`은 `main` 푸시 또는 수동 실행 시 엑셀 변환·테스트·정적 빌드를 수행하고 Pages에 배포합니다. 저장소 Settings → Pages → Source는 **GitHub Actions**로 설정해야 합니다. 자세한 설정과 확인 방법은 [Pages 배포 인계](docs/DEPLOYMENT.md)를 참고합니다.
