@@ -2,7 +2,7 @@
 
 ## 구성과 편집 위치
 
-외부 npm 패키지 없이 브라우저의 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다.
+기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. Cloudflare용 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild를 사용하며 `npm ci`로 설치합니다.
 
 | 파일 | 역할 |
 | --- | --- |
@@ -19,6 +19,11 @@
 | `tests/server.test.mjs` | 임시 DB와 로컬 HTTP 서버를 사용하는 통합 검증 |
 | `tests/rating.test.mjs` | 개별 난이도·곡별 최고 기록·상위 50곡 레이팅 검증 |
 | `start.ps1` | 실행 환경 탐색, 엑셀 변환, 서버 시작 |
+| `worker/index.mjs` | Workers HTTP API, D1 저장, HTTPS 세션, 만료 자료 정리 Cron |
+| `wrangler.jsonc` | Workers·D1·정적 자산·Cron 연결 설정 |
+| `migrations/0001_accounts.sql` | 새 D1용 계정·세션·기록·로그인 제한 테이블 |
+| `scripts/build-worker.mjs` | CLOUD MODE 화면을 `dist-worker/`에 준비 |
+| `tests/worker.test.mjs` | 실제 Workers 런타임·임시 D1 통합 검증 |
 
 `index.html`을 파일로 직접 여는 방식이 아니라 서버를 실행해 접속해야 계정·기록 API가 동작합니다. 정적 파일을 추가하면 `server/app.mjs`의 `assets` 경로 목록도 확장해야 합니다.
 
@@ -39,7 +44,7 @@ npm run dev
 npm test
 ```
 
-패키지 설치 과정은 필요하지 않습니다. `start.ps1`은 PATH의 Node.js 24 이상을 사용하며 필요할 때 현재 사용자의 Codex 번들 런타임을 찾습니다. Python도 번들 경로를 먼저 확인한 뒤 `python` 명령으로 대체합니다. Codex가 없는 환경에서는 Node.js 24 이상과 Python 3을 준비합니다.
+기존 로컬 서버 실행에는 패키지 설치 과정이 필요하지 않습니다. 전체 테스트와 Workers 개발에는 `npm ci`를 먼저 실행합니다. `start.ps1`은 PATH의 Node.js 24 이상을 사용하며 필요할 때 현재 사용자의 Codex 번들 런타임을 찾습니다. Python도 번들 경로를 먼저 확인한 뒤 `python` 명령으로 대체합니다. Codex가 없는 환경에서는 Node.js 24 이상과 Python 3을 준비합니다.
 
 | 환경변수 | 기본값 | 용도 |
 | --- | --- | --- |
@@ -106,12 +111,12 @@ UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
 ## 클라우드 전환 인계
 
-사용자 의도는 충분한 로컬 검증 후 배포하고, 계정 데이터를 Cloudflare에 저장하는 것입니다. 아래는 아직 구현하지 않은 후속 작업 목록입니다.
+사용자가 제공한 D1 `bdon-record`에 연결하도록 Workers 코드를 준비했습니다. 실제 원격 테이블 생성·Cloudflare 배포와 로컬 DB 이전은 별도입니다. 명령과 연결 ID는 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다.
 
-- Workers 등 실행 환경과 DB 이전 방법을 정하고, 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존합니다. D1을 선택하는 경우 현재 동기식 `node:sqlite` 접근을 대상 런타임에 맞게 교체하고 마이그레이션을 준비합니다.
-- 현재 Host·Origin 제한과 CSP의 `connect-src 'self'`는 로컬·동일 출처 전용입니다. 실제 프런트엔드/API 주소에 맞춰 조정하고, HTTPS 세션 쿠키·CORS·CSRF·로그인 제한을 검증합니다.
+- Workers 코드는 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존하고 D1 비동기 접근을 사용합니다. 새 D1용 migration은 준비했으며 기존 로컬 DB 데이터 이전은 아직 없습니다.
+- Workers는 화면과 API를 동일 출처에서 제공하고 HTTPS 세션 쿠키·Origin 검사·D1 로그인 제한을 적용합니다. 기존 Node 서버의 루프백 Host 제한은 그대로 유지합니다.
 - 프런트엔드는 사용자의 후속 요청에 따라 GitHub Pages 정적 미리보기로 구성했습니다. 자산은 상대 경로로 제공하며 API는 공개본에서 사용하지 않습니다. 실제 백엔드 연결 시 API 주소 처리가 필요합니다.
-- DB 백업과 이전, 비밀번호 해시 호환성, 계정별 기록 격리, 로그아웃·만료 동작을 배포 대상에서 확인합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
+- 실제 운영 환경에서 DB 백업과 이전, 비밀번호 해시 호환성, 계정별 기록 격리, 로그아웃·만료·CPU 제한 동작을 확인해야 합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
 - UID 불러오기는 [별도 조사 문서](UID_API_RESEARCH.md)를 기준으로 실제 데이터 접근 방법과 곡 ID 대응표부터 검증합니다. UID 자체를 사이트 로그인 수단이나 계정 소유 증명으로 사용하지 않습니다.
 
-Pages 자동 배포 workflow는 저장소에 포함되어 있습니다. Cloudflare 배포 설정과 클라우드 비밀값은 없습니다. Pages 초기 설정·운영 방법은 [배포 문서](DEPLOYMENT.md)를 참고합니다.
+Pages 자동 배포 workflow와 Cloudflare용 `wrangler.jsonc`가 포함되어 있습니다. Cloudflare 인증 토큰은 저장소에 없습니다. Pages 초기 설정·운영 방법은 [배포 문서](DEPLOYMENT.md)를 참고합니다.

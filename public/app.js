@@ -2,6 +2,7 @@ import { calculateRating, calculateChartRating } from './rating.js';
 
 const $ = id => document.getElementById(id);
 const staticPreview = document.querySelector('meta[name="bdon-mode"]')?.content === 'static';
+const cloudMode = document.querySelector('meta[name="bdon-mode"]')?.content === 'cloud';
 const state = { catalog: null, user: null, records: new Map(), difficulty: 'expert', ready: false, pending: new Set(), authMode: 'login' };
 const difficultyNames = { expert: 'Expert', hard: 'Hard', normal: 'Normal', easy: 'Easy' };
 const statusNames = { clear: '클리어', fc: '풀콤보', ap: '올퍼펙트' };
@@ -233,6 +234,12 @@ document.addEventListener('keydown', event => {
   }
 });
 async function initialize() {
+  if (cloudMode) {
+    document.querySelector('.local-badge').textContent = 'CLOUD MODE';
+    document.querySelector('.site-footer > span:last-child').textContent = 'CLOUD MODE · 계정과 기록이 클라우드에 저장됩니다.';
+    document.querySelector('.local-note').textContent = '계정과 플레이 기록은 클라우드에 저장됩니다.';
+    document.querySelector('#account-dialog .dialog-description').textContent = '기록은 계정에 저장됩니다. 다른 기기에서도 로그인해 이어서 기록할 수 있어요.';
+  }
   try {
     const [catalog, identity] = await Promise.all([api('/api/catalog'), api('/api/me')]);
     catalog.names = new Map(catalog.strings.map(s => [s.id, s]));

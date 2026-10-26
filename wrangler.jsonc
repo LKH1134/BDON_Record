@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bdon-record",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist-worker",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bdon-record",
+      "database_id": "5e15c295-24e9-443d-b9f6-fedc67fd3e87",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": { "crons": ["0 * * * *"] }
+}

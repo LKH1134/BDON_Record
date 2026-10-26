@@ -48,6 +48,6 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 프런트엔드 편집은 기존 `public/` 파일에서 수행합니다. 데이터는 `Data.xlsx`를 편집합니다. `main`에 푸시하면 동일 파이프라인이 갱신합니다. 배포 출력물을 직접 수정하지 않습니다.
 
-Cloudflare 계정 API를 연결하는 작업은 별도입니다. 브라우저에 보관한 임시 계정·가짜 로그인으로 서버 계정 기능을 대체하지 않습니다. 실제 백엔드가 준비되면 인증·API 주소·쿠키·CSP/CORS·기록 격리 검증 후 공개본의 저장 기능을 활성화합니다.
+Cloudflare용 계정 API·화면·D1 설정은 이후 작업에서 준비했습니다. [Cloudflare 안내](CLOUDFLARE.md)를 따라 원격 테이블 생성과 Workers 배포를 완료하면 별도 Cloudflare 주소에서 로그인·저장을 사용할 수 있습니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
 
 공식 참고: [GitHub Pages custom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [GitHub Pages REST API](https://docs.github.com/en/rest/pages/pages).
