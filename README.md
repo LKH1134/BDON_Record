@@ -52,4 +52,13 @@ npm test
 
 ## 배포 계획
 
-현재는 로컬 실행만 구성되어 있으며 GitHub Pages 배포 설정은 없습니다. GitHub Pages에서는 정적 프런트엔드를 제공할 수 있지만, 이 프로토타입의 Node.js 서버와 SQLite 계정 저장은 실행할 수 없습니다. 배포 단계에서 계정·기록 API를 별도 백엔드로 옮기고 프런트엔드 배포를 연결해야 합니다.
+GitHub Pages용 공개 미리보기와 로컬 계정 버전을 함께 유지합니다. 공개본은 곡 목록·검색·필터·난이도 선택·레벨 정렬을 제공하며 로그인과 기록 저장은 비활성화합니다. 계정·기록·개인 레이팅은 기존 로컬 서버에서 계속 사용할 수 있습니다. Cloudflare 백엔드와 게임 UID 연동은 아직 구현하지 않았습니다.
+
+```sh
+npm run sync-data
+npm run build:pages
+```
+
+`dist/`에 공개 자산 6개만 생성합니다. 계정 DB, 엑셀, 서버 코드, 인계 문서는 배포 파일에 포함하지 않습니다. 기존 출력 폴더에 예상하지 않은 파일이 있으면 빌드는 공개를 중단합니다.
+
+`.github/workflows/pages.yml`은 `main` 푸시 또는 수동 실행 시 엑셀 변환·테스트·정적 빌드를 수행하고 Pages에 배포합니다. 저장소 Settings → Pages → Source는 **GitHub Actions**로 설정해야 합니다. 자세한 설정과 확인 방법은 [Pages 배포 인계](docs/DEPLOYMENT.md)를 참고합니다.

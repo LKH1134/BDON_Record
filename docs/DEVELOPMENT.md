@@ -13,6 +13,9 @@
 | `server/app.mjs` | HTTP 라우팅, 인증, 입력 검증, DB 스키마와 기록 저장 |
 | `server/index.mjs` | 서버 시작, 환경변수, 종료 처리 |
 | `scripts/import_data.py` | `Data.xlsx` → `data/catalog.json` 변환 |
+| `scripts/build-pages.mjs` | 공개 자산만 포함한 Pages 정적 미리보기 빌드 |
+| `.github/workflows/pages.yml` | `main` 푸시 시 검증·빌드·Pages 배포 |
+| `tests/pages.test.mjs` | 배포 자산 범위·하위 경로·로컬 모드 유지 검증 |
 | `tests/server.test.mjs` | 임시 DB와 로컬 HTTP 서버를 사용하는 통합 검증 |
 | `tests/rating.test.mjs` | 개별 난이도·곡별 최고 기록·상위 50곡 레이팅 검증 |
 | `start.ps1` | 실행 환경 탐색, 엑셀 변환, 서버 시작 |
@@ -107,8 +110,8 @@ UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
 - Workers 등 실행 환경과 DB 이전 방법을 정하고, 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존합니다. D1을 선택하는 경우 현재 동기식 `node:sqlite` 접근을 대상 런타임에 맞게 교체하고 마이그레이션을 준비합니다.
 - 현재 Host·Origin 제한과 CSP의 `connect-src 'self'`는 로컬·동일 출처 전용입니다. 실제 프런트엔드/API 주소에 맞춰 조정하고, HTTPS 세션 쿠키·CORS·CSRF·로그인 제한을 검증합니다.
-- 프런트엔드를 GitHub Pages에 배포할지 다른 호스팅에 둘지 확정해야 합니다. 현재 루트 절대 경로(`/app.js`, `/api/...`)를 사용하므로 저장소 하위 경로 배포와 API 주소 처리가 필요합니다.
+- 프런트엔드는 사용자의 후속 요청에 따라 GitHub Pages 정적 미리보기로 구성했습니다. 자산은 상대 경로로 제공하며 API는 공개본에서 사용하지 않습니다. 실제 백엔드 연결 시 API 주소 처리가 필요합니다.
 - DB 백업과 이전, 비밀번호 해시 호환성, 계정별 기록 격리, 로그아웃·만료 동작을 배포 대상에서 확인합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
 - UID 불러오기는 [별도 조사 문서](UID_API_RESEARCH.md)를 기준으로 실제 데이터 접근 방법과 곡 ID 대응표부터 검증합니다. UID 자체를 사이트 로그인 수단이나 계정 소유 증명으로 사용하지 않습니다.
 
-배포 설정 파일, 클라우드 비밀값, 자동 배포 워크플로는 현재 저장소에 없습니다.
+Pages 자동 배포 workflow는 저장소에 포함되어 있습니다. Cloudflare 배포 설정과 클라우드 비밀값은 없습니다. Pages 초기 설정·운영 방법은 [배포 문서](DEPLOYMENT.md)를 참고합니다.

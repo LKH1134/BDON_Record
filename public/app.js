@@ -1,6 +1,7 @@
 import { calculateRating, calculateChartRating } from './rating.js';
 
 const $ = id => document.getElementById(id);
+const staticPreview = document.querySelector('meta[name="bdon-mode"]')?.content === 'static';
 const state = { catalog: null, user: null, records: new Map(), difficulty: 'expert', ready: false, pending: new Set(), authMode: 'login' };
 const difficultyNames = { expert: 'Expert', hard: 'Hard', normal: 'Normal', easy: 'Easy' };
 const statusNames = { clear: '클리어', fc: '풀콤보', ap: '올퍼펙트' };
@@ -25,6 +26,12 @@ function saveLabel(message, error = false) {
   node.classList.toggle('error', error);
 }
 async function api(path, options = {}) {
+  if (staticPreview) {
+    if (path === '/api/me') return { user: null };
+    if (path !== '/api/catalog' || (options.method && options.method !== 'GET'))
+      throw new Error('공개 미리보기에서는 계정과 기록 저장을 사용할 수 없습니다.');
+    path = new URL('./catalog.json', document.baseURI).href;
+  }
   let response;
   try { response = await fetch(path, { credentials: 'same-origin', ...options, headers: { 'Content-Type': 'application/json', ...options.headers } }); }
   catch { throw new Error('서버에 연결할 수 없습니다. 서버 실행 상태를 확인해 주세요.'); }
@@ -37,6 +44,21 @@ async function api(path, options = {}) {
   return result;
 }
 function renderAccount() {
+  if (staticPreview) {
+    $('account-button').textContent = '미리보기';
+    $('account-button').disabled = true;
+    $('session-label').textContent = '악곡 라이브러리 미리보기';
+    $('guest-banner').hidden = false;
+    $('guest-banner').querySelector('strong').textContent = '공개 미리보기입니다. 계정 로그인과 기록 저장은 백엔드 연결 후 제공됩니다.';
+    $('banner-login').hidden = true;
+    document.querySelector('.local-badge').textContent = 'WEB PREVIEW';
+    document.querySelector('.intro-copy').textContent = '뱅드림! 아워 노트의 악곡과 난이도를 확인해 보세요.';
+    document.querySelector('.section-heading p').textContent = '검색과 밴드 필터, 레벨 정렬로 곡을 찾아보세요.';
+    document.querySelector('.table-footer > span:last-child').textContent = '난이도별 악곡 목록 · 읽기 전용';
+    document.querySelector('.site-footer > span:last-child').textContent = 'WEB PREVIEW · 계정 및 기록 저장 준비 중';
+    saveLabel('공개 미리보기 · 읽기 전용');
+    return;
+  }
   $('account-button').textContent = state.user ? `${state.user.username} 님 ↗` : '로그인 ↗';
   $('session-label').textContent = state.user ? `${state.user.username} 님의 플레이 아카이브` : '나만의 플레이 아카이브';
   $('guest-banner').hidden = !!state.user;
@@ -92,7 +114,7 @@ function renderSongs() {
       <td class="song-cell"><div class="song-main"><div class="track-art ${style}" aria-hidden="true">${monogram}</div><div class="song-text"><div class="song-name">${escapeHtml(title)}</div>${name.translated && name.translated !== name.original ? `<div class="song-original">${escapeHtml(name.original)}</div>` : ''}<div class="band-name">${escapeHtml(song.band)}</div></div></div></td>
       <td class="rating-cell"><span class="chart-rating${status ? ' earned' : ''}">${chartRating}</span></td>
       <td class="level-cell"><span class="level-badge" aria-label="${difficultyNames[state.difficulty]} 레벨 ${song.levels[state.difficulty]}">${song.levels[state.difficulty]}</span></td>
-      ${['clear','fc','ap'].map(value => `<td class="check-cell"><label class="record-check"><input type="checkbox" data-song="${song.id}" data-status="${value}" aria-label="${escapeHtml(title)} ${difficultyNames[state.difficulty]} ${statusNames[value]}" ${status === value ? 'checked' : ''} ${!state.ready || state.pending.has(recordKey(song.id)) ? 'disabled' : ''}></label></td>`).join('')}
+      ${['clear','fc','ap'].map(value => `<td class="check-cell"><label class="record-check"><input type="checkbox" data-song="${song.id}" data-status="${value}" aria-label="${escapeHtml(title)} ${difficultyNames[state.difficulty]} ${statusNames[value]}" ${status === value ? 'checked' : ''} ${staticPreview || !state.ready || state.pending.has(recordKey(song.id)) ? 'disabled' : ''}></label></td>`).join('')}
     </tr>`;
   }).join('') : '<tr><td colspan="7" class="empty-state">조건에 맞는 곡이 없습니다.<br>검색어나 필터를 바꿔보세요.</td></tr>';
   if (focusTarget) document.querySelector(`#song-list input[data-song="${focusTarget.song}"][data-status="${focusTarget.status}"]`)?.focus({ preventScroll: true });
