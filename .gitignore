@@ -1,0 +1,19 @@
+# Local accounts, passwords, sessions, and play records
+.local/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example
+
+# Authoring outputs and saved website resources
+outputs/
+/*_files/
+/*.html
+~$*.xlsx
+
+# Dependencies and editor files
+node_modules/
+.DS_Store
+*.log

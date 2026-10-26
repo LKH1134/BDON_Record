@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="뱅드림! 아워 노트의 곡과 난이도별 클리어 기록을 관리하세요.">
+  <title>BDON Record · 나의 플레이 기록</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23d9fa71'/%3E%3Cpath d='M12 10v20l18-10z' fill='%23101114'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="brand" aria-label="BDON Record 홈"><span class="brand-mark" aria-hidden="true">↗</span><span>BDON<span class="brand-light"> RECORD</span></span></a>
+    <div class="header-right"><span class="local-badge"><i></i>LOCAL PROTOTYPE</span><button id="account-button" class="button account-button" type="button">로그인 <span aria-hidden="true">↗</span></button></div>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">BanG Dream! OUR NOTES</p><h1>기록 저장소</h1><p class="intro-copy">클리어 여부를 체크하면 <br class="mobile-only"> 상위 50곡의 기록을 바탕으로 레이팅이 계산됩니다.</p></div>
+      <div class="intro-side"><span class="sound-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><p id="session-label">나만의 플레이 아카이브</p></div>
+    </section>
+    <section class="stats" aria-label="플레이 기록 요약">
+      <div class="stat stat-total"><div class="stat-label">수록곡 <span>TRACKS</span></div><div class="stat-value"><span id="stat-total">—</span><small>곡</small></div><div class="stat-bottom" id="difficulty-caption">Expert 기준</div></div>
+      <div class="stat"><div class="stat-label"><i class="status-dot clear-dot"></i>클리어 <span>CLEAR</span></div><div class="stat-value" id="stat-clear">—</div><div class="stat-bottom"><span id="percent-clear">—</span></div><div class="progress"><span id="progress-clear"></span></div></div>
+      <div class="stat"><div class="stat-label"><i class="status-dot fc-dot"></i>풀콤보 <span>FULL COMBO</span></div><div class="stat-value" id="stat-fc">—</div><div class="stat-bottom"><span id="percent-fc">—</span></div><div class="progress fc-progress"><span id="progress-fc"></span></div></div>
+      <div class="stat"><div class="stat-label"><i class="status-dot ap-dot"></i>올퍼펙트 <span>ALL PERFECT</span></div><div class="stat-value" id="stat-ap">—</div><div class="stat-bottom"><span id="percent-ap">—</span></div><div class="progress ap-progress"><span id="progress-ap"></span></div></div>
+      <div class="stat stat-rating"><div class="stat-label">레이팅 <span>RATING</span></div><div class="stat-value" id="stat-rating" aria-live="polite">—</div></div>
+    </section>
+    <section class="library" aria-labelledby="library-title">
+      <div class="section-heading"><div><h2 id="library-title">곡 라이브러리 <span id="result-count"></span></h2><p>곡마다 하나의 최고 기록을 선택하세요. 선택한 기록을 다시 누르면 해제됩니다.</p></div><div class="save-state" id="save-state" role="status" aria-live="polite"><span></span>데이터 불러오는 중</div></div>
+      <div class="toolbar">
+        <div class="difficulty-tabs" role="group" aria-label="난이도"><button type="button" data-difficulty="expert" class="difficulty-tab active" aria-pressed="true">EXPERT</button><button type="button" data-difficulty="hard" class="difficulty-tab" aria-pressed="false">HARD</button><button type="button" data-difficulty="normal" class="difficulty-tab" aria-pressed="false">NORMAL</button><button type="button" data-difficulty="easy" class="difficulty-tab" aria-pressed="false">EASY</button></div>
+        <div class="filters"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="곡명, 원문으로 검색" aria-label="곡 검색" autocomplete="off"><kbd>/</kbd></label><label><span class="sr-only">밴드 필터</span><select id="band-filter"><option value="">모든 밴드</option></select></label><label><span class="sr-only">기록 필터</span><select id="record-filter"><option value="">모든 기록</option><option value="none">미기록</option><option value="clear">클리어</option><option value="fc">풀콤보</option><option value="ap">올퍼펙트</option></select></label><label class="sort-filter"><span class="sr-only">레벨 정렬</span><select id="level-sort"><option value="">기본 순서</option><option value="asc">레벨 오름차순</option><option value="desc">레벨 내림차순</option></select></label></div>
+      </div>
+      <div id="guest-banner" class="guest-banner" hidden><span><strong>로그인하여 기록을 저장하세요.</strong></span><button class="text-button" id="banner-login" type="button">로그인 / 계정 만들기 <span aria-hidden="true">→</span></button></div>
+      <div class="table-wrap"><table><thead><tr><th class="number-col" scope="col">NO.</th><th class="song-col" scope="col">곡 / 밴드</th><th class="rating-col" scope="col">레이팅</th><th class="level-col" scope="col">레벨</th><th class="check-col" scope="col">클리어</th><th class="check-col" scope="col">풀콤보</th><th class="check-col" scope="col">올퍼펙트</th></tr></thead><tbody id="song-list"><tr><td class="empty-state" colspan="7">곡 목록을 불러오는 중입니다.</td></tr></tbody></table></div>
+      <div class="table-footer"><span id="table-count">—</span><span>난이도별 기록 · 선택 시 자동 저장</span></div>
+    </section>
+    <footer class="site-footer"><span class="footer-brand">BDON RECORD <small>나의 플레이 아카이브</small></span><span>LOCAL MODE <span class="footer-dot">·</span> 이 컴퓨터에 계정과 기록이 저장됩니다.</span></footer>
+  </main>
+  <dialog id="auth-dialog" aria-labelledby="auth-title">
+    <button class="close-dialog" id="close-auth" type="button" aria-label="닫기">×</button>
+    <div class="dialog-logo" aria-hidden="true">↗</div><p class="eyebrow">Login</p><h2 id="auth-title">로그인</h2><p class="dialog-description"></p>
+    <div class="auth-tabs" role="group" aria-label="계정 작업"><button type="button" id="login-tab" class="selected" aria-pressed="true">로그인</button><button type="button" id="register-tab" aria-pressed="false">계정 만들기</button></div>
+    <form id="auth-form">
+      <label class="form-field">아이디<input id="username" name="username" autocomplete="username" required minlength="2" maxlength="24" placeholder="아이디를 입력하세요"><small>문자·숫자·밑줄·하이픈, 2~24자</small></label>
+      <label class="form-field">비밀번호<input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="8자 이상 입력하세요"></label>
+      <p class="form-error" id="auth-error" role="alert"></p><button class="button primary-button" id="auth-submit" type="submit">로그인 <span aria-hidden="true">→</span></button>
+    </form><p class="local-note">이 컴퓨터에서 사용하는 로컬 계정입니다.</p>
+  </dialog>
+  <dialog id="account-dialog" aria-labelledby="account-title"><button class="close-dialog" id="close-account" type="button" aria-label="닫기">×</button><div class="dialog-logo" aria-hidden="true">↗</div><p class="eyebrow">MY ACCOUNT</p><h2 id="account-title"></h2><p class="dialog-description">기록은 이 컴퓨터에 저장되어 있습니다.<br>다음 로그인에서도 이어서 기록할 수 있어요.</p><button id="logout-button" class="button primary-button" type="button">로그아웃 <span aria-hidden="true">→</span></button></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
