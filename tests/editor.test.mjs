@@ -108,6 +108,28 @@ test('Cancel restores saved records and ratings; unchanged or reverted edits sen
   assert.equal(ui.requests.length, 0);
 });
 
+test('new coefficients agree across chart, summary and details through draft edits and cancellation', async t => {
+  const ui = await editor(t);
+  const checkRating = expected => {
+    assert.equal(ui.check(1001, 'clear').closest('tr').querySelector('.chart-rating').textContent, expected);
+    assert.equal(ui.$('stat-rating').textContent, expected);
+    ui.$('rating-details-button').click();
+    assert.equal(ui.$('rating-details-list').querySelector('.rating-entry-score').textContent, expected);
+    assert.equal(ui.$('rating-details-total').textContent, expected);
+    ui.$('close-rating').click();
+  };
+  // Song 1001 has an Expert level of 25.
+  checkRating('50');
+  ui.$('edit-button').click();
+  ui.check(1001, 'fc').click();
+  checkRating('52.5');
+  ui.check(1001, 'ap').click();
+  checkRating('55');
+  ui.$('cancel-button').click();
+  checkRating('50');
+  assert.equal(ui.requests.length, 0);
+});
+
 test('failed saves retain the draft for retry and in-flight saves cannot submit twice', async t => {
   const ui = await editor(t);
   ui.$('edit-button').click();

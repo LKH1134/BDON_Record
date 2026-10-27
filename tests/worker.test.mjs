@@ -118,7 +118,7 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     assert.equal(records.find(r => r.difficulty === 'expert').status, 'ap');
     assert.equal((await bob.request('/api/records')).records[0].status, 'clear');
     const catalog = await guest.request('/api/catalog');
-    assert.equal(calculateRating(catalog.songs, new Map(records.map(r => [`${r.songId}:${r.difficulty}`, r.status]))), 27.5);
+    assert.equal(calculateRating(catalog.songs, new Map(records.map(r => [`${r.songId}:${r.difficulty}`, r.status]))), 55);
     await alice.request('/api/records/1001/hard', { method: 'PUT', body: { status: null } });
     assert.equal((await alice.request('/api/records')).records.length, 1);
   });

@@ -1,5 +1,5 @@
 // Calculate in hundredths, then convert the final sum to rating points.
-const weights = { clear: 100, fc: 105, ap: 110 };
+const weights = { clear: 200, fc: 210, ap: 220 };
 
 function chartRatingHundredths(level, status) {
   return level * (weights[status] || 0);

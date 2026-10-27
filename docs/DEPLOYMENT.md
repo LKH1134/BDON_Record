@@ -52,6 +52,6 @@ Cloudflare 계정 API·D1 저장과 네이비 테마는 이미 운영에 반영�
 
 밴드 로고 5개의 교체는 완료했습니다. `scripts/build-pages.mjs`는 로고 폴더와 파일명도 검증하고 `tests/pages.test.mjs`는 파일 보존과 미허용 자산 거부를 확인합니다. 향후 이미지 추가 시 양쪽 허용 목록과 복사 로직, 저장소 하위 경로에서의 로딩을 함께 점검합니다. 상세 매핑은 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
 
-다음 시작 시 안내할 앨범 재킷 포함 여부와 레이팅 2배 변경은 [별도 메모](NEXT_STEPS.md)에 기록되어 있으며 아직 구현·배포하지 않았습니다. 재킷을 추가하게 되면 정적 자산 허용 목록·복사·하위 경로 로딩 검증을 함께 갱신합니다.
+다음 시작 시 안내할 앨범 재킷 포함 여부와 레이팅 직관성 패치 상태는 [별도 메모](NEXT_STEPS.md)에 기록되어 있습니다. 재킷은 검토 중이고 레이팅 계수 2.0 / 2.1 / 2.2는 `test`에서 구현·검증했습니다. `main` 병합·운영 배포 전입니다. 재킷을 추가하게 되면 정적 자산 허용 목록·복사·하위 경로 로딩 검증을 함께 갱신합니다.
 
 공식 참고: [GitHub Pages custom workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages), [GitHub Pages REST API](https://docs.github.com/en/rest/pages/pages).
