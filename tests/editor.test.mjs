@@ -14,7 +14,7 @@ async function until(predicate) {
   }
   assert.fail('UI did not reach the expected state');
 }
-async function editor(t, { guest = false, preview = false, initialRecords = [{ songId: 1001, difficulty: 'expert', status: 'clear' }] } = {}) {
+async function editor(t, { guest = false, preview = false, initialRecords = [{ songId: 101001, difficulty: 'expert', status: 'clear' }] } = {}) {
   const html = preview ? sourceHtml.replace('<head>', '<head><meta name="bdon-mode" content="static">') : sourceHtml;
   const dom = new JSDOM(html, { url: 'http://localhost:3000/', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
@@ -59,28 +59,28 @@ async function editor(t, { guest = false, preview = false, initialRecords = [{ s
 
 test('editing across difficulties stays local and Save sends exactly one request with final changes', async t => {
   const ui = await editor(t);
-  assert.ok(ui.check(1001, 'clear').disabled);
+  assert.ok(ui.check(101001, 'clear').disabled);
   ui.$('edit-button').click();
-  ui.check(1001, 'fc').click();
-  ui.check(1001, 'ap').click();
-  assert.equal(ui.check(1001, 'fc').checked, false);
-  ui.check(1002, 'clear').click();
+  ui.check(101001, 'fc').click();
+  ui.check(101001, 'ap').click();
+  assert.equal(ui.check(101001, 'fc').checked, false);
+  ui.check(101002, 'clear').click();
   ui.difficulty('hard');
-  ui.check(1003, 'fc').click();
+  ui.check(101003, 'fc').click();
   ui.$('search').value = '迷星叫';
   ui.$('search').dispatchEvent(new ui.window.Event('input'));
   ui.difficulty('expert');
-  assert.ok(ui.check(1001, 'ap').checked);
+  assert.ok(ui.check(101001, 'ap').checked);
   assert.equal(ui.requests.length, 0);
   assert.match(ui.$('save-state').textContent, /3개 변경/);
   ui.$('save-button').click();
   await until(() => ui.$('save-button').hidden);
   assert.deepEqual(ui.requests, [{ path: '/api/records', method: 'PUT', body: { records: [
-    { songId: 1001, difficulty: 'expert', status: 'ap' },
-    { songId: 1002, difficulty: 'expert', status: 'clear' },
-    { songId: 1003, difficulty: 'hard', status: 'fc' }
+    { songId: 101001, difficulty: 'expert', status: 'ap' },
+    { songId: 101002, difficulty: 'expert', status: 'clear' },
+    { songId: 101003, difficulty: 'hard', status: 'fc' }
   ] } }]);
-  assert.ok(ui.check(1001, 'ap').disabled);
+  assert.ok(ui.check(101001, 'ap').disabled);
   assert.match(ui.$('save-state').textContent, /모든 기록 저장됨/);
 });
 
@@ -88,20 +88,20 @@ test('Cancel restores saved records and ratings; unchanged or reverted edits sen
   const ui = await editor(t);
   const rating = ui.$('stat-rating').textContent;
   ui.$('edit-button').click();
-  ui.check(1001, 'clear').click();
+  ui.check(101001, 'clear').click();
   ui.difficulty('easy');
-  ui.check(1002, 'ap').click();
+  ui.check(101002, 'ap').click();
   ui.$('cancel-button').click();
   ui.difficulty('expert');
-  assert.ok(ui.check(1001, 'clear').checked);
+  assert.ok(ui.check(101001, 'clear').checked);
   assert.equal(ui.$('stat-rating').textContent, rating);
   ui.$('edit-button').click();
   ui.$('save-button').click();
   ui.$('edit-button').click();
-  ui.check(1001, 'ap').click();
-  ui.check(1001, 'clear').click();
-  ui.check(1002, 'fc').click();
-  ui.check(1002, 'fc').click();
+  ui.check(101001, 'ap').click();
+  ui.check(101001, 'clear').click();
+  ui.check(101002, 'fc').click();
+  ui.check(101002, 'fc').click();
   assert.match(ui.$('save-state').textContent, /0개 변경/);
   ui.$('save-button').click();
   assert.ok(ui.$('save-button').hidden);
@@ -111,19 +111,19 @@ test('Cancel restores saved records and ratings; unchanged or reverted edits sen
 test('new coefficients agree across chart, summary and details through draft edits and cancellation', async t => {
   const ui = await editor(t);
   const checkRating = expected => {
-    assert.equal(ui.check(1001, 'clear').closest('tr').querySelector('.chart-rating').textContent, expected);
+    assert.equal(ui.check(101001, 'clear').closest('tr').querySelector('.chart-rating').textContent, expected);
     assert.equal(ui.$('stat-rating').textContent, expected);
     ui.$('rating-details-button').click();
     assert.equal(ui.$('rating-details-list').querySelector('.rating-entry-score').textContent, expected);
     assert.equal(ui.$('rating-details-total').textContent, expected);
     ui.$('close-rating').click();
   };
-  // Song 1001 has an Expert level of 25.
+  // Song 101001 has an Expert level of 25.
   checkRating('50');
   ui.$('edit-button').click();
-  ui.check(1001, 'fc').click();
+  ui.check(101001, 'fc').click();
   checkRating('52.5');
-  ui.check(1001, 'ap').click();
+  ui.check(101001, 'ap').click();
   checkRating('55');
   ui.$('cancel-button').click();
   checkRating('50');
@@ -133,15 +133,15 @@ test('new coefficients agree across chart, summary and details through draft edi
 test('failed saves retain the draft for retry and in-flight saves cannot submit twice', async t => {
   const ui = await editor(t);
   ui.$('edit-button').click();
-  ui.check(1001, 'clear').click();
-  ui.check(1002, 'ap').click();
+  ui.check(101001, 'clear').click();
+  ui.check(101002, 'ap').click();
   for (const failure of [500, 'network']) {
     ui.fail(failure);
     ui.$('save-button').click();
     await until(() => !ui.$('save-button').disabled);
     assert.equal(ui.$('save-button').hidden, false);
-    assert.ok(ui.check(1002, 'ap').checked);
-    assert.equal(ui.check(1001, 'clear').checked, false);
+    assert.ok(ui.check(101002, 'ap').checked);
+    assert.equal(ui.check(101001, 'clear').checked, false);
     assert.equal(ui.saved().length, 1);
     assert.match(ui.$('save-state').textContent, /저장 실패/);
   }
@@ -151,11 +151,11 @@ test('failed saves retain the draft for retry and in-flight saves cannot submit 
   ui.$('save-button').click();
   ui.$('cancel-button').click();
   assert.ok(ui.$('cancel-button').disabled);
-  assert.ok(ui.check(1002, 'ap').disabled);
+  assert.ok(ui.check(101002, 'ap').disabled);
   assert.equal(ui.requests.length, 1);
   ui.resume();
   await until(() => ui.$('save-button').hidden);
-  assert.deepEqual(ui.saved(), [{ songId: 1002, difficulty: 'expert', status: 'ap' }]);
+  assert.deepEqual(ui.saved(), [{ songId: 101002, difficulty: 'expert', status: 'ap' }]);
 });
 
 test('unsaved edits warn on navigation and expired sessions keep drafts until explicit cancellation', async t => {
@@ -167,13 +167,13 @@ test('unsaved edits warn on navigation and expired sessions keep drafts until ex
   };
   ui.$('edit-button').click();
   assert.equal(leaving(), false);
-  ui.check(1002, 'ap').click();
+  ui.check(101002, 'ap').click();
   assert.equal(leaving(), true);
   ui.$('account-button').click();
   assert.equal(ui.$('account-dialog').open, false);
   ui.fail(401); ui.$('save-button').click();
   await until(() => !ui.$('save-button').disabled);
-  assert.ok(ui.check(1002, 'ap').checked);
+  assert.ok(ui.check(101002, 'ap').checked);
   assert.match(ui.$('save-state').textContent, /로그인 만료/);
   ui.$('cancel-button').click();
   assert.ok(ui.$('auth-dialog').open);
@@ -184,19 +184,19 @@ test('guests enter login from Edit and static previews remain read-only', async 
   const guest = await editor(t, { guest: true });
   guest.$('edit-button').click();
   assert.ok(guest.$('auth-dialog').open);
-  assert.ok(guest.check(1001, 'clear').disabled);
+  assert.ok(guest.check(101001, 'clear').disabled);
   assert.equal(guest.requests.length, 0);
   assert.ok(guest.$('rating-details-button').disabled);
   const preview = await editor(t, { preview: true });
   assert.ok(preview.$('edit-controls').hidden);
-  assert.ok(preview.check(1001, 'clear').disabled);
+  assert.ok(preview.check(101001, 'clear').disabled);
   assert.equal(preview.requests.length, 0);
   assert.ok(preview.$('rating-details-button').disabled);
 });
 
 test('rating details show only 50 contributing songs independently of library filters with no requests', async t => {
   const initialRecords = catalog.songs.slice(0, 60).map(song => ({ songId: song.id, difficulty: 'expert', status: 'ap' }));
-  initialRecords.push({ songId: 1001, difficulty: 'hard', status: 'fc' });
+  initialRecords.push({ songId: 101001, difficulty: 'hard', status: 'fc' });
   const ui = await editor(t, { initialRecords });
   ui.difficulty('easy');
   ui.$('search').value = 'no matching song';
@@ -225,15 +225,15 @@ test('rating details follow draft changes and cancellation, including empty acco
   assert.match(ui.$('rating-details-list').textContent, /반영할 기록이 없습니다/);
   ui.$('close-rating').click();
   ui.$('edit-button').click();
-  ui.check(1001, 'clear').click();
+  ui.check(101001, 'clear').click();
   ui.difficulty('hard');
-  ui.check(1001, 'ap').click();
-  ui.check(1002, 'fc').click();
+  ui.check(101001, 'ap').click();
+  ui.check(101002, 'fc').click();
   ui.$('rating-details-button').click();
   assert.equal(ui.$('rating-details-count').textContent, '2 / 50곡');
   assert.equal(ui.$('rating-draft-note').hidden, false);
   assert.equal(ui.$('rating-details-total').textContent, ui.$('stat-rating').textContent);
-  assert.equal(ui.$('rating-details-list').querySelectorAll('[data-song="1001"]').length, 1);
+  assert.equal(ui.$('rating-details-list').querySelectorAll('[data-song="101001"]').length, 1);
   ui.$('close-rating').click();
   ui.$('cancel-button').click();
   ui.$('rating-details-button').click();

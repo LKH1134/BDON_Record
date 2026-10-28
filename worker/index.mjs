@@ -39,6 +39,9 @@ async function userFor(request, url, db) {
 async function requireUser(request, url, db) {
   const user = await userFor(request, url, db);
   if (!user) throw new HttpError(401, '로그인이 필요합니다.');
+  // Block record reads/writes until the explicit D1 migration has been applied.
+  if (await db.prepare('SELECT 1 FROM records WHERE song_id BETWEEN 1001 AND 1092 LIMIT 1').first())
+    throw new HttpError(503, '곡 데이터 이전 작업 중입니다. 잠시 후 다시 접속해 주세요.');
   return user;
 }
 async function body(request, limit = 4096) {
@@ -178,6 +181,8 @@ export default {
         throw new HttpError(400, 'HTTPS 주소로 접속해 주세요.');
       if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) && request.headers.get('Origin') !== url.origin)
         throw new HttpError(403, '허용되지 않은 요청 출처입니다.');
+      if (env.RECORDS_MAINTENANCE === '1' && (url.pathname === '/api/records' || url.pathname.startsWith('/api/records/')))
+        throw new HttpError(503, '곡 데이터 업데이트 중입니다. 잠시 후 다시 접속해 주세요.');
       if (url.pathname === '/api' || url.pathname.startsWith('/api/')) return await api(request, url, env);
       if (!['GET', 'HEAD'].includes(request.method)) throw new HttpError(405, '허용되지 않은 요청입니다.');
       const response = await env.ASSETS.fetch(request);

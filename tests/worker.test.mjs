@@ -8,6 +8,7 @@ import { Miniflare, Log, LogLevel, convertV4MiniflareOptions } from 'miniflare';
 import { buildWorker } from '../scripts/build-worker.mjs';
 import { calculateRating } from '../public/rating.js';
 import { batchContract } from './batch-contract.mjs';
+import { songMigrationContract } from './song-migration-contract.mjs';
 
 test('Workers API with a real local D1 database', { timeout: 120000 }, async t => {
   const directory = await mkdtemp(join(tmpdir(), 'bdon-worker-test-'));
@@ -83,12 +84,12 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     for (const path of ['/Data.xlsx', '/wrangler.jsonc', '/worker/index.mjs', '/.git/config', '/.local/bdon.sqlite'])
       assert.equal((await mf.dispatchFetch(origin + path)).status, 404);
     const catalog = await guest.request('/api/catalog');
-    assert.equal(catalog.songs.length, 92);
+    assert.equal(catalog.songs.length, 93);
   });
   await t.test('guest cannot read or write records', async () => {
     assert.deepEqual(await guest.request('/api/me'), { user: null });
     await guest.request('/api/records', { expected: 401 });
-    await guest.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'ap' }, expected: 401 });
+    await guest.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'ap' }, expected: 401 });
   });
   await t.test('registers users with real Workers scrypt and hashed sessions', async () => {
     const result = await alice.request('/api/register', { method: 'POST', body: { username: 'Alice', password }, expected: 201 });
@@ -106,33 +107,33 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
   });
   await t.test('records replace exclusively and stay isolated by account and difficulty', async () => {
     for (const status of ['clear', 'fc', 'ap']) {
-      await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status, userId: 999 } });
+      await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status, userId: 999 } });
       const { records } = await alice.request('/api/records');
       assert.equal(records.length, 1);
       assert.equal(records[0].status, status);
     }
-    await alice.request('/api/records/1001/hard', { method: 'PUT', body: { status: 'fc' } });
-    await bob.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear', userId: aliceId } });
+    await alice.request('/api/records/101001/hard', { method: 'PUT', body: { status: 'fc' } });
+    await bob.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'clear', userId: aliceId } });
     const records = (await alice.request('/api/records')).records;
     assert.equal(records.length, 2);
     assert.equal(records.find(r => r.difficulty === 'expert').status, 'ap');
     assert.equal((await bob.request('/api/records')).records[0].status, 'clear');
     const catalog = await guest.request('/api/catalog');
     assert.equal(calculateRating(catalog.songs, new Map(records.map(r => [`${r.songId}:${r.difficulty}`, r.status]))), 55);
-    await alice.request('/api/records/1001/hard', { method: 'PUT', body: { status: null } });
+    await alice.request('/api/records/101001/hard', { method: 'PUT', body: { status: null } });
     assert.equal((await alice.request('/api/records')).records.length, 1);
   });
   await t.test('rejects malformed inputs and foreign origins without changing saved records', async () => {
     for (const originHeader of ['https://attacker.example', 'null', ''])
-      await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { Origin: originHeader }, expected: 403 });
+      await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { Origin: originHeader }, expected: 403 });
     for (const status of ['invalid', '', 1, undefined])
-      await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status }, expected: 400 });
+      await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status }, expected: 400 });
     await alice.request('/api/records/9999/expert', { method: 'PUT', body: { status: 'clear' }, expected: 404 });
-    await alice.request('/api/records/1001/master', { method: 'PUT', body: { status: 'clear' }, expected: 404 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', raw: '{', expected: 400 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', raw: '[]', expected: 400 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', raw: 'x'.repeat(4097), expected: 413 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { 'Content-Type': 'text/plain' }, expected: 415 });
+    await alice.request('/api/records/101001/master', { method: 'PUT', body: { status: 'clear' }, expected: 404 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', raw: '{', expected: 400 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', raw: '[]', expected: 400 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', raw: 'x'.repeat(4097), expected: 413 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { 'Content-Type': 'text/plain' }, expected: 415 });
     assert.equal((await alice.request('/api/records')).records[0].status, 'ap');
     assert.equal((await mf.dispatchFetch('http://bdon.example/api/me')).status, 400);
   });
@@ -174,5 +175,18 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     await bob.request('/api/records', { expected: 401 });
     guest.cookie = '__Host-bdon_session=' + '0'.repeat(64);
     await guest.request('/api/records', { expected: 401 });
+  });
+  await t.test('D1 song ID migration preserves records and blocks access until migrated', async () => {
+    const migration = await readFile(new URL('../migrations/0002_song_ids.sql',import.meta.url),'utf8');
+    await songMigrationContract({
+      execute: sql => db.prepare(sql).run(),
+      query: async sql => (await db.prepare(sql).all()).results,
+      migrate: () => db.batch([db.prepare(migration)]),
+      assertUnavailable: async () => {
+        await alice.request('/api/records',{expected:503});
+        await alice.request('/api/records',{method:'PUT',body:{records:[]},expected:503});
+        await alice.request('/api/records/101001/expert',{method:'PUT',body:{status:'clear'},expected:503});
+      }
+    });
   });
 });

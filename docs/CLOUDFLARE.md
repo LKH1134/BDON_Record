@@ -76,6 +76,8 @@ npm run db:remote
 
 ## 4. Workers 배포
 
+`test`의 6자리 곡 ID 개편을 공개 반영할 때는 먼저 [Songs 인덱스와 기록 이전 절차](SONG_IDS.md)를 확인합니다. 이 변경에는 `0002_song_ids.sql`이 필요하며 원격 DB 이전과 새 코드·카탈로그 배포를 함께 진행해야 합니다. 아직 해당 변경의 운영 이전·배포는 실행하지 않았습니다. 아래 배포 명령만 실행하고 기록 이전을 생략하지 않습니다.
+
 ```powershell
 npm run deploy:worker
 ```

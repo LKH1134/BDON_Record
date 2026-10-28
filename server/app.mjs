@@ -39,6 +39,10 @@ export function createApp({ dbPath = resolve(root, '.local/bdon.sqlite'), catalo
       PRIMARY KEY(user_id, song_id, difficulty)
     );
   `);
+  if (db.prepare('SELECT 1 FROM records WHERE song_id BETWEEN 1001 AND 1092 LIMIT 1').get()) {
+    db.close();
+    throw new Error('기존 곡 ID 기록이 있습니다. 서버를 종료한 상태에서 npm run migrate:song-ids -- --db <DB 경로>로 확인 후 --apply로 이전하세요.');
+  }
   db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(Date.now());
   const loginAttempts = new Map();
   const publicUser = row => row ? { id: row.id, username: row.username } : null;
