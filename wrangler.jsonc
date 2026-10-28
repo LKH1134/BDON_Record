@@ -4,6 +4,7 @@
   "main": "worker/index.mjs",
   "compatibility_date": "2026-10-26",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": { "RECORDS_MAINTENANCE": "0" },
   "assets": {
     "directory": "./dist-worker",
     "binding": "ASSETS",

@@ -11,6 +11,7 @@
     "start": "node server/index.mjs",
     "dev": "node --watch server/index.mjs",
     "sync-data": "python scripts/import_data.py",
+    "migrate:song-ids": "node scripts/migrate-song-ids.mjs",
     "build:pages": "node scripts/build-pages.mjs",
     "build:worker": "node scripts/build-worker.mjs",
     "dev:worker": "npm run build:worker && wrangler dev --local",

@@ -44,9 +44,9 @@ test('local accounts and play records', async t => {
   const password = 'test-password-42';
   let aliceId;
 
-  await t.test('catalog resolves all 92 string references', async () => {
+  await t.test('catalog resolves all 93 string references', async () => {
     const catalog = await guest.request('/api/catalog');
-    assert.equal(catalog.songs.length, 92);
+    assert.equal(catalog.songs.length, 93);
     const strings = new Map(catalog.strings.map(s => [s.id, s]));
     for (const song of catalog.songs) {
       assert.ok(strings.has(song.nameId));
@@ -57,7 +57,7 @@ test('local accounts and play records', async t => {
   await t.test('guest cannot read or change private records', async () => {
     assert.deepEqual(await guest.request('/api/me'), { user: null });
     await guest.request('/api/records', { expected: 401 });
-    await guest.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'ap' }, expected: 401 });
+    await guest.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'ap' }, expected: 401 });
   });
   await t.test('registers users with hashed passwords and private cookies', async () => {
     const result = await alice.request('/api/register', { method: 'POST', body: { username: 'Alice', password }, expected: 201 });
@@ -78,37 +78,37 @@ test('local accounts and play records', async t => {
   });
   await t.test('replaces clear with FC and AP using one exclusive record', async () => {
     for (const status of ['clear','fc','ap']) {
-      await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status } });
+      await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status } });
       const { records } = await alice.request('/api/records');
       assert.equal(records.length, 1);
       assert.equal(records[0].status, status);
-      assert.equal(records[0].songId, 1001);
+      assert.equal(records[0].songId, 101001);
     }
   });
   await t.test('separates accounts, songs, and difficulties', async () => {
     assert.deepEqual(await bob.request('/api/records'), { records: [] });
-    await bob.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear', userId: aliceId } });
-    await alice.request('/api/records/1001/hard', { method: 'PUT', body: { status: 'fc' } });
-    await alice.request('/api/records/1002/expert', { method: 'PUT', body: { status: 'clear' } });
+    await bob.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'clear', userId: aliceId } });
+    await alice.request('/api/records/101001/hard', { method: 'PUT', body: { status: 'fc' } });
+    await alice.request('/api/records/101002/expert', { method: 'PUT', body: { status: 'clear' } });
     const aliceRecords = (await alice.request('/api/records')).records;
     assert.equal(aliceRecords.length, 3);
-    assert.equal(aliceRecords.find(r => r.songId === 1001 && r.difficulty === 'expert').status, 'ap');
+    assert.equal(aliceRecords.find(r => r.songId === 101001 && r.difficulty === 'expert').status, 'ap');
     assert.equal((await bob.request('/api/records')).records[0].status, 'clear');
   });
   await t.test('unchecking removes just the selected chart record', async () => {
-    await alice.request('/api/records/1001/hard', { method: 'PUT', body: { status: null } });
+    await alice.request('/api/records/101001/hard', { method: 'PUT', body: { status: null } });
     const { records } = await alice.request('/api/records');
     assert.equal(records.length, 2);
     assert.ok(!records.some(r => r.difficulty === 'hard'));
     assert.equal((await bob.request('/api/records')).records.length, 1);
   });
   await t.test('rejects invalid status, nonexistent songs, invalid difficulties, and untrusted origins', async () => {
-    await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'all-three' }, expected: 400 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', body: {}, expected: 400 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'all-three' }, expected: 400 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', body: {}, expected: 400 });
     await alice.request('/api/records/9999/expert', { method: 'PUT', body: { status: 'ap' }, expected: 404 });
-    await alice.request('/api/records/1001/master', { method: 'PUT', body: { status: 'ap' }, expected: 404 });
-    await alice.request('/api/records/1001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { Origin: 'https://example.com' }, expected: 403 });
-    assert.equal((await alice.request('/api/records')).records.find(r => r.songId === 1001).status, 'ap');
+    await alice.request('/api/records/101001/master', { method: 'PUT', body: { status: 'ap' }, expected: 404 });
+    await alice.request('/api/records/101001/expert', { method: 'PUT', body: { status: 'clear' }, headers: { Origin: 'https://example.com' }, expected: 403 });
+    assert.equal((await alice.request('/api/records')).records.find(r => r.songId === 101001).status, 'ap');
   });
   await t.test('serves UI and does not expose local database or workbook', async () => {
     const response = await fetch(origin);
@@ -153,7 +153,7 @@ test('local accounts and play records', async t => {
   await t.test('workbook remains the catalog source', async () => {
     const catalog = JSON.parse(await readFile(new URL('../data/catalog.json', import.meta.url), 'utf8'));
     assert.equal(catalog.source, 'Data.xlsx');
-    assert.equal(catalog.songs[0].id, 1001);
+    assert.equal(catalog.songs[0].id, 101001);
     assert.equal(catalog.songs[0].nameId, 2001);
   });
 });

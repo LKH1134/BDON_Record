@@ -10,6 +10,9 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 NS = {'s': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
 REL = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id'
+BAND_CODES = {'MyGO!!!!!': 10, 'Ave Mujica': 20, '무겐다이 뮤타입': 30,
+              'millsage': 40, '일가 Dumb Rock!': 50}
+CATEGORIES = {1: '오리지널', 2: '커버'}
 
 def read_workbook(path):
     with zipfile.ZipFile(path) as archive:
@@ -41,8 +44,10 @@ def read_workbook(path):
             result[sheet.get('name')] = rows
         return result
 
-def main():
-    workbook = read_workbook(ROOT / 'Data.xlsx')
+def build_catalog(workbook):
+    if [workbook['Songs'][0].get(column) for column in 'ABCDEFGH'] != [
+            'index', '곡 이름 index', '밴드', '곡 분류', 'Expert', 'Hard', 'Normal', 'Easy']:
+        raise ValueError('Songs columns must be: index, 곡 이름 index, 밴드, 곡 분류, Expert, Hard, Normal, Easy')
     strings = []
     string_ids = set()
     for row in workbook['Strings'][1:]:
@@ -59,19 +64,29 @@ def main():
         key, name_id = row['A'], row.get('B')
         if not isinstance(key, int) or key in song_ids or name_id not in string_ids:
             raise ValueError('Invalid song or string reference: ' + str(key))
-        levels = {name: row.get(column) for name, column in [('expert','D'),('hard','E'),('normal','F'),('easy','G')]}
+        category = row.get('D')
+        if (not 100000 <= key <= 999999 or key % 1000 == 0 or category not in CATEGORIES.values()
+                or CATEGORIES.get(key // 1000 % 10) != category):
+            raise ValueError('Song ID/category mismatch: ' + str(key))
+        levels = {name: row.get(column) for name, column in [('expert','E'),('hard','F'),('normal','G'),('easy','H')]}
         if any(not isinstance(level, int) or not 1 <= level <= 50 for level in levels.values()):
             raise ValueError('Invalid difficulty: ' + str(key))
         if not isinstance(row.get('C'), str) or not row['C'].strip():
             raise ValueError('Missing band: ' + str(key))
+        if key // 10000 != BAND_CODES.get(row['C'], 60):
+            raise ValueError('Song ID/band mismatch: ' + str(key))
         song_ids.add(key)
-        songs.append({'id': key, 'nameId': name_id, 'band': row['C'], 'levels': levels})
+        songs.append({'id': key, 'nameId': name_id, 'band': row['C'], 'category': category, 'levels': levels})
     if not songs: raise ValueError('Workbook contains no songs')
-    data = {'source': 'Data.xlsx', 'generatedAt': datetime.now(timezone.utc).isoformat(), 'songs': songs, 'strings': strings}
+    return {'source': 'Data.xlsx', 'generatedAt': datetime.now(timezone.utc).isoformat(),
+            'songs': sorted(songs, key=lambda song: song['id']), 'strings': strings}
+
+def main():
+    data = build_catalog(read_workbook(ROOT / 'Data.xlsx'))
     output = ROOT / 'data' / 'catalog.json'
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(f'Imported {len(songs)} songs and {len(strings)} strings from Data.xlsx.')
+    print(f'Imported {len(data["songs"])} songs and {len(data["strings"])} strings from Data.xlsx.')
 
 if __name__ == '__main__':
     try: main()

@@ -1,11 +1,12 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-10-28T07:06:13.505013+00:00",
+  "generatedAt": "2026-10-28T07:42:52.345904+00:00",
   "songs": [
     {
-      "id": 1001,
+      "id": 101001,
       "nameId": 2001,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 25,
         "hard": 20,
@@ -14,9 +15,10 @@
       }
     },
     {
-      "id": 1002,
+      "id": 101002,
       "nameId": 2002,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 27,
         "hard": 21,
@@ -25,9 +27,10 @@
       }
     },
     {
-      "id": 1003,
+      "id": 101003,
       "nameId": 2003,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 27,
         "hard": 19,
@@ -36,9 +39,10 @@
       }
     },
     {
-      "id": 1004,
+      "id": 101004,
       "nameId": 2004,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 25,
         "hard": 18,
@@ -47,9 +51,10 @@
       }
     },
     {
-      "id": 1005,
+      "id": 101005,
       "nameId": 2005,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 23,
         "hard": 18,
@@ -58,9 +63,10 @@
       }
     },
     {
-      "id": 1006,
+      "id": 101006,
       "nameId": 2006,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 25,
         "hard": 18,
@@ -69,9 +75,10 @@
       }
     },
     {
-      "id": 1007,
+      "id": 101007,
       "nameId": 2007,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 20,
         "hard": 15,
@@ -80,9 +87,10 @@
       }
     },
     {
-      "id": 1008,
+      "id": 101008,
       "nameId": 2008,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 26,
         "hard": 19,
@@ -91,9 +99,10 @@
       }
     },
     {
-      "id": 1009,
+      "id": 101009,
       "nameId": 2009,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 27,
         "hard": 17,
@@ -102,9 +111,10 @@
       }
     },
     {
-      "id": 1010,
+      "id": 101010,
       "nameId": 2010,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -113,9 +123,10 @@
       }
     },
     {
-      "id": 1011,
+      "id": 101011,
       "nameId": 2011,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 25,
         "hard": 20,
@@ -124,9 +135,10 @@
       }
     },
     {
-      "id": 1012,
+      "id": 101012,
       "nameId": 2012,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 23,
         "hard": 19,
@@ -135,9 +147,10 @@
       }
     },
     {
-      "id": 1013,
+      "id": 101013,
       "nameId": 2013,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 24,
         "hard": 19,
@@ -146,9 +159,10 @@
       }
     },
     {
-      "id": 1014,
+      "id": 101014,
       "nameId": 2014,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 24,
         "hard": 20,
@@ -157,9 +171,10 @@
       }
     },
     {
-      "id": 1015,
+      "id": 101015,
       "nameId": 2015,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 29,
         "hard": 23,
@@ -168,9 +183,10 @@
       }
     },
     {
-      "id": 1016,
+      "id": 101016,
       "nameId": 2016,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 25,
         "hard": 17,
@@ -179,9 +195,10 @@
       }
     },
     {
-      "id": 1017,
+      "id": 101017,
       "nameId": 2017,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 27,
         "hard": 22,
@@ -190,9 +207,10 @@
       }
     },
     {
-      "id": 1018,
+      "id": 101018,
       "nameId": 2018,
       "band": "MyGO!!!!!",
+      "category": "오리지널",
       "levels": {
         "expert": 28,
         "hard": 23,
@@ -201,515 +219,10 @@
       }
     },
     {
-      "id": 1019,
-      "nameId": 2019,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 27,
-        "hard": 21,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1020,
-      "nameId": 2020,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 28,
-        "hard": 21,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1021,
-      "nameId": 2021,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 22,
-        "hard": 17,
-        "normal": 12,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1022,
-      "nameId": 2022,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 23,
-        "hard": 16,
-        "normal": 11,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1023,
-      "nameId": 2023,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 26,
-        "hard": 17,
-        "normal": 15,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1024,
-      "nameId": 2024,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 24,
-        "hard": 17,
-        "normal": 11,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1025,
-      "nameId": 2025,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 25,
-        "hard": 18,
-        "normal": 15,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1026,
-      "nameId": 2026,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 26,
-        "hard": 19,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1027,
-      "nameId": 2027,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 25,
-        "hard": 20,
-        "normal": 11,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1028,
-      "nameId": 2028,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 21,
-        "hard": 15,
-        "normal": 9,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1029,
-      "nameId": 2029,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 24,
-        "hard": 17,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1030,
-      "nameId": 2030,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 26,
-        "hard": 18,
-        "normal": 11,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1031,
-      "nameId": 2031,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 26,
-        "hard": 20,
-        "normal": 13,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1032,
-      "nameId": 2032,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 25,
-        "hard": 18,
-        "normal": 13,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1033,
-      "nameId": 2033,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 28,
-        "hard": 22,
-        "normal": 15,
-        "easy": 10
-      }
-    },
-    {
-      "id": 1034,
-      "nameId": 2034,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 21,
-        "hard": 15,
-        "normal": 9,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1035,
-      "nameId": 2035,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 27,
-        "hard": 19,
-        "normal": 13,
-        "easy": 10
-      }
-    },
-    {
-      "id": 1036,
-      "nameId": 2036,
-      "band": "Ave Mujica",
-      "levels": {
-        "expert": 26,
-        "hard": 18,
-        "normal": 11,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1037,
-      "nameId": 2037,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 19,
-        "normal": 12,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1038,
-      "nameId": 2038,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 18,
-        "normal": 14,
-        "easy": 9
-      }
-    },
-    {
-      "id": 1039,
-      "nameId": 2039,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 27,
-        "hard": 19,
-        "normal": 12,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1040,
-      "nameId": 2040,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 24,
-        "hard": 17,
-        "normal": 13,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1041,
-      "nameId": 2041,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 19,
-        "normal": 12,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1042,
-      "nameId": 2042,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 25,
-        "hard": 19,
-        "normal": 14,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1043,
-      "nameId": 2043,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 27,
-        "hard": 23,
-        "normal": 14,
-        "easy": 9
-      }
-    },
-    {
-      "id": 1044,
-      "nameId": 2044,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 22,
-        "hard": 16,
-        "normal": 10,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1045,
-      "nameId": 2045,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 21,
-        "normal": 14,
-        "easy": 9
-      }
-    },
-    {
-      "id": 1046,
-      "nameId": 2046,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 23,
-        "hard": 17,
-        "normal": 11,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1047,
-      "nameId": 2047,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 20,
-        "normal": 13,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1048,
-      "nameId": 2048,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 25,
-        "hard": 18,
-        "normal": 14,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1049,
-      "nameId": 2049,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 24,
-        "hard": 18,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1050,
-      "nameId": 2050,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 25,
-        "hard": 19,
-        "normal": 14,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1051,
-      "nameId": 2051,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 24,
-        "hard": 18,
-        "normal": 13,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1052,
-      "nameId": 2052,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 26,
-        "hard": 19,
-        "normal": 15,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1053,
-      "nameId": 2053,
-      "band": "무겐다이 뮤타입",
-      "levels": {
-        "expert": 27,
-        "hard": 22,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1054,
-      "nameId": 2054,
-      "band": "millsage",
-      "levels": {
-        "expert": 28,
-        "hard": 21,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1055,
-      "nameId": 2055,
-      "band": "millsage",
-      "levels": {
-        "expert": 26,
-        "hard": 20,
-        "normal": 14,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1056,
-      "nameId": 2056,
-      "band": "millsage",
-      "levels": {
-        "expert": 25,
-        "hard": 18,
-        "normal": 13,
-        "easy": 8
-      }
-    },
-    {
-      "id": 1057,
-      "nameId": 2057,
-      "band": "millsage",
-      "levels": {
-        "expert": 28,
-        "hard": 20,
-        "normal": 14,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1058,
-      "nameId": 2058,
-      "band": "millsage",
-      "levels": {
-        "expert": 28,
-        "hard": 22,
-        "normal": 15,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1059,
-      "nameId": 2059,
-      "band": "일가 Dumb Rock!",
-      "levels": {
-        "expert": 26,
-        "hard": 22,
-        "normal": 15,
-        "easy": 10
-      }
-    },
-    {
-      "id": 1060,
-      "nameId": 2060,
-      "band": "일가 Dumb Rock!",
-      "levels": {
-        "expert": 26,
-        "hard": 20,
-        "normal": 14,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1061,
-      "nameId": 2061,
-      "band": "일가 Dumb Rock!",
-      "levels": {
-        "expert": 27,
-        "hard": 22,
-        "normal": 14,
-        "easy": 9
-      }
-    },
-    {
-      "id": 1062,
-      "nameId": 2062,
-      "band": "일가 Dumb Rock!",
-      "levels": {
-        "expert": 23,
-        "hard": 20,
-        "normal": 14,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1063,
-      "nameId": 2063,
-      "band": "일가 Dumb Rock!",
-      "levels": {
-        "expert": 25,
-        "hard": 17,
-        "normal": 12,
-        "easy": 7
-      }
-    },
-    {
-      "id": 1064,
-      "nameId": 2064,
-      "band": "CRYCHIC",
-      "levels": {
-        "expert": 22,
-        "hard": 16,
-        "normal": 11,
-        "easy": 5
-      }
-    },
-    {
-      "id": 1065,
+      "id": 102001,
       "nameId": 2065,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 21,
@@ -718,9 +231,10 @@
       }
     },
     {
-      "id": 1066,
+      "id": 102002,
       "nameId": 2066,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 20,
@@ -729,9 +243,10 @@
       }
     },
     {
-      "id": 1067,
+      "id": 102003,
       "nameId": 2067,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 21,
         "hard": 16,
@@ -740,9 +255,10 @@
       }
     },
     {
-      "id": 1068,
+      "id": 102004,
       "nameId": 2068,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 18,
@@ -751,9 +267,10 @@
       }
     },
     {
-      "id": 1069,
+      "id": 102005,
       "nameId": 2069,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 26,
         "hard": 22,
@@ -762,9 +279,10 @@
       }
     },
     {
-      "id": 1070,
+      "id": 102006,
       "nameId": 2070,
       "band": "MyGO!!!!!",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 19,
@@ -773,9 +291,238 @@
       }
     },
     {
-      "id": 1071,
+      "id": 102007,
+      "nameId": 2092,
+      "band": "MyGO!!!!!",
+      "category": "커버",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
+      "id": 201001,
+      "nameId": 2019,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 21,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201002,
+      "nameId": 2020,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 28,
+        "hard": 21,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201003,
+      "nameId": 2021,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 22,
+        "hard": 17,
+        "normal": 12,
+        "easy": 7
+      }
+    },
+    {
+      "id": 201004,
+      "nameId": 2022,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 23,
+        "hard": 16,
+        "normal": 11,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201005,
+      "nameId": 2023,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 17,
+        "normal": 15,
+        "easy": 7
+      }
+    },
+    {
+      "id": 201006,
+      "nameId": 2024,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 17,
+        "normal": 11,
+        "easy": 7
+      }
+    },
+    {
+      "id": 201007,
+      "nameId": 2025,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 18,
+        "normal": 15,
+        "easy": 7
+      }
+    },
+    {
+      "id": 201008,
+      "nameId": 2026,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 19,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201009,
+      "nameId": 2027,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 20,
+        "normal": 11,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201010,
+      "nameId": 2028,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 21,
+        "hard": 15,
+        "normal": 9,
+        "easy": 5
+      }
+    },
+    {
+      "id": 201011,
+      "nameId": 2029,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 17,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201012,
+      "nameId": 2030,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 18,
+        "normal": 11,
+        "easy": 8
+      }
+    },
+    {
+      "id": 201013,
+      "nameId": 2031,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 13,
+        "easy": 6
+      }
+    },
+    {
+      "id": 201014,
+      "nameId": 2032,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 18,
+        "normal": 13,
+        "easy": 6
+      }
+    },
+    {
+      "id": 201015,
+      "nameId": 2033,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 28,
+        "hard": 22,
+        "normal": 15,
+        "easy": 10
+      }
+    },
+    {
+      "id": 201016,
+      "nameId": 2034,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 21,
+        "hard": 15,
+        "normal": 9,
+        "easy": 5
+      }
+    },
+    {
+      "id": 201017,
+      "nameId": 2035,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 19,
+        "normal": 13,
+        "easy": 10
+      }
+    },
+    {
+      "id": 201018,
+      "nameId": 2036,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 18,
+        "normal": 11,
+        "easy": 6
+      }
+    },
+    {
+      "id": 202001,
       "nameId": 2071,
       "band": "Ave Mujica",
+      "category": "커버",
       "levels": {
         "expert": 26,
         "hard": 18,
@@ -784,9 +531,10 @@
       }
     },
     {
-      "id": 1072,
+      "id": 202002,
       "nameId": 2072,
       "band": "Ave Mujica",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -795,9 +543,10 @@
       }
     },
     {
-      "id": 1073,
+      "id": 202003,
       "nameId": 2073,
       "band": "Ave Mujica",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 20,
@@ -806,9 +555,10 @@
       }
     },
     {
-      "id": 1074,
+      "id": 202004,
       "nameId": 2074,
       "band": "Ave Mujica",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 17,
@@ -817,9 +567,10 @@
       }
     },
     {
-      "id": 1075,
+      "id": 202005,
       "nameId": 2075,
       "band": "Ave Mujica",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 17,
@@ -828,9 +579,238 @@
       }
     },
     {
-      "id": 1076,
+      "id": 202006,
+      "nameId": 2091,
+      "band": "Ave Mujica",
+      "category": "커버",
+      "levels": {
+        "expert": 25,
+        "hard": 18,
+        "normal": 12,
+        "easy": 6
+      }
+    },
+    {
+      "id": 202007,
+      "nameId": 2093,
+      "band": "Ave Mujica",
+      "category": "커버",
+      "levels": {
+        "expert": 25,
+        "hard": 17,
+        "normal": 11,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301001,
+      "nameId": 2037,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 19,
+        "normal": 12,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301002,
+      "nameId": 2038,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 18,
+        "normal": 14,
+        "easy": 9
+      }
+    },
+    {
+      "id": 301003,
+      "nameId": 2039,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 19,
+        "normal": 12,
+        "easy": 8
+      }
+    },
+    {
+      "id": 301004,
+      "nameId": 2040,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 17,
+        "normal": 13,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301005,
+      "nameId": 2041,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 19,
+        "normal": 12,
+        "easy": 6
+      }
+    },
+    {
+      "id": 301006,
+      "nameId": 2042,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 19,
+        "normal": 14,
+        "easy": 8
+      }
+    },
+    {
+      "id": 301007,
+      "nameId": 2043,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 23,
+        "normal": 14,
+        "easy": 9
+      }
+    },
+    {
+      "id": 301008,
+      "nameId": 2044,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 22,
+        "hard": 16,
+        "normal": 10,
+        "easy": 5
+      }
+    },
+    {
+      "id": 301009,
+      "nameId": 2045,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 21,
+        "normal": 14,
+        "easy": 9
+      }
+    },
+    {
+      "id": 301010,
+      "nameId": 2046,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 23,
+        "hard": 17,
+        "normal": 11,
+        "easy": 5
+      }
+    },
+    {
+      "id": 301011,
+      "nameId": 2047,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 13,
+        "easy": 6
+      }
+    },
+    {
+      "id": 301012,
+      "nameId": 2048,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 18,
+        "normal": 14,
+        "easy": 8
+      }
+    },
+    {
+      "id": 301013,
+      "nameId": 2049,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 18,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 301014,
+      "nameId": 2050,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 19,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301015,
+      "nameId": 2051,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 18,
+        "normal": 13,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301016,
+      "nameId": 2052,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 19,
+        "normal": 15,
+        "easy": 7
+      }
+    },
+    {
+      "id": 301017,
+      "nameId": 2053,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 22,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 302001,
       "nameId": 2076,
       "band": "무겐다이 뮤타입",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 19,
@@ -839,9 +819,10 @@
       }
     },
     {
-      "id": 1077,
+      "id": 302002,
       "nameId": 2077,
       "band": "무겐다이 뮤타입",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -850,9 +831,10 @@
       }
     },
     {
-      "id": 1078,
+      "id": 302003,
       "nameId": 2078,
       "band": "무겐다이 뮤타입",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 20,
@@ -861,9 +843,10 @@
       }
     },
     {
-      "id": 1079,
+      "id": 302004,
       "nameId": 2079,
       "band": "무겐다이 뮤타입",
+      "category": "커버",
       "levels": {
         "expert": 26,
         "hard": 21,
@@ -872,9 +855,10 @@
       }
     },
     {
-      "id": 1080,
+      "id": 302005,
       "nameId": 2080,
       "band": "무겐다이 뮤타입",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 19,
@@ -883,9 +867,70 @@
       }
     },
     {
-      "id": 1081,
+      "id": 401001,
+      "nameId": 2054,
+      "band": "millsage",
+      "category": "오리지널",
+      "levels": {
+        "expert": 28,
+        "hard": 21,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 401002,
+      "nameId": 2055,
+      "band": "millsage",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
+      "id": 401003,
+      "nameId": 2056,
+      "band": "millsage",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 18,
+        "normal": 13,
+        "easy": 8
+      }
+    },
+    {
+      "id": 401004,
+      "nameId": 2057,
+      "band": "millsage",
+      "category": "오리지널",
+      "levels": {
+        "expert": 28,
+        "hard": 20,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
+      "id": 401005,
+      "nameId": 2058,
+      "band": "millsage",
+      "category": "오리지널",
+      "levels": {
+        "expert": 28,
+        "hard": 22,
+        "normal": 15,
+        "easy": 7
+      }
+    },
+    {
+      "id": 402001,
       "nameId": 2081,
       "band": "millsage",
+      "category": "커버",
       "levels": {
         "expert": 26,
         "hard": 19,
@@ -894,9 +939,10 @@
       }
     },
     {
-      "id": 1082,
+      "id": 402002,
       "nameId": 2082,
       "band": "millsage",
+      "category": "커버",
       "levels": {
         "expert": 22,
         "hard": 17,
@@ -905,9 +951,10 @@
       }
     },
     {
-      "id": 1083,
+      "id": 402003,
       "nameId": 2083,
       "band": "millsage",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 18,
@@ -916,9 +963,10 @@
       }
     },
     {
-      "id": 1084,
+      "id": 402004,
       "nameId": 2084,
       "band": "millsage",
+      "category": "커버",
       "levels": {
         "expert": 21,
         "hard": 16,
@@ -927,9 +975,10 @@
       }
     },
     {
-      "id": 1085,
+      "id": 402005,
       "nameId": 2085,
       "band": "millsage",
+      "category": "커버",
       "levels": {
         "expert": 25,
         "hard": 18,
@@ -938,9 +987,70 @@
       }
     },
     {
-      "id": 1086,
+      "id": 501001,
+      "nameId": 2059,
+      "band": "일가 Dumb Rock!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 22,
+        "normal": 15,
+        "easy": 10
+      }
+    },
+    {
+      "id": 501002,
+      "nameId": 2060,
+      "band": "일가 Dumb Rock!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
+      "id": 501003,
+      "nameId": 2061,
+      "band": "일가 Dumb Rock!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 27,
+        "hard": 22,
+        "normal": 14,
+        "easy": 9
+      }
+    },
+    {
+      "id": 501004,
+      "nameId": 2062,
+      "band": "일가 Dumb Rock!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 23,
+        "hard": 20,
+        "normal": 14,
+        "easy": 5
+      }
+    },
+    {
+      "id": 501005,
+      "nameId": 2063,
+      "band": "일가 Dumb Rock!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 17,
+        "normal": 12,
+        "easy": 7
+      }
+    },
+    {
+      "id": 502001,
       "nameId": 2086,
       "band": "일가 Dumb Rock!",
+      "category": "커버",
       "levels": {
         "expert": 21,
         "hard": 17,
@@ -949,9 +1059,10 @@
       }
     },
     {
-      "id": 1087,
+      "id": 502002,
       "nameId": 2087,
       "band": "일가 Dumb Rock!",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -960,9 +1071,10 @@
       }
     },
     {
-      "id": 1088,
+      "id": 502003,
       "nameId": 2088,
       "band": "일가 Dumb Rock!",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -971,9 +1083,10 @@
       }
     },
     {
-      "id": 1089,
+      "id": 502004,
       "nameId": 2089,
       "band": "일가 Dumb Rock!",
+      "category": "커버",
       "levels": {
         "expert": 23,
         "hard": 17,
@@ -982,9 +1095,10 @@
       }
     },
     {
-      "id": 1090,
+      "id": 502005,
       "nameId": 2090,
       "band": "일가 Dumb Rock!",
+      "category": "커버",
       "levels": {
         "expert": 24,
         "hard": 17,
@@ -993,25 +1107,15 @@
       }
     },
     {
-      "id": 1091,
-      "nameId": 2091,
-      "band": "Ave Mujica",
+      "id": 601001,
+      "nameId": 2064,
+      "band": "CRYCHIC",
+      "category": "오리지널",
       "levels": {
-        "expert": 25,
-        "hard": 18,
-        "normal": 12,
-        "easy": 6
-      }
-    },
-    {
-      "id": 1092,
-      "nameId": 2092,
-      "band": "MyGO!!!!!",
-      "levels": {
-        "expert": 26,
-        "hard": 20,
-        "normal": 14,
-        "easy": 7
+        "expert": 22,
+        "hard": 16,
+        "normal": 11,
+        "easy": 5
       }
     }
   ],
@@ -1475,6 +1579,11 @@
       "id": 2092,
       "original": "ノンブレス・オブリージュ",
       "translated": "논브레스 오블리주"
+    },
+    {
+      "id": 2093,
+      "original": "怪物",
+      "translated": "KAIBUTSU"
     }
   ]
 }
