@@ -44,9 +44,9 @@ test('local accounts and play records', async t => {
   const password = 'test-password-42';
   let aliceId;
 
-  await t.test('catalog resolves all 91 string references', async () => {
+  await t.test('catalog resolves all 92 string references', async () => {
     const catalog = await guest.request('/api/catalog');
-    assert.equal(catalog.songs.length, 91);
+    assert.equal(catalog.songs.length, 92);
     const strings = new Map(catalog.strings.map(s => [s.id, s]));
     for (const song of catalog.songs) {
       assert.ok(strings.has(song.nameId));

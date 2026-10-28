@@ -83,7 +83,7 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     for (const path of ['/Data.xlsx', '/wrangler.jsonc', '/worker/index.mjs', '/.git/config', '/.local/bdon.sqlite'])
       assert.equal((await mf.dispatchFetch(origin + path)).status, 404);
     const catalog = await guest.request('/api/catalog');
-    assert.equal(catalog.songs.length, 91);
+    assert.equal(catalog.songs.length, 92);
   });
   await t.test('guest cannot read or write records', async () => {
     assert.deepEqual(await guest.request('/api/me'), { user: null });

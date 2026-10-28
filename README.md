@@ -2,7 +2,7 @@
 
 [**Workers 운영 페이지 바로가기 →**](https://bdon-record.kh12.workers.dev)
 
-뱅드림! 아워 노트의 악곡별 플레이 기록을 저장하고 레이팅을 확인하는 웹사이트입니다. Cloudflare Workers에서 화면과 API를 제공하고, 계정과 기록은 Cloudflare D1에 저장합니다. 현재 91곡과 Expert / Hard / Normal / Easy 난이도를 지원합니다.
+뱅드림! 아워 노트의 악곡별 플레이 기록을 저장하고 레이팅을 확인하는 웹사이트입니다. Cloudflare Workers에서 화면과 API를 제공하고, 계정과 기록은 Cloudflare D1에 저장합니다. 현재 92곡과 Expert / Hard / Normal / Easy 난이도를 지원합니다.
 
 ## 주요 기능
 

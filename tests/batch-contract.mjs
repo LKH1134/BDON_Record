@@ -53,7 +53,7 @@ export async function batchContract(t, { client, catalog, exec }) {
       assert.deepEqual(await read(), before);
     } finally { await exec('DROP TRIGGER reject_batch_test'); }
   });
-  await t.test('all 364 charts fit one request and can be retried idempotently', async () => {
+  await t.test('all catalog charts fit one request and can be retried idempotently', async () => {
     const records = catalog.songs.flatMap(song => Object.keys(song.levels).map(difficulty => chart(song.id, difficulty, 'ap')));
     assert.ok(JSON.stringify({ records }).length > 4096);
     await put(records);

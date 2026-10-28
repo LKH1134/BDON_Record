@@ -1,6 +1,6 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-10-26T06:45:00.534409+00:00",
+  "generatedAt": "2026-10-28T07:06:13.505013+00:00",
   "songs": [
     {
       "id": 1001,
@@ -1002,6 +1002,17 @@
         "normal": 12,
         "easy": 6
       }
+    },
+    {
+      "id": 1092,
+      "nameId": 2092,
+      "band": "MyGO!!!!!",
+      "levels": {
+        "expert": 26,
+        "hard": 20,
+        "normal": 14,
+        "easy": 7
+      }
     }
   ],
   "strings": [
@@ -1459,6 +1470,11 @@
       "id": 2091,
       "original": "Abracadabra",
       "translated": null
+    },
+    {
+      "id": 2092,
+      "original": "ノンブレス・オブリージュ",
+      "translated": "논브레스 오블리주"
     }
   ]
 }
