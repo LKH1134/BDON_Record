@@ -2,7 +2,7 @@
 
 [**Workers 운영 페이지 바로가기 →**](https://bdon-record.kh12.workers.dev)
 
-뱅드림! 아워 노트의 악곡별 플레이 기록을 저장하고 레이팅을 확인하는 웹사이트입니다. Cloudflare Workers에서 화면과 API를 제공하고, 계정과 기록은 Cloudflare D1에 저장합니다. 현재 92곡과 Expert / Hard / Normal / Easy 난이도를 지원합니다.
+뱅드림! 아워 노트의 악곡별 플레이 기록을 저장하고 레이팅을 확인하는 웹사이트입니다. Cloudflare Workers에서 화면과 API를 제공하고, 계정과 기록은 Cloudflare D1에 저장합니다. 현재 93곡과 Expert / Hard / Normal / Easy 난이도를 지원합니다.
 
 ## 주요 기능
 
@@ -80,7 +80,7 @@ npm run deploy:worker
 
 Cloudflare 인증·D1 연결·새 환경의 migration 설정은 [Workers·D1 안내](docs/CLOUDFLARE.md)를 참고합니다. 저장소의 GitHub Actions는 Pages 미리보기용이므로, GitHub 푸시만으로 Workers 배포가 완료됐다고 가정하지 않습니다.
 
-악곡 데이터의 원본은 `Data.xlsx`입니다. 데이터를 수정했다면 Python 3으로 `npm run sync-data`를 실행해 `data/catalog.json`도 갱신합니다. `test`에서는 곡 ID를 밴드·분류·순번의 6자리로 개편하고 `곡 분류` 컬럼을 추가했습니다. 개발 카탈로그는 「怪物 / KAIBUTSU」를 포함한 93곡이며, 엑셀의 `Info` 시트에서 인덱스 규칙을 확인할 수 있습니다. `xx1xxx`는 오리지널, `xx2xxx`는 커버이며 Strings ID는 유지합니다. 운영 반영 전에는 기존 기록의 ID 이전이 필요합니다. [ID 규칙과 이전 절차](docs/SONG_IDS.md)를 참고하며, 이후에는 발급한 곡 ID를 유지합니다.
+악곡 데이터의 원본은 `Data.xlsx`입니다. 데이터를 수정했다면 Python 3으로 `npm run sync-data`를 실행해 `data/catalog.json`도 갱신합니다. 곡 ID는 밴드·분류·순번의 6자리이며 `곡 분류` 컬럼이 있습니다. 「怪物 / KAIBUTSU」를 포함한 93곡을 운영에 반영했으며, 엑셀의 `Info` 시트에서 인덱스 규칙을 확인할 수 있습니다. `xx1xxx`는 오리지널, `xx2xxx`는 커버이며 Strings ID는 유지합니다. 운영 D1의 기존 기록 ID 이전은 완료했습니다. 이전 로컬 DB를 사용하는 경우 [ID 규칙과 이전 절차](docs/SONG_IDS.md)를 참고하며, 이후에는 발급한 곡 ID를 유지합니다.
 
 ### 브랜치 작업 방식
 
