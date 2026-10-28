@@ -1,10 +1,10 @@
 # 개발 및 운영 인계
 
-2026-10-27 `test`에서 레이팅 계수를 클리어 2.0 / 풀콤보 2.1 / 올퍼펙트 2.2로 변경하고 `main` 병합·운영 배포를 완료했습니다. 다음 작업 시작 시 **앨범 재킷 포함 여부 검토**와 **레이팅 직관성 패치의 구현·반영 상태**를 먼저 안내합니다. [다음 작업 메모](NEXT_STEPS.md)에 적용 범위·검증 예시가 있습니다.
+갱신일: 2026-10-28. 93곡·372차트, 6자리 곡 ID·분류, Info 시트와 기록 이전을 반영했습니다. `main` 병합·Workers 운영 배포·D1 이전·Pages 배포를 완료했으며 전체 테스트는 58개 통과입니다. 시작 안내는 [다음 작업 메모](NEXT_STEPS.md), 오늘 작업의 확인 범위는 [HANDOFF](../HANDOFF.md)를 참고합니다. 레이팅 계수 2.0 / 2.1 / 2.2는 유지합니다.
 
 ## 구성과 편집 위치
 
-기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild·jsdom을 사용하며 Node.js 24.15 이상에서 `npm ci`로 설치합니다.
+기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild·jsdom을 사용하며 Node.js 24.15 이상에서 `npm ci`로 설치합니다. Python 3은 엑셀 변환과 전체 테스트의 importer 검증에 필요합니다.
 
 | 파일 | 역할 |
 | --- | --- |
@@ -18,6 +18,8 @@
 | `server/app.mjs` | HTTP 라우팅, 인증, 입력 검증, DB 스키마와 기록 저장 |
 | `server/index.mjs` | 서버 시작, 환경변수, 종료 처리 |
 | `scripts/import_data.py` | `Data.xlsx` → `data/catalog.json` 변환 |
+| `docs/SONG_IDS.md` | 6자리 ID·Info·분류·기록 이전 규칙 |
+| `scripts/migrate-song-ids.mjs` | 명시적 SQLite ID 이전, 읽기 전용 미리보기·백업 |
 | `scripts/build-pages.mjs` | 공개 자산만 포함한 Pages 정적 미리보기 빌드 |
 | `.github/workflows/pages.yml` | `main` 푸시 시 검증·빌드·Pages 배포 |
 | `tests/pages.test.mjs` | 배포 자산 범위·하위 경로·로컬 모드 유지 검증 |
@@ -27,10 +29,14 @@
 | `worker/index.mjs` | Workers HTTP API, D1 저장, HTTPS 세션, 만료 자료 정리 Cron |
 | `wrangler.jsonc` | Workers·D1·정적 자산·Cron 연결 설정 |
 | `migrations/0001_accounts.sql` | 새 D1용 계정·세션·기록·로그인 제한 테이블 |
+| `migrations/0002_song_ids.sql` | 기존 92곡 ID 대응표와 records 단일 UPDATE |
 | `scripts/build-worker.mjs` | CLOUD MODE 화면을 `dist-worker/`에 준비 |
 | `tests/worker.test.mjs` | 실제 Workers 런타임·임시 D1 통합 검증 |
 | `tests/editor.test.mjs` | 프런트엔드 jsdom 편집·취소·일괄 저장·실패 복구 검증 |
 | `tests/batch-contract.mjs` | Node·D1 공통 일괄 저장 계약과 원자성 검증 |
+| `tests/catalog.test.mjs`, `tests/import_data_test.py` | 곡·분류·참조·엑셀/JSON 일치와 입력 검증 |
+| `tests/song-migration.test.mjs`, `tests/song-migration-contract.mjs` | SQLite·D1 기록 보존·재실행·충돌 롤백 |
+| `tests/maintenance.test.mjs` | 점검 중 기록 차단·카탈로그 유지 |
 
 `index.html`을 파일로 직접 여는 방식이 아니라 서버를 실행해 접속해야 계정·기록 API가 동작합니다. 정적 파일 추가 시 로컬 서버와 배포 빌드의 허용 목록을 함께 점검합니다. 아래 아이콘 교체 인계를 참고합니다.
 
@@ -52,7 +58,7 @@
 | millsage | `public/band-logos/millsage.webp` |
 | 일가 Dumb Rock! | `public/band-logos/dr.webp` |
 
-`public/app.js`의 `bandLogos`가 실제 밴드명으로 이미지 파일을 연결하고 `renderSongs()`가 상대 경로 `./band-logos/...`를 렌더링합니다. 원본 밴드명과 곡·문자열 ID는 변경하지 않았습니다. 로고가 제공되지 않은 CRYCHIC은 기존 CC 아이콘을 유지하며 필터에서는 계속 기타로 분류합니다. 헤더 캐릭터 이미지 `public/brand-icon.webp`는 별도입니다.
+`public/app.js`의 `bandLogos`가 실제 밴드명으로 이미지 파일을 연결하고 `renderSongs()`가 상대 경로 `./band-logos/...`를 렌더링합니다. 로고 매핑은 실제 밴드명을 사용해 6자리 곡 ID 개편과 독립적으로 유지됩니다. 로고가 제공되지 않은 CRYCHIC은 기존 CC 아이콘을 유지하며 필터에서는 계속 기타로 분류합니다. 헤더 캐릭터 이미지 `public/brand-icon.webp`는 별도입니다.
 
 `public/styles.css`의 `.track-art.band-logo-frame`은 흰 바탕, `--accent` 블루 2px 테두리, 둥근 모서리를 사용합니다. 데스크톱 액자는 112×56px, 모바일은 84×42px입니다. `object-fit: contain`으로 로고 전체와 비율을 보존합니다. 모바일에서는 로고를 숨기지 않고 곡명 위에 배치합니다. 기존 장식 원은 로고 액자에서 제거했습니다.
 
@@ -68,7 +74,7 @@ PC·모바일에서 흰 바탕과 테두리, 비율 보존, 검색·필터·정�
 
 ## 레이팅 상세 보기
 
-현재 차트 점수는 `레벨 × 기록 계수`이며 계수는 클리어 2.0 / 풀콤보 2.1 / 올퍼펙트 2.2입니다. `public/rating.js`의 100분의 1 정수 가중치(200 / 210 / 220)를 공통으로 사용하므로 행별 점수·전체 합계·상세 목록에 함께 반영됩니다. 예를 들어 레벨 29 AP는 63.8, 같은 기록 50곡은 3190입니다. `main` 병합·운영 배포를 완료했으며 DB 변경은 없습니다.
+현재 차트 점수는 `레벨 × 기록 계수`이며 계수는 클리어 2.0 / 풀콤보 2.1 / 올퍼펙트 2.2입니다. `public/rating.js`의 100분의 1 정수 가중치(200 / 210 / 220)를 공통으로 사용하므로 행별 점수·전체 합계·상세 목록에 함께 반영됩니다. 예를 들어 레벨 29 AP는 63.8, 같은 기록 50곡은 3190입니다. 레이팅 패치 자체에는 DB 변경이 없었으며 2026-10-28 곡 ID 개편은 별도로 기록 이전을 수행했습니다.
 
 요약 레이팅 옆 `#rating-details-button`은 로그인 후 활성화되며 `#rating-dialog`를 엽니다. `public/rating.js`의 `getRatingBreakdown(songs, records)`가 `{ total, entries }`를 반환하고 메인 합계와 상세 목록이 이를 함께 사용합니다. 각 entry는 `songId`, `difficulty`, `level`, `status`, `rating`을 가집니다. 한 곡에서 최고 점수의 차트 하나만 선택해 점수 내림차순으로 최대 50개를 반환합니다. 차트 동점은 카탈로그 난이도 순서(현재 Expert 우선), 곡 동점은 카탈로그 곡 순서를 유지합니다. 합계는 기존처럼 100분의 1 정수 점수로 계산해 합산 오차를 피합니다. `calculateRating()`은 같은 함수의 total을 반환하는 호환 함수입니다.
 
@@ -119,6 +125,8 @@ JSON의 `songs`는 `{ id, nameId, band, category, levels }`, `strings`는 `{ id,
 
 곡 ID와 문자열 ID는 서로 다른 식별자입니다. 2026-10-28 `test`에서 곡 ID를 `밴드 2자리 + 분류 1자리 + 순번 3자리`로 개편하고 `main` 병합·운영 배포·D1 기록 이전을 완료했습니다. `xx1xxx`는 오리지널, `xx2xxx`는 커버이며 새 ID를 재사용하거나 기존 순번을 다시 매기지 않습니다. Strings ID는 유지했습니다. 이전 ID의 로컬 DB는 명시적인 기록 이전이 필요하며 [ID 규칙과 이전 절차](SONG_IDS.md)를 따릅니다. 외부 서비스의 곡 ID와 같은 번호라고 가정하지 않습니다. importer는 헤더·ID·밴드·분류 일치, 중복 ID·잘못된 문자열 참조·없는 밴드명·정수 범위를 벗어난 레벨을 거부합니다. 수식이 있다면 계산 결과 캐시가 필요하며 Python이 엑셀 수식을 다시 계산하지는 않습니다.
 
+시트 순서는 `Info`·`Songs`·`Strings`이며 importer는 시트 이름으로 Songs와 Strings만 읽습니다. Info는 안내용입니다. 현재 93곡·93개 문자열·372차트, 오리지널 64곡·커버 29곡이며 Songs는 ID 오름차순입니다. 곡 분류는 데이터에만 추가했고 화면의 분류 컬럼·필터는 구현하지 않았습니다.
+
 ## 계정 및 기록 저장
 
 | 테이블 | 주요 필드와 제약 |
@@ -133,7 +141,7 @@ JSON의 `songs`는 `{ id, nameId, band, category, levels }`, `strings`는 `{ id,
 
 ## HTTP API
 
-응답은 JSON이며 오류는 `{ "error": "사용자에게 표시할 메시지" }` 형식입니다. 수정 요청에는 동일 출처 `Origin`이 필요합니다. JSON 본문은 `Content-Type: application/json`이며 기본 최대 4096바이트, 일괄 저장만 최대 1MiB입니다. `Host`는 실제 실행 포트의 `127.0.0.1` 또는 `localhost`만 허용합니다.
+응답은 JSON이며 오류는 `{ "error": "사용자에게 표시할 메시지" }` 형식입니다. 수정 요청에는 동일 출처 `Origin`이 필요합니다. JSON 본문은 `Content-Type: application/json`이며 기본 최대 4096바이트, 일괄 저장만 최대 1MiB입니다. Node 서버의 `Host`는 실제 실행 포트의 `127.0.0.1` 또는 `localhost`만 허용하며, Worker는 로컬 개발 주소를 제외하면 HTTPS를 요구합니다.
 
 | 메서드 | 경로 | 입력 / 결과 |
 | --- | --- | --- |
@@ -146,11 +154,17 @@ JSON의 `songs`는 `{ id, nameId, band, category, levels }`, `strings`는 `{ id,
 | PUT | `/api/records` | 로그인 필요; `{ records: [{ songId, difficulty, status }] }`; 변경분 일괄 반영 후 `{ ok: true }` |
 | PUT | `/api/records/{songId}/{difficulty}` | 로그인 필요; `{ status: "clear" / "fc" / "ap" / null }`; 교체 또는 삭제 후 `{ record: { songId, difficulty, status, updatedAt } }` |
 
-가입·로그인은 IP별 60초 동안 합계 20회까지 허용하는 메모리 제한을 사용합니다. 사용자 ID는 클라이언트 입력 대신 세션에서 결정합니다. 알려진 정적 자산만 제공하며 DB·엑셀·서버 소스는 HTTP로 제공하지 않습니다.
+가입·로그인은 IP별 60초 동안 합계 20회로 제한하며 Node는 메모리, Worker는 D1 카운터를 사용합니다. 사용자 ID는 클라이언트 입력 대신 세션에서 결정합니다. 알려진 정적 자산만 제공하며 DB·엑셀·서버 소스는 HTTP로 제공하지 않습니다.
+
+### ID 이전과 점검 모드
+
+Node는 이전 ID 기록이 남아 있으면 시작을 중단하고 명시적인 이전 명령을 안내합니다. Worker는 이전 ID가 남아 있는 동안 로그인 사용자의 기록 접근을 503으로 차단합니다. `RECORDS_MAINTENANCE=1`은 인증 여부와 무관하게 모든 기록 경로를 503으로 막고 공개 카탈로그는 유지합니다. 기본값은 `0`입니다. [이전 절차](SONG_IDS.md)를 참고합니다.
 
 ## 검증 방법
 
 `npm test`는 임시 폴더와 DB를 만들고 테스트 후 정리합니다. 실제 `.local/bdon.sqlite`를 사용하지 않습니다. HTTP 통합 테스트에는 루프백 접속 권한이 필요합니다. 샌드박스에서 `connect EACCES 127.0.0.1`이 발생하면 환경의 네트워크 제한 여부를 확인합니다.
+
+2026-10-28 전체 테스트 58개·Workers dry-run을 통과했습니다. 이전 계약은 두 계정의 기존 92곡 × 4난이도 736개 기록과 무관한 기록을, 일괄 저장 계약은 현재 372차트를 검증합니다. 운영에서는 별도로 160개 기록의 ID 대응·상태·시각·계정·세션·레이팅 보존을 확인했습니다. 운영 사용자 기록의 신규 체크·해제 테스트는 하지 않았습니다.
 
 UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
@@ -166,7 +180,7 @@ UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
 저장 성공 시 편집을 종료하고 체크박스를 비활성화합니다. 실패 시 기준값·임시 기록을 유지해 재시도할 수 있습니다. 저장 중에는 체크·저장·취소를 비활성화해 중복 요청을 방지합니다. 계정 전환과 로그아웃은 편집 종료 후 허용하며, 로그인 만료 오류도 임시 기록을 유지합니다. 이때 명시적으로 취소하면 임시 기록을 버리고 로그인 창을 엽니다. 새로고침 전 미저장 경고만 제공하며 자동 임시 저장은 없습니다.
 
-일괄 API는 카탈로그의 악곡·난이도·상태·중복 키와 최대 항목 수(곡 수 × 4)를 전부 검증한 뒤 쓰기 작업을 시작합니다. `null`은 해당 계정의 해당 차트만 삭제하며 생략한 차트는 유지합니다. JSON 입력을 사용하는 삭제·upsert 두 SQL문을 SQLite 트랜잭션 또는 D1 `batch()`로 원자적으로 실행하므로 전체 364차트도 SQL 쿼리 수가 늘지 않습니다. 단건 PUT은 기존 클라이언트 호환을 위해 유지합니다.
+일괄 API는 카탈로그의 악곡·난이도·상태·중복 키와 최대 항목 수(곡 수 × 4)를 전부 검증한 뒤 쓰기 작업을 시작합니다. `null`은 해당 계정의 해당 차트만 삭제하며 생략한 차트는 유지합니다. JSON 입력을 사용하는 삭제·upsert 두 SQL문을 SQLite 트랜잭션 또는 D1 `batch()`로 원자적으로 실행하므로 전체 372차트도 SQL 쿼리 수가 늘지 않습니다. 단건 PUT은 기존 클라이언트 호환을 위해 유지합니다.
 
 `tests/editor.test.mjs`는 실제 프런트엔드 코드를 jsdom에서 실행해 체크·필터·난이도 변경 시 통신 0회, 저장 1회, 취소·무변경 0회, 실패 후 재시도·중복 저장 방지·만료 세션을 검증합니다. `tests/batch-contract.mjs`는 같은 계약을 Node와 실제 D1에 적용해 전체 차트 저장, 계정 분리, 잘못된 요청 전체 거부와 강제 DB 오류 시 롤백을 검증합니다. 개발 의존성을 설치해 테스트하려면 Node.js 24.15 이상을 사용합니다.
 
@@ -174,10 +188,10 @@ UI를 바꾼 경우 다음을 수동으로 확인합니다.
 
 Workers·D1 계정 저장은 <https://bdon-record.kh12.workers.dev>에 배포되어 있습니다. 사용자가 초기 D1 생성·migration·첫 배포를 완료했으며 편집 모드와 네이비 테마도 이후 반영했습니다. 기존 로컬 DB를 D1으로 이전하는 기능은 아직 없습니다. 명령과 연결 ID는 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다.
 
-- Workers 코드는 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존하고 D1 비동기 접근을 사용합니다. 새 D1용 migration은 준비했으며 기존 로컬 DB 데이터 이전은 아직 없습니다.
+- Workers 코드는 현재 API 및 `(user_id, song_id, difficulty)` 제약을 보존하고 D1 비동기 접근을 사용합니다. 운영 D1에 `0001`·`0002`가 적용됐고 동일 SQLite 내 ID 이전 도구도 있습니다. 로컬 계정의 D1 이관은 별도 미구현입니다.
 - Workers는 화면과 API를 동일 출처에서 제공하고 HTTPS 세션 쿠키·Origin 검사·D1 로그인 제한을 적용합니다. 기존 Node 서버의 루프백 Host 제한은 그대로 유지합니다.
 - GitHub Pages는 상대 자산 경로를 사용하는 읽기 전용 미리보기입니다. Cloudflare 버전은 화면과 API를 동일 출처에서 제공하므로 별도 API URL이나 CORS 설정 없이 동작합니다.
-- 실제 운영 환경에서 DB 백업과 이전, 비밀번호 해시 호환성, 계정별 기록 격리, 로그아웃·만료·CPU 제한 동작을 확인해야 합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
+- 오늘 운영에서는 D1 백업·임시 복원·ID 이전·전후 보존을 확인했습니다. 이후 인증·저장·UI 변경 시 관련 운영 동작과 CPU 제한·동시 부하는 별도로 검증합니다. 로컬 DB를 저장소에 업로드하는 방식으로 이전하지 않습니다.
 - UID 불러오기는 [별도 조사 문서](UID_API_RESEARCH.md)를 기준으로 실제 데이터 접근 방법과 곡 ID 대응표부터 검증합니다. UID 자체를 사이트 로그인 수단이나 계정 소유 증명으로 사용하지 않습니다.
 
 Pages 자동 배포 workflow와 Cloudflare용 `wrangler.jsonc`가 포함되어 있습니다. Cloudflare 인증 토큰은 저장소에 없습니다. Pages 초기 설정·운영 방법은 [배포 문서](DEPLOYMENT.md)를 참고합니다.

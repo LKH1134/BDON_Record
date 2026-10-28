@@ -1,127 +1,144 @@
 # Cloudflare Workers + D1 실행·배포
 
-2026-10-26 사용자가 원격 D1 초기화와 Workers 첫 배포를 완료했습니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다. 아래 명령은 새 환경의 초기 설정과 이후 업데이트에도 사용할 수 있습니다.
+갱신일: 2026-10-28. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
 
-현재 편집 모드에서는 체크 변경을 브라우저에 보관하고 저장할 때만 변경분을 한 요청으로 보냅니다. Node와 Worker 모두 `PUT /api/records`를 제공하며 D1에서는 검증 후 삭제·upsert를 단일 batch 트랜잭션으로 적용합니다. 편집 모드 자체에는 DB 스키마 변경이 없으며, 2026-10-28 곡 ID 개편에는 별도의 `0002_song_ids.sql` 기록 이전을 적용했습니다. 기존 운영 DB를 초기화하지 않습니다.
+## 현재 운영 상태
 
-운영 주소: <https://bdon-record.kh12.workers.dev>. 최근 배포는 2026-10-28 곡 ID·분류 개편과 「怪物 / KAIBUTSU」 추가이며 Worker 버전은 `8c86c64f-ba94-4d6a-8af9-15c45c644c04`입니다. 운영 화면·카탈로그 API의 HTTP 200과 93곡·372차트 카탈로그 일치를 확인했습니다. 전체 테스트 58개와 Workers dry-run을 통과했습니다. 점검 모드에서 D1 전체 백업·임시 복원 검증 후 `0002_song_ids.sql`을 적용해 기존 기록 160개를 이전했으며 상태·시각·계정·세션·레이팅 보존을 확인했습니다. 점검 모드는 해제했습니다. 레이팅 계수 2.0 / 2.1 / 2.2, 편집 모드·일괄 저장, 네이비·블루 테마와 밴드 로고 5개를 유지합니다. 로고 매핑과 자산 관리는 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
-
-## 연결할 리소스
-
-| 항목 | 값 |
+| 항목 | 상태 |
 | --- | --- |
-| Worker 이름 | `bdon-record` |
-| D1 이름 | `bdon-record` |
+| Worker / D1 이름 | `bdon-record` |
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
-| D1 바인딩 이름 | `DB` |
-| 정적 자산 바인딩 | `ASSETS` |
-| 설정 파일 | `wrangler.jsonc` |
-| API 진입점 | `worker/index.mjs` |
-| 초기 테이블 정의 | `migrations/0001_accounts.sql` |
+| 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
+| 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
+| Workers 버전 | `8c86c64f-ba94-4d6a-8af9-15c45c644c04` |
+| 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
+| 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 
-DB 이름과 ID는 사용자가 만든 D1을 가리킵니다. Cloudflare 로그인 계정도 이 D1이 속한 계정이어야 합니다. 이 값들은 접근 비밀키가 아닙니다.
+D1 이름·ID는 대상 확인용 식별자이며 인증값이 아닙니다. Cloudflare 계정은 이 D1이 속한 계정을 사용합니다.
 
-## 1. 설치 및 로컬 검증
+## 2026-10-28 검증·배포 결과
 
-프로젝트 폴더의 PowerShell에서 실행합니다. 개발 의존성·테스트에는 Node.js 24.15 이상이 필요하며, 엑셀을 갱신할 경우 Python 3도 필요합니다.
+- 6자리 곡 ID·분류 개편과 「怪物 / KAIBUTSU」 추가를 `test`에서 검증하고 `main`에 병합했습니다.
+- 엑셀/카탈로그의 93곡·93개 문자열·372차트 일치, 기존 92곡의 이름·밴드·레벨과 이전 대응표를 확인했습니다.
+- 전체 테스트 58개와 Workers dry-run을 통과했습니다.
+- 점검 모드에서 D1 전체 export를 백업하고 임시 메모리 DB 복원으로 유효성을 확인했습니다.
+- `0002_song_ids.sql`로 운영 기록 160개를 이전하고 새 ID 대응·상태·수정 시각·계정·세션·레이팅 합계 보존을 확인했습니다.
+- 점검 모드를 해제한 뒤 운영 화면·카탈로그·JS/CSS·로고와 비로그인 기록 접근 보호를 확인했습니다.
+
+백업·전후 검증 자료는 `.local/deploy-song-ids/`의 Git 제외 자료입니다. 파일 위치와 상세 이력은 [HANDOFF](../HANDOFF.md)에 있습니다. 실제 Node 로컬 사용자 DB는 이전하지 않았습니다.
+
+## 설치와 로컬 검증
+
+Node.js 24.15 이상과 Python 3을 준비합니다. Python은 엑셀 변환과 importer 테스트에 사용합니다.
 
 ```powershell
 npm ci
-# 엑셀을 변경했다면 먼저 실행
+# 엑셀 변경 시
 npm run sync-data
 
-# 로컬 D1에 테이블 생성. Cloudflare 로그인 불필요.
+# 로컬 D1에 미적용 migration 반영
 npm run db:local
 npm run dev:worker
 ```
 
-Wrangler가 출력한 로컬 URL에 접속합니다. 기본 포트는 8787입니다. 이 모드는 `.wrangler/`에 로컬 DB를 만들며 원격 D1이나 기존 `.local/bdon.sqlite`를 수정하지 않습니다. 로컬 Worker의 화면에 표시되는 CLOUD MODE는 코드 실행 모드이며 로컬 개발 중에는 데이터도 로컬 D1에 저장됩니다.
-
-현재 Node.js 로컬 버전은 계속 `./start.ps1` 또는 `npm start`로 실행합니다. 두 버전은 DB가 분리되어 있습니다.
+기본 주소는 `http://127.0.0.1:8787`입니다. `.wrangler/`의 로컬 D1, Node의 `.local/bdon.sqlite`, 운영 D1은 별도 DB입니다. 로컬 화면의 CLOUD MODE는 실행 모드를 의미하며 데이터가 운영에 저장된다는 뜻이 아닙니다.
 
 ```powershell
-# 기존 로컬 버전 및 실제 Workers 런타임 통합 테스트
 npm test
-
-# 실제 업로드 없이 Wrangler 번들·바인딩 검증
 npm run check:worker
 ```
 
-`npm test`의 Workers 테스트는 Miniflare와 임시 D1을 사용합니다. 가입, 비밀번호 해시, HTTPS 쿠키, 사용자별 기록 격리, 저장·해제, 요청 검증, 로그아웃·토큰 교체·만료, 재시작 후 계정·기록·로그인 시도 제한 유지를 검증합니다.
+테스트는 임시 SQLite·Miniflare D1으로 계정·세션·기록 격리, 372차트 일괄 저장, 오류 롤백, ID 이전·반복 실행·충돌·점검 모드와 레이팅을 검증합니다. `check:worker`는 번들·바인딩의 dry-run이며 실제 업로드를 하지 않습니다. 루프백 EACCES가 발생하면 로컬 접속 제한을 확인합니다.
 
-밴드 로고 적용 후 전체 테스트는 52개 통과이며, [해당 커밋의 CI](https://github.com/LKH1134/BDON_Record/actions/runs/40323291800)도 성공했습니다. 전체 364차트 일괄 저장과 강제 DB 오류 시 롤백, 상위 50곡 상세 내역·합계 일치·추가 통신 없음, 로고 5개의 HTTP 제공·원본 일치·미허용 자산 거부를 검증합니다. 실제 브라우저에서 편집·저장·취소, 상위 50곡 합계, 로고 액자·매핑·로딩과 PC·모바일·가로 화면을 확인했습니다. 이번 문서 정리에서는 코드와 운영 배포를 변경하지 않았습니다.
-
-다음 시작 시 안내할 앨범 재킷 검토·레이팅 직관성 패치 상태는 [다음 작업 메모](NEXT_STEPS.md)에 있습니다. 계수 2.0 / 2.1 / 2.2를 `main`에 병합하고 운영 배포를 완료했습니다. 공식은 `레벨 × 기록 계수`이며 이 변경에 DB migration은 필요하지 않습니다. 전체 테스트 53개와 Workers dry-run도 통과했습니다.
-
-## 2. Cloudflare 로그인
+## 로그인과 DB 대상 확인
 
 ```powershell
 npx wrangler login
 npx wrangler whoami
+npx wrangler d1 migrations list DB --remote
 ```
 
-브라우저에서 직접 로그인합니다. 여러 Cloudflare 계정이 보이면 위 D1을 만든 계정을 선택합니다. 필요할 때만 `wrangler.jsonc`에 해당 계정의 `account_id`를 명시합니다. 로그인 인증값은 코드나 Git에 넣지 않습니다.
+브라우저에서 직접 로그인합니다. 여러 계정이 있다면 위 D1이 속한 계정을 선택합니다. 인증 토큰·세션·테스트 비밀번호는 저장소나 문서에 넣지 않습니다.
 
-## 3. 원격 D1 테이블 생성
+## D1 migration
 
-아직 비어 있는 새 D1에 초기 테이블을 생성합니다.
+현재 운영에는 아래 두 migration이 적용됐습니다.
+
+| 파일 | 역할 |
+| --- | --- |
+| `migrations/0001_accounts.sql` | 계정·세션·기록·로그인 제한 테이블 생성 |
+| `migrations/0002_song_ids.sql` | 기존 곡 ID 92개를 새 6자리 ID로 대응시켜 기록 이전 |
+
+새 D1을 만들거나 실제 미적용 migration이 있을 때 대상과 목록을 확인하고 실행합니다.
 
 ```powershell
 npm run db:remote
 ```
 
-이 명령은 **실제 원격 D1을 변경**합니다. 적용 전에 대상 이름·ID와 migration 목록을 확인합니다. `0001_accounts.sql`은 새 DB용이며 이미 같은 이름의 테이블이 있는 별도 DB에 강제로 적용하지 않습니다. Wrangler가 적용 이력을 `d1_migrations`에 기록하므로 이후 같은 명령은 미적용 migration만 실행합니다.
+이 명령은 원격 D1을 변경합니다. Wrangler는 `d1_migrations` 이력으로 미적용 항목만 실행합니다. 기존 운영 DB를 초기화하거나 초기 SQL을 수동으로 중복 적용하지 않습니다.
 
-테이블은 `users`, `sessions`, `records`, `auth_attempts`입니다. 마지막 테이블은 로그인 시도 제한을 위한 내부 자료입니다. 기존 로컬 계정·기록을 자동으로 가져오지는 않습니다. 초기 migration을 수동 SQL로 중복 실행하지 않습니다.
+`0002_song_ids.sql`은 곡 ID만 바꾸며 계정·상태·수정 시각을 보존합니다. 적용 후에는 단순 코드 롤백만으로 이전 ID를 사용하는 구버전을 복원할 수 없으므로, 문제가 생기면 점검 상태에서 코드와 DB의 대응을 함께 확인합니다. 전체 절차는 [Songs 인덱스](SONG_IDS.md)를 따릅니다.
 
-## 4. Workers 배포
+## Workers 운영 업데이트
 
-6자리 곡 ID 개편의 운영 이전·배포는 완료했습니다. 새 환경이나 이전 ID를 사용하는 DB에서는 먼저 [Songs 인덱스와 기록 이전 절차](SONG_IDS.md)를 확인합니다. 이 변경에는 `0002_song_ids.sql`이 필요하며 DB 이전과 새 코드·카탈로그 배포를 함께 진행합니다. 기존 운영 DB에는 이미 적용된 migration을 강제로 재적용하거나 DB를 초기화하지 않습니다.
+큰 기능은 `test`에서 로컬 검증하고 공개 반영 요청이 있는 변경을 `main`에 병합합니다. 이후 검증한 `main`에서 배포합니다.
+
+일반 코드·데이터 업데이트는 다음 순서입니다.
 
 ```powershell
+npm test
+npm run check:worker
 npm run deploy:worker
 ```
 
-정적 화면과 API가 함께 배포되며 완료 시 실제 `https://bdon-record.<계정별이름>.workers.dev` 주소가 출력됩니다. 화면과 API를 같은 주소에서 제공하므로 별도 CORS 허용 목록이나 외부 API 주소를 입력할 필요가 없습니다.
+엑셀이 바뀌었다면 먼저 `npm run sync-data`를 실행해 JSON을 갱신합니다. 원격 DB 변경이 필요하면 배포 전에 migration 목록·백업·적용 순서를 별도로 확인합니다.
 
-현재 `npm run build:pages`는 GitHub Pages용 읽기 전용 파일을 만듭니다. Cloudflare에는 `npm run build:worker`가 만드는 **`dist-worker/`**를 사용합니다. 배포 스크립트가 이 빌드를 먼저 실행합니다.
+기존 기록 ID를 변경해야 하는 경우에는 기록 요청을 잠시 차단하고 검증 후 다시 엽니다.
 
-배포 후 확인합니다.
+```powershell
+# 기록 조회·저장 점검 모드
+npm run deploy:worker -- --var RECORDS_MAINTENANCE:1
 
-1. 로그인 후 `기록 편집`에서 여러 곡·난이도를 체크합니다. 체크 중에는 기록 API 요청이 없고, `저장` 시 일괄 PUT 한 번만 발생해야 합니다. 저장 후 새로고침해 유지되는지 확인합니다.
-2. 로그아웃 뒤 다른 계정에는 기존 계정의 기록이 보이지 않아야 합니다.
-3. 다른 기기에서 같은 계정으로 로그인해 같은 기록을 확인합니다.
-4. 레이팅과 난이도별 집계가 로컬 버전과 동일한지 확인합니다.
-5. 로그인·가입 요청의 실행 시간과 오류 로그를 확인합니다. 로컬 검증은 운영 환경의 CPU 제한·동시 부하까지 검증한 결과는 아닙니다.
+# 백업 파일은 새 이름을 지정하고 Git 제외 위치에 보관
+npx wrangler d1 export DB --remote --output .local/d1-before-change.sql
 
-최초 코드 준비 단계에서는 원격 migration과 배포를 실행하지 않았으며, 이후 사용자가 직접 완료했습니다. GitHub Pages 주소는 자동으로 Cloudflare 주소로 바뀌지 않습니다.
+# 대상·미적용 목록과 충돌 여부 확인 후 적용
+npm run db:remote
 
-## GitHub 연결로 자동 배포할 경우
+# 전후 기록·계정·세션·레이팅 보존 확인 후 점검 해제
+npm run deploy:worker
+```
 
-초기 원격 migration과 첫 배포 확인 후 Cloudflare Workers & Pages에서 이 저장소를 연결할 수 있습니다.
+실제 백업은 덮어쓰지 않는 새 경로를 사용하고 임시 DB 복원으로 유효성을 확인합니다. SQL export와 전후 비교 자료를 Git에 넣지 않습니다. 기본 `RECORDS_MAINTENANCE` 값은 `0`이며 점검 모드에서는 기록 경로가 503을 반환합니다. 이전 ID 기록이 남아 있는 새 Worker도 로그인 사용자의 기록 접근을 차단합니다.
 
-- 저장소: `LKH1134/BDON_Record`
-- 브랜치: `main`
-- 루트 디렉터리: 저장소 루트
-- 빌드 명령: `npm run build:worker`
-- 배포 명령: `npx wrangler deploy`
+`deploy:worker`는 `build:worker`로 `dist-worker/`를 준비한 뒤 화면·API를 배포합니다. `build:pages`의 `dist/`는 GitHub Pages용입니다.
 
-빌드 환경은 Node.js 24.15 이상을 사용하고 `npm ci`로 lockfile에 맞는 개발 의존성을 설치해야 합니다. 저장소의 `data/catalog.json`을 빌드에 사용합니다. 엑셀 변경 시 JSON도 변환해 함께 커밋합니다. DB migration은 자동 배포와 분리해 필요한 시점에 대상 DB를 확인한 뒤 적용합니다.
+### 배포 후 확인
 
-GitHub Pages workflow는 계속 읽기 전용 미리보기를 배포합니다. Cloudflare 자동 배포를 연결하기 전에는 GitHub에 푸시해도 Workers가 자동 배포되지 않습니다.
+- `/`, `/api/catalog`, `/catalog.json`의 응답과 검증한 카탈로그·자산의 일치
+- 점검 모드 해제, 비로그인 기록 요청 401, 로그인 세션과 계정별 기록
+- 변경 시 기존 기록 수·상태·시각·레이팅 합계 보존
+- 임시 QA 계정·로컬 테스트의 편집·저장·취소·일괄 저장 계약
+- Pages workflow 성공과 공개 카탈로그 일치
 
-현재까지 확인한 Workers 업데이트는 CLI의 `npm run deploy:worker`를 사용했습니다. Cloudflare 대시보드의 Git 자동 배포 연결 여부는 확인되지 않았으므로 푸시만으로 운영 반영이 끝났다고 기록하지 않습니다. 문서만 정리한 변경은 Workers 재배포가 필요하지 않습니다.
+2026-10-28 운영 확인은 기존 사용자 기록의 추가 편집 없이 수행했습니다. 실제 브라우저의 PC·모바일 편집·저장 확인 기록은 이전 UI 작업 기준이며, UI가 바뀌면 다시 검증합니다.
 
-## 데이터·인증 동작
+## GitHub 자동 배포 구분
 
-- 사용자 이름·곡 ID·난이도·상태와 레이팅 규칙은 기존 로컬 버전과 동일합니다.
-- 비밀번호는 무작위 salt와 scrypt, 세션 토큰은 SHA-256 해시로 저장합니다. 로컬과 같은 해시 형식을 사용하지만 로컬 DB 이전 도구는 아직 없습니다.
-- 운영 HTTPS에서는 `__Host-bdon_session` 쿠키에 `Secure`, `HttpOnly`, `SameSite=Strict`, `Path=/`를 적용합니다. 세션은 30일입니다. 로컬 HTTP에서는 개발용 `bdon_session` 이름을 사용합니다.
-- 쓰기 요청은 동일한 Origin만 허용합니다. 계정 ID는 요청 본문이 아닌 로그인 세션에서 결정합니다.
-- 가입·로그인은 IP별 60초 동안 합계 20회까지 허용합니다. D1에는 IP 원문 대신 해시 키와 만료 시각을 기록합니다. 공유 네트워크에서는 여러 사용자가 이 제한을 공유합니다.
-- 매시간 Cron이 만료된 세션과 로그인 제한 자료를 정리합니다. 만료 여부는 조회 시에도 검사하므로 Cron 지연으로 로그인 수명이 늘어나지는 않습니다.
-- 비밀번호 찾기·이메일 인증·게임 UID 가져오기는 이번 작업 범위에 포함하지 않았습니다.
+`main` 푸시는 [Pages workflow](DEPLOYMENT.md)를 실행합니다. 현재 확인한 Workers 배포는 CLI 실행이며 Cloudflare Git 자동 배포 연결 여부는 확인되지 않았습니다. 푸시만으로 Workers 운영 반영을 완료했다고 판단하지 않습니다.
 
-로컬 Cron 확인은 개발 서버 실행 중 `http://127.0.0.1:8787/cdn-cgi/local/scheduled`를 호출할 수 있습니다. 운영에서는 `wrangler.jsonc`의 Cron 설정으로 실행됩니다.
+향후 Cloudflare Git 배포를 연결한다면 저장소 `LKH1134/BDON_Record`, 브랜치 `main`, Node.js 24.15 이상, `npm ci`, `npm run build:worker`, `npx wrangler deploy`를 기준으로 설정합니다. DB migration은 자동 배포와 분리합니다.
 
-공식 참고: [D1 시작 안내](https://developers.cloudflare.com/d1/get-started/), [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/), [Workers 정적 자산](https://developers.cloudflare.com/workers/static-assets/binding/), [Node crypto 호환성](https://developers.cloudflare.com/workers/runtime-apis/nodejs/crypto/).
+문서만 갱신하는 작업에는 Workers 재배포·DB migration이 필요하지 않습니다.
+
+## 인증·저장 동작
+
+- 비밀번호는 salt와 scrypt, 세션 토큰은 SHA-256 해시로 저장합니다.
+- 운영 HTTPS 쿠키는 `__Host-bdon_session`, `Secure`·`HttpOnly`·`SameSite=Strict`·`Path=/`, 수명 30일입니다. Node 로컬 쿠키는 `bdon_session`입니다.
+- 쓰기 요청은 동일 Origin만 허용하고 사용자 ID는 세션에서 결정합니다.
+- 가입·로그인은 IP별 60초간 합계 20회로 제한합니다. D1에는 IP 원문 대신 해시 키를 보관합니다.
+- 기록 일괄 저장은 검증 후 삭제·upsert를 단일 D1 batch로 적용합니다.
+- 매시간 Cron이 만료된 세션·로그인 제한 자료를 정리합니다.
+- Node 계정의 D1 이관, 게임 UID 자동 수집, 비밀번호 찾기·이메일 인증은 미구현입니다. 같은 SQLite 안의 곡 ID 이전 도구와 구분합니다.
+
+공식 참고: [D1 migrations](https://developers.cloudflare.com/d1/reference/migrations/), [Workers 정적 자산](https://developers.cloudflare.com/workers/static-assets/binding/), [Node crypto 호환성](https://developers.cloudflare.com/workers/runtime-apis/nodejs/crypto/).
