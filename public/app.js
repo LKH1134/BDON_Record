@@ -12,7 +12,7 @@ const bandStyle = {
 };
 const bandLogos = {
   'MyGO!!!!!': 'mygo.webp', 'Ave Mujica': 'avemujica.webp', '무겐다이 뮤타입': 'ymmt.webp',
-  millsage: 'millsage.webp', '일가 Dumb Rock!': 'dr.webp'
+  millsage: 'millsage.webp', '일가 Dumb Rock!': 'dr.webp', CRYCHIC: 'bang-dream-on.webp'
 };
 const getBandCategory = band => band === 'CRYCHIC' ? '기타' : band;
 const recordKey = (songId, difficulty = state.difficulty) => `${songId}:${difficulty}`;

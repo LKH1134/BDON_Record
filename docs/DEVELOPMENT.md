@@ -48,7 +48,7 @@
 
 ## 곡 앞 밴드 로고
 
-사용자가 제공한 5개 밴드 로고를 악곡 목록에 적용했습니다. 제공된 WebP 파일 모두 RGBA 투명 배경이 포함되어 있어 이미지 재생성·배경 재처리 없이 원본을 그대로 복사했습니다. 웹에서 사용하는 원본은 `public/band-logos/`에 보관합니다.
+사용자가 제공한 5개 밴드 로고와 기타 분류용 BanG Dream! Our Notes 로고를 악곡 목록에 적용했습니다. 제공된 WebP 파일 모두 RGBA 투명 배경이 포함되어 있어 이미지 재생성·배경 재처리 없이 원본을 그대로 복사했습니다. 웹에서 사용하는 원본은 `public/band-logos/`에 보관합니다.
 
 | 실제 밴드명 | 로고 파일 |
 | --- | --- |
@@ -57,8 +57,9 @@
 | 무겐다이 뮤타입 | `public/band-logos/ymmt.webp` |
 | millsage | `public/band-logos/millsage.webp` |
 | 일가 Dumb Rock! | `public/band-logos/dr.webp` |
+| CRYCHIC (기타 분류) | `public/band-logos/bang-dream-on.webp` |
 
-`public/app.js`의 `bandLogos`가 실제 밴드명으로 이미지 파일을 연결하고 `renderSongs()`가 상대 경로 `./band-logos/...`를 렌더링합니다. 로고 매핑은 실제 밴드명을 사용해 6자리 곡 ID 개편과 독립적으로 유지됩니다. 로고가 제공되지 않은 CRYCHIC은 기존 CC 아이콘을 유지하며 필터에서는 계속 기타로 분류합니다. 헤더 캐릭터 이미지 `public/brand-icon.webp`는 별도입니다.
+`public/app.js`의 `bandLogos`가 실제 밴드명으로 이미지 파일을 연결하고 `renderSongs()`가 상대 경로 `./band-logos/...`를 렌더링합니다. 로고 매핑은 실제 밴드명을 사용해 6자리 곡 ID 개편과 독립적으로 유지됩니다. CRYCHIC은 2026-10-29 기타 분류용 로고로 기존 CC 아이콘을 교체했으며 필터에서는 계속 기타로 분류합니다. 헤더 캐릭터 이미지 `public/brand-icon.webp`는 별도입니다.
 
 `public/styles.css`의 `.track-art.band-logo-frame`은 흰 바탕, `--accent` 블루 2px 테두리, 둥근 모서리를 사용합니다. 데스크톱 액자는 112×56px, 모바일은 84×42px입니다. `object-fit: contain`으로 로고 전체와 비율을 보존합니다. 모바일에서는 로고를 숨기지 않고 곡명 위에 배치합니다. 기존 장식 원은 로고 액자에서 제거했습니다.
 

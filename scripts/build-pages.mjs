@@ -3,7 +3,7 @@ import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const logoFilenames = ['mygo.webp', 'avemujica.webp', 'ymmt.webp', 'millsage.webp', 'dr.webp'];
+const logoFilenames = ['mygo.webp', 'avemujica.webp', 'ymmt.webp', 'millsage.webp', 'dr.webp', 'bang-dream-on.webp'];
 const filenames = ['index.html', 'app.js', 'rating.js', 'styles.css', 'brand-icon.webp', 'catalog.json', '.nojekyll', 'band-logos'];
 
 export async function buildPages(outputDirectory = resolve(root, 'dist')) {

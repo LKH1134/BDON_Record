@@ -10,8 +10,8 @@ test('Pages artifact contains only public assets and works under a repository pa
   t.after(() => rm(directory, { recursive: true, force: true }));
   await buildPages(directory);
   assert.deepEqual((await readdir(directory)).sort(), ['.nojekyll', 'app.js', 'band-logos', 'brand-icon.webp', 'catalog.json', 'index.html', 'rating.js', 'styles.css']);
-  assert.deepEqual((await readdir(join(directory, 'band-logos'))).sort(), ['avemujica.webp', 'dr.webp', 'millsage.webp', 'mygo.webp', 'ymmt.webp']);
-  for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr']) {
+  assert.deepEqual((await readdir(join(directory, 'band-logos'))).sort(), ['avemujica.webp', 'bang-dream-on.webp', 'dr.webp', 'millsage.webp', 'mygo.webp', 'ymmt.webp']);
+  for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr', 'bang-dream-on']) {
     assert.deepEqual(await readFile(join(directory, 'band-logos', `${name}.webp`)), await readFile(new URL(`../public/band-logos/${name}.webp`, import.meta.url)));
   }
   const html = await readFile(join(directory, 'index.html'), 'utf8');
