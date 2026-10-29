@@ -116,7 +116,7 @@ test('local accounts and play records', async t => {
     assert.match(response.headers.get('content-security-policy'), /frame-ancestors 'none'/);
     assert.match(await response.text(), /곡 라이브러리/);
     for (const path of ['/app.js','/rating.js','/styles.css','/brand-icon.webp']) assert.equal((await fetch(origin + path)).status, 200);
-    for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr']) {
+    for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr', 'bang-dream-on']) {
       const logo = await fetch(origin + `/band-logos/${name}.webp`);
       assert.equal(logo.status, 200);
       assert.match(logo.headers.get('content-type'), /image\/webp/);

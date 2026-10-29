@@ -75,7 +75,7 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     assert.equal(image.status, 200);
     assert.match(image.headers.get('content-type'), /image\/webp/);
     assert.ok((await image.arrayBuffer()).byteLength > 0);
-    for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr']) {
+    for (const name of ['mygo', 'avemujica', 'ymmt', 'millsage', 'dr', 'bang-dream-on']) {
       const logo = await mf.dispatchFetch(origin + `/band-logos/${name}.webp`);
       assert.equal(logo.status, 200);
       assert.match(logo.headers.get('content-type'), /image\/webp/);

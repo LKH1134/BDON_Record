@@ -18,7 +18,7 @@ npm test
 npm run build:pages
 ```
 
-`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `brand-icon.webp`, `catalog.json`, `.nojekyll`과 `band-logos/` 안의 밴드 로고 5개를 생성합니다. 총 공개 파일은 12개입니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다. 헤더 아이콘 원본은 `public/brand-icon.webp`입니다. 카탈로그에는 6자리 ID·`category`가 포함되지만 분류 표시·필터는 추가하지 않았습니다. 엑셀의 Info 안내는 JSON이나 공개 정적 자산에 포함하지 않습니다.
+`scripts/build-pages.mjs`는 `dist/`에 `index.html`, `styles.css`, `app.js`, `rating.js`, `brand-icon.webp`, `catalog.json`, `.nojekyll`과 `band-logos/` 안의 로고 6개(밴드 5개·기타 분류용 1개)를 생성합니다. 총 공개 파일은 13개입니다. 다른 파일이 출력 폴더에 있으면 오류로 중단합니다. `dist/`는 Git 제외 대상입니다. 헤더 아이콘 원본은 `public/brand-icon.webp`입니다. 카탈로그에는 6자리 ID·`category`가 포함되지만 분류 표시·필터는 추가하지 않았습니다. 엑셀의 Info 안내는 JSON이나 공개 정적 자산에 포함하지 않습니다.
 
 원본 HTML 대신 배포용 HTML에만 `<meta name="bdon-mode" content="static">`을 삽입합니다. `public/app.js`는 이 표식을 읽어 카탈로그를 같은 폴더의 `catalog.json`에서 불러오고 계정 API 요청을 하지 않습니다. `/BDON_Record/` 하위 경로에서 동작하도록 HTML 자산·홈 링크는 상대 경로를 사용합니다. 원본 HTML을 제공하는 로컬 서버는 기존 `/api/...` 경로를 계속 사용합니다.
 
@@ -52,7 +52,7 @@ Pages 초기 설정이 없어도 코드 업로드와 빌드 준비를 완료할 
 
 Cloudflare 계정 API·D1 저장과 네이비 테마는 이미 운영에 반영되어 있습니다. Workers 업데이트 방법은 [Cloudflare 안내](CLOUDFLARE.md)를 참고합니다. GitHub Pages는 읽기 전용 미리보기로 유지합니다.
 
-밴드 로고 5개의 교체는 완료했습니다. `scripts/build-pages.mjs`는 로고 폴더와 파일명도 검증하고 `tests/pages.test.mjs`는 파일 보존과 미허용 자산 거부를 확인합니다. 향후 이미지 추가 시 양쪽 허용 목록과 복사 로직, 저장소 하위 경로에서의 로딩을 함께 점검합니다. 상세 매핑은 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
+밴드 로고 5개에 더해 2026-10-29 기타 분류(CRYCHIC)의 임시 CC 아이콘을 사용자가 제공한 투명 WebP 로고로 교체했습니다. `scripts/build-pages.mjs`는 로고 폴더와 파일명도 검증하고 `tests/pages.test.mjs`는 파일 보존과 미허용 자산 거부를 확인합니다. 향후 이미지 추가 시 양쪽 허용 목록과 복사 로직, 저장소 하위 경로에서의 로딩을 함께 점검합니다. 상세 매핑은 [개발 인계](DEVELOPMENT.md#곡-앞-밴드-로고)에 있습니다.
 
 다음 시작 시 안내할 앨범 재킷 포함 여부와 레이팅 직관성 패치 상태는 [별도 메모](NEXT_STEPS.md)에 기록되어 있습니다. 재킷은 검토 중이고 레이팅 계수 2.0 / 2.1 / 2.2는 `test`에서 구현·검증한 뒤 `main` 병합·Workers 운영 배포를 완료했습니다. 재킷을 추가하게 되면 정적 자산 허용 목록·복사·하위 경로 로딩 검증을 함께 갱신합니다.
 
