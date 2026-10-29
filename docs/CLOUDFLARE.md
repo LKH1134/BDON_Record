@@ -21,6 +21,8 @@ D1 이름·ID는 대상 확인용 식별자이며 인증값이 아닙니다. Clo
 - 기타 분류(CRYCHIC)의 임시 아이콘을 사용자 제공 투명 WebP 로고로 교체하고 `test` 검증 후 `main`에서 배포했습니다.
 - 전체 테스트 58개와 Workers dry-run을 통과했습니다. 운영 JS·새 로고·카탈로그의 SHA-256이 로컬 파일과 일치합니다.
 - `/`, `/api/catalog`, `/api/me`의 200과 비로그인 `/api/records`의 401을 확인했습니다. DB migration과 사용자 기록 변경은 없습니다.
+- `7b3d3e9`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/40813019858)도 성공했고 공개 미리보기의 새 로고·화면 코드·카탈로그 내용을 확인했습니다. `main`·`test`와 양쪽 원격을 동기화했습니다.
+- 10월 29일 마무리 문서 갱신은 GitHub README와 인계 문서 반영 작업입니다. Workers 버전과 D1은 유지하며 문서 갱신만을 위한 운영 재배포는 필요하지 않습니다.
 
 ## 2026-10-28 검증·배포 결과
 
