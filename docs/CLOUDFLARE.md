@@ -1,6 +1,6 @@
 # Cloudflare Workers + D1 실행·배포
 
-갱신일: 2026-10-28. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
+갱신일: 2026-10-29. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. 기타 분류 로고 교체를 운영 반영했습니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
 
 ## 현재 운영 상태
 
@@ -10,11 +10,17 @@
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
 | 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
 | 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
-| Workers 버전 | `8c86c64f-ba94-4d6a-8af9-15c45c644c04` |
+| Workers 버전 | `56d8d686-5ae5-47b4-a9d1-e00dad9f8ba9` |
 | 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
 | 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 
 D1 이름·ID는 대상 확인용 식별자이며 인증값이 아닙니다. Cloudflare 계정은 이 D1이 속한 계정을 사용합니다.
+
+## 2026-10-29 로고 배포 결과
+
+- 기타 분류(CRYCHIC)의 임시 아이콘을 사용자 제공 투명 WebP 로고로 교체하고 `test` 검증 후 `main`에서 배포했습니다.
+- 전체 테스트 58개와 Workers dry-run을 통과했습니다. 운영 JS·새 로고·카탈로그의 SHA-256이 로컬 파일과 일치합니다.
+- `/`, `/api/catalog`, `/api/me`의 200과 비로그인 `/api/records`의 401을 확인했습니다. DB migration과 사용자 기록 변경은 없습니다.
 
 ## 2026-10-28 검증·배포 결과
 

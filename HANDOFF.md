@@ -1,6 +1,6 @@
 # BDON Record 인계
 
-갱신일: 2026-10-28. 곡 ID·분류 개편, 신곡 추가와 `Info` 시트 작성을 완료했습니다. `test` 검증 후 `main` 병합·푸시, Workers 운영 배포·D1 기록 이전과 GitHub Pages 배포까지 확인했습니다.
+갱신일: 2026-10-29. 기타 분류(CRYCHIC)의 임시 아이콘을 사용자 제공 투명 로고로 교체하고 `test` 검증·`main` 병합·Workers 운영 배포를 완료했습니다. 2026-10-28의 곡 ID·분류 개편, 신곡 추가·`Info` 시트와 D1 기록 이전 상태를 유지합니다.
 
 ## 다음 작업 시작 안내
 
@@ -18,14 +18,23 @@
 | 주 운영 페이지 | <https://bdon-record.kh12.workers.dev> — 화면·API, D1 계정·기록 저장 |
 | GitHub Pages | <https://lkh1134.github.io/BDON_Record/> — 읽기 전용 악곡 미리보기 |
 | 저장소 | <https://github.com/LKH1134/BDON_Record>, 공개 기준 `main` |
-| Workers 버전 | `8c86c64f-ba94-4d6a-8af9-15c45c644c04` |
+| Workers 버전 | `56d8d686-5ae5-47b4-a9d1-e00dad9f8ba9` |
 | 카탈로그 | 93곡·93개 문자열·372차트, 오리지널 64곡·커버 29곡 |
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 58개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 기능 배포 기준 CI | `ec557bd`의 [Pages workflow 성공](https://github.com/LKH1134/BDON_Record/actions/runs/40654249265) |
+| 2026-10-28 CI 기록 | `ec557bd`의 [Pages workflow 성공](https://github.com/LKH1134/BDON_Record/actions/runs/40654249265) |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
+
+## 2026-10-29 기타 분류 로고 교체
+
+- `cbd419b`: 사용자 제공 RGBA WebP를 `public/band-logos/bang-dream-on.webp`로 원본 복사했습니다. 이미 투명 배경이어서 재처리하지 않았습니다.
+- CRYCHIC의 CC 임시 아이콘을 새 로고로 교체하고 기존 흰 액자·블루 테두리·비율 보존 양식을 적용했습니다. 실제 밴드명과 기타 필터 동작은 유지합니다.
+- Node 정적 경로, Pages·Workers 자산 빌드와 기존 자산 검증 테스트에 새 로고를 포함했습니다. 로고는 총 6개입니다.
+- 전체 테스트 58개, Pages·Workers 빌드와 Workers dry-run을 통과하고 로컬 브라우저에서 기타 필터의 표시를 확인했습니다.
+- `main`에서 Workers를 배포한 뒤 운영 JS·새 로고·카탈로그가 로컬 파일과 SHA-256 기준으로 일치함을 확인했습니다. 화면·카탈로그·사용자 조회는 200, 비로그인 기록 접근은 401입니다.
+- 데이터·기록·DB migration 변경은 없습니다. GitHub Pages는 `main` 푸시로 같은 공개 자산을 자동 배포합니다.
 
 ## 2026-10-28 작업 결과
 
