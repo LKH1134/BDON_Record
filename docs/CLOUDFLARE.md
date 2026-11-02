@@ -1,6 +1,6 @@
 # Cloudflare Workers + D1 실행·배포
 
-갱신일: 2026-10-29. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. 기타 분류 로고 교체를 운영 반영했습니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
+갱신일: 2026-11-02. 루트 중복 파일 정리 후 사용자 요청으로 검증한 `main`을 Workers 운영에 배포했습니다. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
 
 ## 현재 운영 상태
 
@@ -10,11 +10,19 @@
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
 | 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
 | 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
-| Workers 버전 | `56d8d686-5ae5-47b4-a9d1-e00dad9f8ba9` |
+| Workers 버전 | `a46f6189-4e92-40e6-80c0-7e126200bf80` |
 | 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
 | 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 
 D1 이름·ID는 대상 확인용 식별자이며 인증값이 아닙니다. Cloudflare 계정은 이 D1이 속한 계정을 사용합니다.
+
+## 2026-11-02 정리 변경 배포 결과
+
+- `983414f`의 중복 이미지·완료된 개편 초안 삭제를 `main`에 푸시했습니다. 실제 공개 자산·코드·데이터·DB 설정은 변경하지 않았습니다.
+- 전체 테스트 58개와 Workers dry-run을 통과했습니다. 사용자 요청으로 `npm run deploy:worker`를 실행했으며 자산 변경 업로드는 없었습니다. DB migration은 실행하지 않았습니다.
+- 운영 화면·카탈로그·사용자 조회의 200, 비로그인 기록 접근의 401, 카탈로그와 JS/CSS·헤더 이미지·로고 6개의 로컬 일치를 확인했습니다. 운영 사용자 기록 편집과 모바일·로그인 UI 수동 확인은 오늘 수행하지 않았습니다.
+- 정리 커밋의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/41389182123)도 성공했으며 공개 카탈로그·코드·이미지의 로컬 일치를 확인했습니다.
+- Wrangler 로그를 프로젝트의 `.local/wrangler-logs/`에 저장했습니다. 문서 갱신 후 추가 Workers 배포는 필요하지 않습니다.
 
 ## 2026-10-29 로고 배포 결과
 

@@ -1,6 +1,6 @@
 # BDON Record 인계
 
-갱신일: 2026-10-29. 기타 분류(CRYCHIC)의 임시 아이콘을 사용자 제공 투명 로고로 교체하고 `test` 검증·`main` 병합·Workers 운영 배포·GitHub Pages 배포를 완료했습니다. 마무리 작업 지침을 추가하고 README와 인계 문서를 당일 결과에 맞춰 정리했습니다. 2026-10-28의 곡 ID·분류 개편, 신곡 추가·`Info` 시트와 D1 기록 이전 상태를 유지합니다.
+갱신일: 2026-11-02. 프로젝트 루트의 중복 이미지·완료된 개편 초안과 로컬의 저장 웹페이지·빌드 결과를 정리했습니다. 정리 커밋 `983414f`를 `main`에 푸시하고 사용자 요청으로 Workers 운영 및 GitHub Pages 배포를 완료했습니다. 전체 테스트 58개·Workers dry-run과 양쪽 공개 자산 일치를 확인했습니다. 2026-10-29 로고 기능과 2026-10-28 데이터·기록 이전 상태를 유지합니다.
 
 ## 다음 작업 시작 안내
 
@@ -18,14 +18,26 @@
 | 주 운영 페이지 | <https://bdon-record.kh12.workers.dev> — 화면·API, D1 계정·기록 저장 |
 | GitHub Pages | <https://lkh1134.github.io/BDON_Record/> — 읽기 전용 악곡 미리보기 |
 | 저장소 | <https://github.com/LKH1134/BDON_Record>, 공개 기준 `main` |
-| Workers 버전 | `56d8d686-5ae5-47b4-a9d1-e00dad9f8ba9` |
+| Workers 버전 | `a46f6189-4e92-40e6-80c0-7e126200bf80` |
 | 카탈로그 | 93곡·93개 문자열·372차트, 오리지널 64곡·커버 29곡 |
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 58개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 로고 기능 배포 확인 기준 | `7b3d3e9`의 [Pages workflow 성공](https://github.com/LKH1134/BDON_Record/actions/runs/40813019858) |
+| 정리 변경 Pages 배포 확인 | `983414f`의 [Pages workflow 성공](https://github.com/LKH1134/BDON_Record/actions/runs/41389182123) |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
+
+## 2026-11-02 루트 정리와 배포
+
+- `983414f`: `public/band-logos/`의 원본과 SHA-256이 동일하고 코드·빌드 참조가 없는 `images/`의 이미지 5개와 완료된 `데이터리팩토링.txt` 초안을 삭제했습니다. 초안의 잘못된 커버 시작값 대신 현재 [Songs 규칙](docs/SONG_IDS.md)을 사용합니다.
+- Git 제외 자료인 루트 나무위키 HTML·리소스 폴더와 `dist/`·`dist-worker/`도 로컬에서 삭제했습니다. 총 128개 파일·약 8.26MiB입니다. 이후 배포 검증 과정에서 `dist-worker/`는 다시 생성됐습니다.
+- `outputs/`의 과거 엑셀 작업본·화면 캡처, `.local/`의 DB·운영 백업, `.wrangler/`·`node_modules/`·`Legacy/`·`레이팅 계산식.txt`는 유지했습니다. 서비스 로고·Data.xlsx·카탈로그·계산 코드·DB migration은 변경하지 않았습니다.
+- 초기 전체 테스트는 샌드박스의 루프백 접속 제한으로 실패했으나, 제한을 해제한 재실행에서 58개가 모두 통과했습니다. Workers dry-run도 통과했습니다. Wrangler 로그는 `.local/wrangler-logs/`에 기록했습니다.
+- 사용자 요청으로 검증한 `main`에서 Workers를 배포했습니다. 버전은 `a46f6189-4e92-40e6-80c0-7e126200bf80`이며 정적 자산 변경 업로드는 없었습니다. DB migration은 실행하지 않았습니다.
+- 운영 `/`·`/api/catalog`·`/catalog.json`·`/api/me`의 200, 비로그인 `/api/records`의 401, 93곡·93개 문자열·372차트와 JS/CSS·헤더 이미지·로고 6개의 로컬 일치를 확인했습니다. 오늘 운영 사용자 기록을 편집하거나 모바일·로그인 UI를 새로 수동 검증하지 않았습니다.
+- `983414f`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/41389182123)가 성공했습니다. 공개 페이지의 정적 모드·93곡·93개 문자열·372차트, JS/CSS·헤더 이미지·로고 6개가 로컬과 일치합니다. JS/CSS는 줄바꿈, 카탈로그는 생성 시각을 정규화해 비교했습니다.
+- README·인계 문서에 당일 결과를 반영하고 문서 커밋까지 `main`·`test`와 양쪽 원격을 fast-forward로 동기화합니다. 마지막 체크아웃은 `main`입니다. 문서 갱신을 위한 Workers 재배포나 DB migration은 실행하지 않습니다.
+- 큰 기능 추가가 아닌 정리 작업으로 `main`에서 처리했습니다. 추가 구현 우선순위와 앨범 재킷 포함 여부는 미정입니다.
 
 ## 2026-10-29 기타 분류 로고 교체
 
