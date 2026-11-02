@@ -194,9 +194,9 @@ test('guests enter login from Edit and static previews remain read-only', async 
   assert.ok(preview.$('rating-details-button').disabled);
 });
 
-test('rating details show only 50 contributing songs independently of library filters with no requests', async t => {
-  const initialRecords = catalog.songs.slice(0, 60).map(song => ({ songId: song.id, difficulty: 'expert', status: 'ap' }));
-  initialRecords.push({ songId: 101001, difficulty: 'hard', status: 'fc' });
+test('rating details show only 50 contributing charts independently of library filters with no requests', async t => {
+  const initialRecords = catalog.songs.slice(0, 30).flatMap(song => ['expert', 'hard'].map(difficulty =>
+    ({ songId: song.id, difficulty, status: 'ap' })));
   const ui = await editor(t, { initialRecords });
   ui.difficulty('easy');
   ui.$('search').value = 'no matching song';
@@ -205,12 +205,15 @@ test('rating details show only 50 contributing songs independently of library fi
   assert.ok(ui.$('rating-dialog').open);
   const rows = [...ui.$('rating-details-list').querySelectorAll('.rating-entry')];
   assert.equal(rows.length, 50);
-  const expected = catalog.songs.slice(0, 60).toSorted((a, b) => b.levels.expert - a.levels.expert).slice(0, 50);
-  assert.deepEqual(rows.map(row => Number(row.dataset.song)), expected.map(song => song.id));
-  assert.equal(new Set(rows.map(row => row.dataset.song)).size, 50);
-  assert.ok(rows.every(row => row.dataset.difficulty === 'expert'));
+  const expected = catalog.songs.slice(0, 30).flatMap(song => ['expert', 'hard'].map(difficulty =>
+    ({ songId: song.id, difficulty, level: song.levels[difficulty] })))
+    .toSorted((a, b) => b.level - a.level).slice(0, 50);
+  assert.deepEqual(rows.map(row => [Number(row.dataset.song), row.dataset.difficulty]),
+    expected.map(chart => [chart.songId, chart.difficulty]));
+  assert.equal(new Set(rows.map(row => row.dataset.song)).size, 30);
+  assert.equal(new Set(rows.map(row => `${row.dataset.song}:${row.dataset.difficulty}`)).size, 50);
   assert.equal(ui.$('rating-details-total').textContent, ui.$('stat-rating').textContent);
-  assert.equal(ui.$('rating-details-count').textContent, '50 / 50곡');
+  assert.equal(ui.$('rating-details-count').textContent, '50 / 50차트');
   assert.ok(ui.$('rating-draft-note').hidden);
   ui.$('close-rating').click();
   assert.equal(ui.$('rating-dialog').open, false);
@@ -220,7 +223,7 @@ test('rating details show only 50 contributing songs independently of library fi
 test('rating details follow draft changes and cancellation, including empty accounts', async t => {
   const ui = await editor(t, { initialRecords: [] });
   ui.$('rating-details-button').click();
-  assert.equal(ui.$('rating-details-count').textContent, '0 / 50곡');
+  assert.equal(ui.$('rating-details-count').textContent, '0 / 50차트');
   assert.equal(ui.$('rating-details-total').textContent, '0');
   assert.match(ui.$('rating-details-list').textContent, /반영할 기록이 없습니다/);
   ui.$('close-rating').click();
@@ -230,14 +233,15 @@ test('rating details follow draft changes and cancellation, including empty acco
   ui.check(101001, 'ap').click();
   ui.check(101002, 'fc').click();
   ui.$('rating-details-button').click();
-  assert.equal(ui.$('rating-details-count').textContent, '2 / 50곡');
+  assert.equal(ui.$('rating-details-count').textContent, '3 / 50차트');
   assert.equal(ui.$('rating-draft-note').hidden, false);
   assert.equal(ui.$('rating-details-total').textContent, ui.$('stat-rating').textContent);
-  assert.equal(ui.$('rating-details-list').querySelectorAll('[data-song="101001"]').length, 1);
+  assert.equal(ui.$('rating-details-list').querySelectorAll('[data-song="101001"]').length, 2);
+  assert.equal(ui.$('rating-details-total').textContent, '138.1'); // 25 clear + 20 AP + 21 FC.
   ui.$('close-rating').click();
   ui.$('cancel-button').click();
   ui.$('rating-details-button').click();
-  assert.equal(ui.$('rating-details-count').textContent, '0 / 50곡');
+  assert.equal(ui.$('rating-details-count').textContent, '0 / 50차트');
   assert.ok(ui.$('rating-draft-note').hidden);
   assert.equal(ui.requests.length, 0);
 });

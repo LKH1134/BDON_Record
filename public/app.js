@@ -114,7 +114,7 @@ function renderStats() {
 const formatRating = value => value.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
 function renderRatingDetails(breakdown) {
   const entries = breakdown?.entries ?? [];
-  $('rating-details-count').textContent = `${entries.length} / 50곡`;
+  $('rating-details-count').textContent = `${entries.length} / 50차트`;
   $('rating-details-total').textContent = breakdown ? formatRating(breakdown.total) : '—';
   $('rating-draft-note').hidden = !state.baseline;
   const songs = new Map(state.catalog.songs.map(song => [song.id, song]));
