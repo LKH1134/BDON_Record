@@ -1,9 +1,9 @@
 # Cloudflare Workers + D1 실행·배포
 
-최신 패치 (2026-11-02): 신곡 `502006` 추가 후 94곡·376차트이며 레이팅은 같은 곡의 여러 난이도를 포함한 상위 50개 차트를 합산합니다. `test`에서 전체 테스트 60개·Workers dry-run을 통과했습니다. 공개 요청에 따라 `main` 병합·배포를 진행하며 완료 결과는 [HANDOFF](../HANDOFF.md)의 최신 패치 항목을 기준으로 합니다. DB migration은 필요하지 않습니다. 아래 기존 배포 이력의 곡 수·버전은 해당 작업 당시 기록입니다.
+최신 패치 (2026-11-02): 신곡 `502006` 추가 후 94곡·376차트이며 레이팅은 같은 곡의 여러 난이도를 포함한 상위 50개 차트를 합산합니다. `test`에서 전체 테스트 60개·Workers dry-run을 통과했습니다. 검증한 패치를 `b1cef7d`로 `main`에 병합·푸시하고 Workers 운영과 [Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/41463308953)를 완료했습니다. 양쪽 공개 자산·카탈로그와 배포 코드의 108.6점 예시를 확인했습니다. 운영 버전은 `0f2456a8-ca13-4104-bbda-ef715a898028`입니다. 상세 결과는 [HANDOFF](../HANDOFF.md)를 기준으로 합니다. DB migration은 필요하지 않습니다. 아래 기존 배포 이력의 곡 수·버전은 해당 작업 당시 기록입니다.
 
 
-갱신일: 2026-11-02. 루트 중복 파일 정리 후 사용자 요청으로 검증한 `main`을 Workers 운영에 배포했습니다. 운영은 <https://bdon-record.kh12.workers.dev>이며 93곡·372차트와 계정별 기록 저장을 제공합니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
+갱신일: 2026-11-02. 루트 중복 파일 정리 후 사용자 요청으로 검증한 `main`을 Workers 운영에 배포했습니다. 운영은 <https://bdon-record.kh12.workers.dev>이며 94곡·376차트와 계정별 기록 저장을 제공합니다. GitHub Pages는 별도 읽기 전용 미리보기입니다.
 
 ## 현재 운영 상태
 
@@ -13,7 +13,7 @@
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
 | 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
 | 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
-| Workers 버전 | `a46f6189-4e92-40e6-80c0-7e126200bf80` |
+| Workers 버전 | `0f2456a8-ca13-4104-bbda-ef715a898028` |
 | 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
 | 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 
@@ -68,7 +68,7 @@ npm test
 npm run check:worker
 ```
 
-테스트는 임시 SQLite·Miniflare D1으로 계정·세션·기록 격리, 372차트 일괄 저장, 오류 롤백, ID 이전·반복 실행·충돌·점검 모드와 레이팅을 검증합니다. `check:worker`는 번들·바인딩의 dry-run이며 실제 업로드를 하지 않습니다. 루프백 EACCES가 발생하면 로컬 접속 제한을 확인합니다.
+테스트는 임시 SQLite·Miniflare D1으로 계정·세션·기록 격리, 376차트 일괄 저장, 오류 롤백, ID 이전·반복 실행·충돌·점검 모드와 레이팅을 검증합니다. `check:worker`는 번들·바인딩의 dry-run이며 실제 업로드를 하지 않습니다. 루프백 EACCES가 발생하면 로컬 접속 제한을 확인합니다.
 
 ## 로그인과 DB 대상 확인
 
