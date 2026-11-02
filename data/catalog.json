@@ -1,6 +1,6 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-10-28T07:42:52.345904+00:00",
+  "generatedAt": "2026-11-02T14:29:04.499728+00:00",
   "songs": [
     {
       "id": 101001,
@@ -1107,6 +1107,18 @@
       }
     },
     {
+      "id": 502006,
+      "nameId": 2094,
+      "band": "일가 Dumb Rock!",
+      "category": "커버",
+      "levels": {
+        "expert": 23,
+        "hard": 17,
+        "normal": 14,
+        "easy": 7
+      }
+    },
+    {
       "id": 601001,
       "nameId": 2064,
       "band": "CRYCHIC",
@@ -1584,6 +1596,11 @@
       "id": 2093,
       "original": "怪物",
       "translated": "KAIBUTSU"
+    },
+    {
+      "id": 2094,
+      "original": "ハレ晴レユカイ",
+      "translated": "Hare Hare Yukai"
     }
   ]
 }

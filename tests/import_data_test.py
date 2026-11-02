@@ -15,8 +15,8 @@ class ImportDataTests(unittest.TestCase):
 
     def test_workbook_category_and_shifted_levels(self):
         data = build_catalog(self.workbook)
-        self.assertEqual(len(data['songs']), 93)
-        self.assertEqual(len(data['strings']), 93)
+        self.assertEqual(len(data['songs']), 94)
+        self.assertEqual(len(data['strings']), 94)
         self.assertEqual(data['songs'][0], {
             'id': 101001, 'nameId': 2001, 'band': 'MyGO!!!!!', 'category': '오리지널',
             'levels': {'expert': 25, 'hard': 20, 'normal': 13, 'easy': 9}})
@@ -26,6 +26,11 @@ class ImportDataTests(unittest.TestCase):
         self.assertEqual(next(s for s in data['songs'] if s['nameId'] == 2093), {
             'id': 202007, 'nameId': 2093, 'band': 'Ave Mujica', 'category': '커버',
             'levels': {'expert': 25, 'hard': 17, 'normal': 11, 'easy': 7}})
+        self.assertEqual(next(s for s in data['songs'] if s['nameId'] == 2094), {
+            'id': 502006, 'nameId': 2094, 'band': '일가 Dumb Rock!', 'category': '커버',
+            'levels': {'expert': 23, 'hard': 17, 'normal': 14, 'easy': 7}})
+        self.assertEqual(next(s for s in data['strings'] if s['id'] == 2094), {
+            'id': 2094, 'original': 'ハレ晴レユカイ', 'translated': 'Hare Hare Yukai'})
 
     def test_rejects_malformed_ids_and_classification(self):
         for changes in [

@@ -84,7 +84,7 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     for (const path of ['/Data.xlsx', '/wrangler.jsonc', '/worker/index.mjs', '/.git/config', '/.local/bdon.sqlite'])
       assert.equal((await mf.dispatchFetch(origin + path)).status, 404);
     const catalog = await guest.request('/api/catalog');
-    assert.equal(catalog.songs.length, 93);
+    assert.equal(catalog.songs.length, 94);
   });
   await t.test('guest cannot read or write records', async () => {
     assert.deepEqual(await guest.request('/api/me'), { user: null });
@@ -119,7 +119,7 @@ test('Workers API with a real local D1 database', { timeout: 120000 }, async t =
     assert.equal(records.find(r => r.difficulty === 'expert').status, 'ap');
     assert.equal((await bob.request('/api/records')).records[0].status, 'clear');
     const catalog = await guest.request('/api/catalog');
-    assert.equal(calculateRating(catalog.songs, new Map(records.map(r => [`${r.songId}:${r.difficulty}`, r.status]))), 55);
+    assert.equal(calculateRating(catalog.songs, new Map(records.map(r => [`${r.songId}:${r.difficulty}`, r.status]))), 97);
     await alice.request('/api/records/101001/hard', { method: 'PUT', body: { status: null } });
     assert.equal((await alice.request('/api/records')).records.length, 1);
   });

@@ -13,7 +13,7 @@ test('deployment maintenance blocks every record route while keeping the catalog
   }
   const catalog=await worker.fetch(new Request(origin+'/api/catalog'),env);
   assert.equal(catalog.status,200);
-  assert.equal((await catalog.json()).songs.length,93);
+  assert.equal((await catalog.json()).songs.length,94);
   const resumed=await worker.fetch(new Request(origin+'/api/records'),{RECORDS_MAINTENANCE:'0'});
   assert.equal(resumed.status,503);
   assert.match((await resumed.json()).error,/계정 저장소 연결/);
