@@ -22,6 +22,7 @@ D1 이름·ID는 대상 확인용 식별자이며 인증값이 아닙니다. Clo
 - 전체 테스트 58개와 Workers dry-run을 통과했습니다. 사용자 요청으로 `npm run deploy:worker`를 실행했으며 자산 변경 업로드는 없었습니다. DB migration은 실행하지 않았습니다.
 - 운영 화면·카탈로그·사용자 조회의 200, 비로그인 기록 접근의 401, 카탈로그와 JS/CSS·헤더 이미지·로고 6개의 로컬 일치를 확인했습니다. 운영 사용자 기록 편집과 모바일·로그인 UI 수동 확인은 오늘 수행하지 않았습니다.
 - 정리 커밋의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/41389182123)도 성공했으며 공개 카탈로그·코드·이미지의 로컬 일치를 확인했습니다.
+- 결과 인계 `3599326`의 [Pages workflow](https://github.com/LKH1134/BDON_Record/actions/runs/41389448869)와 GitHub README 반영까지 확인했습니다. 마무리 문서 작업은 Workers 버전 `a46f6189-4e92-40e6-80c0-7e126200bf80`·D1·점검 모드 설정을 유지합니다.
 - Wrangler 로그를 프로젝트의 `.local/wrangler-logs/`에 저장했습니다. 문서 갱신 후 추가 Workers 배포는 필요하지 않습니다.
 
 ## 2026-10-29 로고 배포 결과

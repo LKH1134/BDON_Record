@@ -2,6 +2,12 @@
 
 갱신일: 2026-11-02. 루트의 중복 이미지·완료된 개편 초안을 정리하고 전체 테스트 58개·Workers dry-run을 통과한 뒤 운영 배포했습니다. 실제 로고는 `public/band-logos/`에서 관리하며 `images/`는 삭제했습니다. 93곡·372차트, 6자리 곡 ID·분류, Info 시트와 레이팅 계수 2.0 / 2.1 / 2.2는 유지합니다. 시작 안내는 [다음 작업 메모](NEXT_STEPS.md), 날짜별 검증·배포 범위는 [HANDOFF](../HANDOFF.md)를 참고합니다.
 
+## 2026-11-02 마무리 기준
+
+정리 커밋 `983414f`와 결과 인계 `3599326`을 반영하고 `main`·`test`와 양쪽 원격을 fast-forward로 동기화했습니다. `3599326`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/41389448869)가 성공했고 GitHub README 반영도 확인했습니다. 다음 작업 시작 시 브랜치 상태를 다시 확인합니다.
+
+오늘 전체 테스트 58개와 Workers dry-run, 운영·Pages 공개 자산 비교를 완료했습니다. 운영 사용자 기록 편집·모바일·로그인 UI 수동 확인은 새로 하지 않았습니다. 이번 마무리 문서 수정에는 추가 로컬 전체 테스트·Workers 배포·DB migration을 실행하지 않습니다. 로고 원본은 `public/band-logos/`를 사용하며 삭제한 `images/`를 복원할 필요가 없습니다.
+
 ## 구성과 편집 위치
 
 기존 로컬 버전은 외부 npm 패키지 없이 HTML/CSS/JavaScript, Node.js HTTP 서버 및 내장 SQLite를 사용합니다. 엑셀 변환에는 Python 표준 라이브러리만 사용합니다. 개발·검증에는 lockfile로 고정한 Wrangler·Miniflare·esbuild·jsdom을 사용하며 Node.js 24.15 이상에서 `npm ci`로 설치합니다. Python 3은 엑셀 변환과 전체 테스트의 importer 검증에 필요합니다.

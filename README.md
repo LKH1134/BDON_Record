@@ -20,7 +20,7 @@
 
 ## 최근 업데이트 · 2026-11-02
 
-프로젝트 루트의 중복 이미지와 완료된 데이터 개편 초안을 정리했습니다. 실제 서비스 로고는 `public/band-logos/`에서 관리합니다. 전체 테스트 58개와 Workers dry-run을 통과하고 운영 Workers 및 [GitHub Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/41389182123)를 완료했습니다. 양쪽 공개 카탈로그·코드·이미지의 일치를 확인했습니다. 악곡·화면·레이팅·DB 변경은 없습니다.
+프로젝트 루트의 중복 이미지와 완료된 데이터 개편 초안을 정리했습니다. 실제 서비스 로고는 `public/band-logos/`에서 관리합니다. 전체 테스트 58개와 Workers dry-run을 통과하고 운영 Workers를 배포했습니다. README·인계 문서 갱신 후의 [GitHub Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/41389448869)도 성공했으며, 양쪽 공개 카탈로그·코드·이미지의 일치와 GitHub README 반영을 확인했습니다. 악곡·화면·레이팅·DB 변경은 없습니다.
 
 ### 2026-10-29 로고 업데이트
 
