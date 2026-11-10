@@ -6,11 +6,11 @@ import { readFile } from 'node:fs/promises';
 const catalog = JSON.parse(await readFile(new URL('../data/catalog.json',import.meta.url),'utf8'));
 
 test('six-digit IDs group all songs by band and original/cover without changing string references', () => {
-  const groups = new Map([[101,18],[102,7],[201,18],[202,7],[301,17],[302,5],[401,5],[402,5],[501,5],[502,6],[601,1]]);
+  const groups = new Map([[101,18],[102,7],[201,19],[202,7],[301,17],[302,5],[401,5],[402,5],[501,5],[502,6],[601,1]]);
   const bands = {10:'MyGO!!!!!',20:'Ave Mujica',30:'무겐다이 뮤타입',40:'millsage',50:'일가 Dumb Rock!',60:'CRYCHIC'};
-  assert.equal(new Set(catalog.songs.map(s=>s.id)).size,94);
-  assert.equal(new Set(catalog.songs.map(s=>s.nameId)).size,94);
-  assert.equal(catalog.songs.filter(s=>s.category==='오리지널').length,64);
+  assert.equal(new Set(catalog.songs.map(s=>s.id)).size,95);
+  assert.equal(new Set(catalog.songs.map(s=>s.nameId)).size,95);
+  assert.equal(catalog.songs.filter(s=>s.category==='오리지널').length,65);
   assert.equal(catalog.songs.filter(s=>s.category==='커버').length,30);
   for (const [prefix,count] of groups) {
     const songs = catalog.songs.filter(s=>Math.floor(s.id/1000)===prefix);
@@ -22,7 +22,7 @@ test('six-digit IDs group all songs by band and original/cover without changing 
     }
   }
   for (const [nameId,id] of [[2001,101001],[2019,201001],[2037,301001],[2054,401001],[2059,501001],
-      [2064,601001],[2065,102001],[2071,202001],[2076,302001],[2081,402001],[2086,502001],[2091,202006],[2092,102007],[2093,202007],[2094,502006]])
+      [2064,601001],[2065,102001],[2071,202001],[2076,302001],[2081,402001],[2086,502001],[2091,202006],[2092,102007],[2093,202007],[2094,502006],[2095,201019]])
     assert.equal(catalog.songs.find(s=>s.nameId===nameId).id,id);
 });
 

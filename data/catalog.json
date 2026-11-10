@@ -1,6 +1,6 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-11-02T14:29:04.499728+00:00",
+  "generatedAt": "2026-11-10T11:35:11.677031+00:00",
   "songs": [
     {
       "id": 101001,
@@ -513,6 +513,18 @@
       "category": "오리지널",
       "levels": {
         "expert": 26,
+        "hard": 18,
+        "normal": 11,
+        "easy": 6
+      }
+    },
+    {
+      "id": 201019,
+      "nameId": 2095,
+      "band": "Ave Mujica",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
         "hard": 18,
         "normal": 11,
         "easy": 6
@@ -1601,6 +1613,11 @@
       "id": 2094,
       "original": "ハレ晴レユカイ",
       "translated": "Hare Hare Yukai"
+    },
+    {
+      "id": 2095,
+      "original": "ふたつの月 ~Deep Into The Forest~",
+      "translated": "두개의 달 ~Deep Into The Forest~"
     }
   ]
 }
