@@ -22,6 +22,8 @@
 
 2026-11-10: Ave Mujica 오리지널 「ふたつの月 ~Deep Into The Forest~ / 두개의 달 ~Deep Into The Forest~」를 정식 ID `201019`(임시 `991001`)·문자열 `2095`, 레벨 `25 / 18 / 11 / 6`으로 추가했습니다. 현재 95곡·95개 문자열·380차트, 오리지널 65곡·커버 30곡입니다. 기존 94곡·문자열과 레이팅 계산은 보존했습니다. 전체 테스트 60개와 Workers dry-run 통과 후 Workers 운영 배포를 완료했습니다. DB migration은 필요하지 않습니다.
 
+Workers 운영과 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/42809122868)를 완료했습니다. 양쪽 공개 카탈로그·코드·이미지 일치와 GitHub README 반영을 확인했습니다. 실제 모바일·로그인 UI 수동 검증은 이번에 새로 수행하지 않았습니다.
+
 ## 2026-11-02 신곡·레이팅 업데이트
 
 「ハレ晴レユカイ / Hare Hare Yukai」를 곡 ID `502006`·문자열 `2094`, Expert / Hard / Normal / Easy `23 / 17 / 14 / 7`로 추가했습니다. 레이팅은 같은 곡의 여러 난이도도 포함하는 상위 50개 차트 합산으로 변경했습니다. 예를 들어 같은 곡의 Expert 29 클리어와 Hard 23 올퍼펙트가 모두 반영되면 `58 + 50.6 = 108.6`입니다. 전체 테스트 60개와 Workers dry-run을 통과하고 Workers 운영·[GitHub Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/41463308953)를 완료했습니다. 양쪽 공개 카탈로그와 코드·이미지 일치도 확인했습니다. 기존 계정·기록과 계수 2.0 / 2.1 / 2.2는 유지하며 DB migration은 필요하지 않습니다.

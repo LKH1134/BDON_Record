@@ -6,6 +6,14 @@
 
 전체 테스트 60개·Workers dry-run 통과 후 `main`의 데이터 커밋 `99a911f`를 Workers 운영에 배포했습니다. 버전은 `081663dd-588c-4d37-b267-d73de47b17ea`입니다. 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401과 카탈로그 및 코드·이미지 10개의 로컬 일치를 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
 
+### 2026-11-10 마무리
+
+- 데이터 `99a911f`와 배포 결과 인계 `4f2af46`을 `main`에 커밋·푸시하고 `test`를 fast-forward로 동기화했습니다. 일반 신곡 데이터 작업으로 별도 병합 커밋은 없습니다.
+- `4f2af46`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/42809122868)가 성공했습니다. 공개 미리보기의 정적 모드, 95곡·95개 문자열·380차트 및 전체 카탈로그·코드/이미지 10개의 로컬 일치를 확인했습니다. 카탈로그 생성 시각과 텍스트 줄바꿈을 정규화해 비교했습니다. GitHub `main` README의 95곡·380차트와 신곡 반영도 확인했습니다.
+- 전체 테스트 60개·Workers dry-run·Workers 운영 응답 및 자산 검증은 오늘 신곡 배포 단계에서 완료한 결과입니다. 이번 마무리는 문서만 갱신하며 전체 테스트 재실행·Workers 재배포·DB migration을 하지 않습니다.
+- 마무리 시작 시 `main`·`test`·`origin/main`·`origin/test`가 모두 `4f2af46`이고 작업 트리가 깨끗했습니다. 마무리 문서도 커밋·푸시 후 같은 방식으로 동기화하며 최종 체크아웃은 `main`입니다. 다음 작업 시 `git status -sb`·`git branch -vv`로 재확인합니다.
+- 다음 우선순위는 미정입니다. 앨범 재킷 포함 여부 검토, 곡 분류 표시·필터, UID 자동 불러오기, 로컬 계정의 D1 이관, 비밀번호 찾기·이메일 인증이 남아 있습니다. 실제 Node 사용자 DB의 ID 이전은 별도 미수행 상태를 유지합니다.
+
 이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
 
 ## 2026-11-02 신곡·레이팅 패치
@@ -41,7 +49,7 @@
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 60개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 신곡·레이팅 Pages 배포 확인 | `b1cef7d`의 [Pages workflow 성공](https://github.com/LKH1134/BDON_Record/actions/runs/41463308953) |
+| 최신 신곡 Pages 배포 확인 | `4f2af46`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/42809122868) 성공 |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
 
