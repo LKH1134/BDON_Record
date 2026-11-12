@@ -1,6 +1,6 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-11-10T11:35:11.677031+00:00",
+  "generatedAt": "2026-11-12T14:11:15.123829+00:00",
   "songs": [
     {
       "id": 101001,
@@ -216,6 +216,18 @@
         "hard": 23,
         "normal": 15,
         "easy": 8
+      }
+    },
+    {
+      "id": 101019,
+      "nameId": 2096,
+      "band": "MyGO!!!!!",
+      "category": "오리지널",
+      "levels": {
+        "expert": 24,
+        "hard": 17,
+        "normal": 13,
+        "easy": 7
       }
     },
     {
@@ -1618,6 +1630,11 @@
       "id": 2095,
       "original": "ふたつの月 ~Deep Into The Forest~",
       "translated": "두개의 달 ~Deep Into The Forest~"
+    },
+    {
+      "id": 2096,
+      "original": "世点彩",
+      "translated": "세피아"
     }
   ]
 }
