@@ -1,6 +1,16 @@
 # Cloudflare Workers + D1 실행·배포
 
-## 2026-11-10 신곡 갱신 (최신)
+## 2026-11-12 신곡 갱신 (최신)
+
+2026-11-12: MyGO!!!!! 오리지널 「世点彩 / 세피아」를 정식 ID `101019`(임시 `991001`)·문자열 `2096`, Expert / Hard / Normal / Easy `24 / 17 / 13 / 7`로 추가했습니다. 현재 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡입니다. 기존 95곡·문자열과 레이팅 계산을 보존했습니다.
+
+`test`에서 전체 테스트 60개와 Workers dry-run을 통과한 뒤 데이터 커밋 `af223b1`을 `main`에 fast-forward로 반영·푸시했습니다. Workers 운영 버전은 `790117f7-df2e-4091-b8b3-0fa02b351abf`입니다. [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945)도 성공했습니다. 양쪽 공개 카탈로그 전체·코드/이미지 10개의 로컬 일치와 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401을 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
+
+검증한 `main`에서 Workers를 배포했으며 카탈로그 자산만 새로 업로드했습니다. D1 migration과 점검 모드 `RECORDS_MAINTENANCE=0`을 유지합니다. 배포 결과 문서만을 위한 Workers 재배포는 하지 않습니다. 이번 환경에서는 기본 OAuth의 localhost 콜백 연결이 실패해 `wrangler login --device`로 기기 인증을 완료했습니다. 같은 오류가 재현되면 기기 인증을 사용할 수 있습니다.
+
+이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
+
+## 2026-11-10 신곡 갱신
 
 2026-11-10: Ave Mujica 오리지널 「ふたつの月 ~Deep Into The Forest~ / 두개의 달 ~Deep Into The Forest~」를 정식 ID `201019`(임시 `991001`)·문자열 `2095`, 레벨 `25 / 18 / 11 / 6`으로 추가했습니다. 현재 95곡·95개 문자열·380차트, 오리지널 65곡·커버 30곡입니다. 기존 94곡·문자열과 레이팅 계산은 보존했습니다.
 
@@ -25,7 +35,7 @@
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
 | 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
 | 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
-| Workers 버전 | `081663dd-588c-4d37-b267-d73de47b17ea` |
+| Workers 버전 | `790117f7-df2e-4091-b8b3-0fa02b351abf` |
 | 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
 | 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 

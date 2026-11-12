@@ -1,6 +1,16 @@
 # BDON Record 인계
 
-## 2026-11-10 신곡 갱신 (최신)
+## 2026-11-12 신곡 갱신 (최신)
+
+2026-11-12: MyGO!!!!! 오리지널 「世点彩 / 세피아」를 정식 ID `101019`(임시 `991001`)·문자열 `2096`, Expert / Hard / Normal / Easy `24 / 17 / 13 / 7`로 추가했습니다. 현재 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡입니다. 기존 95곡·문자열과 레이팅 계산을 보존했습니다.
+
+`test`에서 전체 테스트 60개와 Workers dry-run을 통과한 뒤 데이터 커밋 `af223b1`을 `main`에 fast-forward로 반영·푸시했습니다. Workers 운영 버전은 `790117f7-df2e-4091-b8b3-0fa02b351abf`입니다. [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945)도 성공했습니다. 양쪽 공개 카탈로그 전체·코드/이미지 10개의 로컬 일치와 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401을 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
+
+엑셀 Info의 MyGO!!!!! 오리지널 범위와 카탈로그 수치를 갱신하고 Songs를 ID 오름차순으로 정렬했습니다. 임시 입력 원본은 `.local/patch-261112/Data-user-input.xlsx`에 보관합니다. 배포 결과 문서는 커밋·푸시하고 `main`·`test`와 양쪽 원격을 fast-forward 동기화하며 최종 체크아웃은 `main`입니다. 다음 작업 시 Git 상태를 재확인합니다.
+
+이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
+
+## 2026-11-10 신곡 갱신
 
 2026-11-10: Ave Mujica 오리지널 「ふたつの月 ~Deep Into The Forest~ / 두개의 달 ~Deep Into The Forest~」를 정식 ID `201019`(임시 `991001`)·문자열 `2095`, 레벨 `25 / 18 / 11 / 6`으로 추가했습니다. 현재 95곡·95개 문자열·380차트, 오리지널 65곡·커버 30곡입니다. 기존 94곡·문자열과 레이팅 계산은 보존했습니다.
 
@@ -44,12 +54,12 @@
 | 주 운영 페이지 | <https://bdon-record.kh12.workers.dev> — 화면·API, D1 계정·기록 저장 |
 | GitHub Pages | <https://lkh1134.github.io/BDON_Record/> — 읽기 전용 악곡 미리보기 |
 | 저장소 | <https://github.com/LKH1134/BDON_Record>, 공개 기준 `main` |
-| Workers 버전 | `081663dd-588c-4d37-b267-d73de47b17ea` |
-| 카탈로그 | 95곡·95개 문자열·380차트, 오리지널 65곡·커버 30곡 |
+| Workers 버전 | `790117f7-df2e-4091-b8b3-0fa02b351abf` |
+| 카탈로그 | 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡 |
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 60개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 최신 신곡 Pages 배포 확인 | `4f2af46`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/42809122868) 성공 |
+| 최신 신곡 Pages 배포 확인 | `af223b1`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945) 성공 |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
 
