@@ -6,7 +6,15 @@
 
 `test`에서 전체 테스트 60개와 Workers dry-run을 통과한 뒤 데이터 커밋 `af223b1`을 `main`에 fast-forward로 반영·푸시했습니다. Workers 운영 버전은 `790117f7-df2e-4091-b8b3-0fa02b351abf`입니다. [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945)도 성공했습니다. 양쪽 공개 카탈로그 전체·코드/이미지 10개의 로컬 일치와 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401을 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
 
-엑셀 Info의 MyGO!!!!! 오리지널 범위와 카탈로그 수치를 갱신하고 Songs를 ID 오름차순으로 정렬했습니다. 임시 입력 원본은 `.local/patch-261112/Data-user-input.xlsx`에 보관합니다. 배포 결과 문서는 커밋·푸시하고 `main`·`test`와 양쪽 원격을 fast-forward 동기화하며 최종 체크아웃은 `main`입니다. 다음 작업 시 Git 상태를 재확인합니다.
+엑셀 Info의 MyGO!!!!! 오리지널 범위와 카탈로그 수치를 갱신하고 Songs를 ID 오름차순으로 정렬했습니다. 임시 입력 원본은 `.local/patch-261112/Data-user-input.xlsx`에 보관합니다. 배포 결과 문서 `6a772fc`를 커밋·푸시하고 `main`·`test`와 양쪽 원격을 fast-forward 동기화했습니다. 마무리 문서도 같은 방식으로 반영하며 최종 체크아웃은 `main`입니다. 다음 작업 시 Git 상태를 재확인합니다.
+
+### 2026-11-12 마무리
+
+- 신곡 데이터 `af223b1`과 배포 결과 인계 `6a772fc`를 반영했습니다. `test` 검증 후 `main`에 fast-forward로 반영했으며 별도 병합 커밋은 없습니다.
+- 결과 인계 `6a772fc`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43235808484)가 성공했습니다. GitHub `main` README의 로컬 Git blob SHA 일치도 확인했습니다. 신곡 배포 단계에서 Workers·Pages의 96곡·96개 문자열·384차트, 전체 카탈로그·코드/이미지 10개 일치를 확인했습니다.
+- 전체 테스트 60개·Workers dry-run·공개 응답 및 자산 검증은 오늘 앞선 신곡 배포 단계의 결과입니다. 이번 마무리는 문서만 갱신하며 전체 테스트 재실행·Workers 재배포·DB migration을 하지 않습니다.
+- 마무리 시작 시 `main`·`test`·`origin/main`·`origin/test`가 모두 `6a772fc`이고 작업 트리가 깨끗했습니다. 마무리 문서도 커밋·푸시하고 양쪽 브랜치를 fast-forward 동기화하며 마지막 체크아웃은 `main`입니다. 다음 작업 시작 시 실제 Git 상태를 재확인합니다.
+- 남은 작업은 앨범 재킷 포함 여부, 곡 분류 표시·필터, UID 자동 불러오기, 로컬 계정의 D1 이관, 비밀번호 찾기·이메일 인증입니다. 우선순위는 미정이며 실제 Node 사용자 DB의 ID 이전은 별도 미수행 상태입니다.
 
 이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
 
@@ -59,7 +67,7 @@
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 60개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 최신 신곡 Pages 배포 확인 | `af223b1`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945) 성공 |
+| 신곡 결과 인계 Pages 배포 확인 | `6a772fc`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43235808484) 성공 |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
 

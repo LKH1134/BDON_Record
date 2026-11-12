@@ -8,6 +8,10 @@
 
 검증한 `main`에서 Workers를 배포했으며 카탈로그 자산만 새로 업로드했습니다. D1 migration과 점검 모드 `RECORDS_MAINTENANCE=0`을 유지합니다. 배포 결과 문서만을 위한 Workers 재배포는 하지 않습니다. 이번 환경에서는 기본 OAuth의 localhost 콜백 연결이 실패해 `wrangler login --device`로 기기 인증을 완료했습니다. 같은 오류가 재현되면 기기 인증을 사용할 수 있습니다.
 
+### 2026-11-12 운영 인계 마무리
+
+Workers 운영 버전 `790117f7-df2e-4091-b8b3-0fa02b351abf`, D1 migration `0001`·`0002`, 점검 모드 `0`을 유지합니다. 오늘 신곡 배포 단계에서 운영 응답과 카탈로그·코드·이미지 일치를 확인했습니다. `6a772fc`의 [Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/43235808484)도 성공했습니다. 이번 마무리는 문서만 반영하므로 Workers 재배포·DB migration·운영 사용자 기록 편집은 하지 않습니다. CLI 로그인에서 localhost 콜백 실패 시 사용한 `wrangler login --device` 절차를 위에 남겼으며 인증 코드·토큰은 문서에 저장하지 않습니다.
+
 이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
 
 ## 2026-11-10 신곡 갱신

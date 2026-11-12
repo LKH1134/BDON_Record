@@ -24,6 +24,8 @@
 
 전체 테스트 60개·Workers dry-run을 통과하고 Workers 운영과 [Pages 배포](https://github.com/LKH1134/BDON_Record/actions/runs/43234846945)를 완료했습니다. 양쪽 공개 카탈로그와 코드·이미지의 로컬 일치를 확인했습니다. 기존 기록과 레이팅 계산을 유지하며 DB migration은 실행하지 않았습니다.
 
+배포 결과 인계 `6a772fc`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43235808484)와 GitHub README 반영까지 확인했습니다. README·인계 문서를 당일 결과로 정리하고 `main`·`test`를 동기화합니다. 오늘 검증은 앞선 신곡 배포 단계에서 수행했으며 문서 마무리에는 Workers 재배포·DB migration을 하지 않습니다.
+
 ## 2026-11-10 신곡 업데이트
 
 2026-11-10: Ave Mujica 오리지널 「ふたつの月 ~Deep Into The Forest~ / 두개의 달 ~Deep Into The Forest~」를 정식 ID `201019`(임시 `991001`)·문자열 `2095`, 레벨 `25 / 18 / 11 / 6`으로 추가했습니다. 현재 95곡·95개 문자열·380차트, 오리지널 65곡·커버 30곡입니다. 기존 94곡·문자열과 레이팅 계산은 보존했습니다. 전체 테스트 60개와 Workers dry-run 통과 후 Workers 운영 배포를 완료했습니다. DB migration은 필요하지 않습니다.
