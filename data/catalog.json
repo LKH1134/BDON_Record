@@ -1,6 +1,6 @@
 {
   "source": "Data.xlsx",
-  "generatedAt": "2026-11-12T14:11:15.123829+00:00",
+  "generatedAt": "2026-11-19T14:18:59.184752+00:00",
   "songs": [
     {
       "id": 101001,
@@ -831,6 +831,18 @@
       }
     },
     {
+      "id": 301018,
+      "nameId": 2097,
+      "band": "무겐다이 뮤타입",
+      "category": "오리지널",
+      "levels": {
+        "expert": 25,
+        "hard": 16,
+        "normal": 12,
+        "easy": 7
+      }
+    },
+    {
       "id": 302001,
       "nameId": 2076,
       "band": "무겐다이 뮤타입",
@@ -1635,6 +1647,11 @@
       "id": 2096,
       "original": "世点彩",
       "translated": "세피아"
+    },
+    {
+      "id": 2097,
+      "original": "KEEP ON",
+      "translated": "KEEP ON"
     }
   ]
 }

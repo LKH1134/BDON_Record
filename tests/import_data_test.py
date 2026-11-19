@@ -15,8 +15,8 @@ class ImportDataTests(unittest.TestCase):
 
     def test_workbook_category_and_shifted_levels(self):
         data = build_catalog(self.workbook)
-        self.assertEqual(len(data['songs']), 96)
-        self.assertEqual(len(data['strings']), 96)
+        self.assertEqual(len(data['songs']), 97)
+        self.assertEqual(len(data['strings']), 97)
         self.assertEqual(data['songs'][0], {
             'id': 101001, 'nameId': 2001, 'band': 'MyGO!!!!!', 'category': '오리지널',
             'levels': {'expert': 25, 'hard': 20, 'normal': 13, 'easy': 9}})
@@ -43,6 +43,11 @@ class ImportDataTests(unittest.TestCase):
             'levels': {'expert': 24, 'hard': 17, 'normal': 13, 'easy': 7}})
         self.assertEqual(next(s for s in data['strings'] if s['id'] == 2096), {
             'id': 2096, 'original': '世点彩', 'translated': '세피아'})
+        self.assertEqual(next(s for s in data['songs'] if s['nameId'] == 2097), {
+            'id': 301018, 'nameId': 2097, 'band': '무겐다이 뮤타입', 'category': '오리지널',
+            'levels': {'expert': 25, 'hard': 16, 'normal': 12, 'easy': 7}})
+        self.assertEqual(next(s for s in data['strings'] if s['id'] == 2097), {
+            'id': 2097, 'original': 'KEEP ON', 'translated': 'KEEP ON'})
 
     def test_rejects_malformed_ids_and_classification(self):
         for changes in [
