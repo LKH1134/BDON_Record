@@ -1,6 +1,16 @@
 # Cloudflare Workers + D1 실행·배포
 
-## 2026-11-12 신곡 갱신 (최신)
+## 2026-11-19 신곡 갱신 (최신)
+
+무겐다이 뮤타입 오리지널 「KEEP ON」을 정식 ID `301018`(임시 `991001`)·문자열 `2097`, Expert / Hard / Normal / Easy `25 / 16 / 12 / 7`로 추가했습니다. 현재 97곡·97개 문자열·388차트, 오리지널 67곡·커버 30곡입니다. 기존 96곡과 입력 원본의 Strings 전체를 보존했습니다.
+
+`test`에서 전체 테스트 60개와 Workers dry-run을 통과한 후 데이터 커밋 `9de4851`을 `main`에 fast-forward 반영·푸시했습니다. Workers 운영 버전은 `7fbb7894-73cd-4a80-869c-9046ca17fec9`이며 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/44542760027)도 성공했습니다. 양쪽 공개 카탈로그 전체와 코드·이미지 10개가 로컬과 일치합니다. 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401을 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
+
+검증한 main에서 CLI로 카탈로그 자산 1개를 업로드했습니다. D1 migration 0001·0002와 점검 모드 `RECORDS_MAINTENANCE=0`을 유지합니다. 문서 반영만을 위한 Workers 재배포는 하지 않습니다.
+
+이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
+
+## 2026-11-12 신곡 갱신
 
 2026-11-12: MyGO!!!!! 오리지널 「世点彩 / 세피아」를 정식 ID `101019`(임시 `991001`)·문자열 `2096`, Expert / Hard / Normal / Easy `24 / 17 / 13 / 7`로 추가했습니다. 현재 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡입니다. 기존 95곡·문자열과 레이팅 계산을 보존했습니다.
 
@@ -39,7 +49,7 @@ Workers 운영 버전 `790117f7-df2e-4091-b8b3-0fa02b351abf`, D1 migration `0001
 | D1 Database ID | `5e15c295-24e9-443d-b9f6-fedc67fd3e87` |
 | 바인딩 | D1 `DB`, 정적 자산 `ASSETS` |
 | 설정 / API | `wrangler.jsonc` / `worker/index.mjs` |
-| Workers 버전 | `790117f7-df2e-4091-b8b3-0fa02b351abf` |
+| Workers 버전 | `7fbb7894-73cd-4a80-869c-9046ca17fec9` |
 | 적용된 migration | `0001_accounts.sql`, `0002_song_ids.sql` |
 | 기록 점검 모드 | `RECORDS_MAINTENANCE=0` (해제) |
 

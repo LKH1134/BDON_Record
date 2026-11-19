@@ -1,6 +1,16 @@
 # BDON Record 인계
 
-## 2026-11-12 신곡 갱신 (최신)
+## 2026-11-19 신곡 갱신 (최신)
+
+무겐다이 뮤타입 오리지널 「KEEP ON」을 정식 ID `301018`(임시 `991001`)·문자열 `2097`, Expert / Hard / Normal / Easy `25 / 16 / 12 / 7`로 추가했습니다. 현재 97곡·97개 문자열·388차트, 오리지널 67곡·커버 30곡입니다. 기존 96곡과 입력 원본의 Strings 전체를 보존했습니다.
+
+`test`에서 전체 테스트 60개와 Workers dry-run을 통과한 후 데이터 커밋 `9de4851`을 `main`에 fast-forward 반영·푸시했습니다. Workers 운영 버전은 `7fbb7894-73cd-4a80-869c-9046ca17fec9`이며 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/44542760027)도 성공했습니다. 양쪽 공개 카탈로그 전체와 코드·이미지 10개가 로컬과 일치합니다. 운영 화면·카탈로그·사용자 조회 200, 비로그인 기록 접근 401을 확인했습니다. DB migration·운영 사용자 기록 편집·실제 모바일/로그인 UI 수동 검증은 수행하지 않았습니다.
+
+Songs를 ID 오름차순으로 정렬하고 Info의 무겐다이 뮤타입 오리지널 범위·곡 수를 갱신했습니다. 입력 원본은 `.local/patch-261119/Data-user-input.xlsx`에 보관합니다. 문서 반영 후 main·test와 양쪽 원격을 fast-forward 동기화하며 최종 체크아웃은 main입니다. 다음 작업 시 실제 Git 상태를 재확인합니다.
+
+이하 날짜별 기록은 당시 이력입니다. 현재 상태는 위 최신 기록을 우선합니다.
+
+## 2026-11-12 신곡 갱신
 
 2026-11-12: MyGO!!!!! 오리지널 「世点彩 / 세피아」를 정식 ID `101019`(임시 `991001`)·문자열 `2096`, Expert / Hard / Normal / Easy `24 / 17 / 13 / 7`로 추가했습니다. 현재 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡입니다. 기존 95곡·문자열과 레이팅 계산을 보존했습니다.
 
@@ -62,12 +72,12 @@
 | 주 운영 페이지 | <https://bdon-record.kh12.workers.dev> — 화면·API, D1 계정·기록 저장 |
 | GitHub Pages | <https://lkh1134.github.io/BDON_Record/> — 읽기 전용 악곡 미리보기 |
 | 저장소 | <https://github.com/LKH1134/BDON_Record>, 공개 기준 `main` |
-| Workers 버전 | `790117f7-df2e-4091-b8b3-0fa02b351abf` |
-| 카탈로그 | 96곡·96개 문자열·384차트, 오리지널 66곡·커버 30곡 |
+| Workers 버전 | `7fbb7894-73cd-4a80-869c-9046ca17fec9` |
+| 카탈로그 | 97곡·97개 문자열·388차트, 오리지널 67곡·커버 30곡 |
 | D1 migration | `0001_accounts.sql`, `0002_song_ids.sql` 적용 완료 |
 | 기록 점검 모드 | 해제, `RECORDS_MAINTENANCE=0` |
 | 최근 전체 테스트 | 60개 통과, 실패 0개 및 Workers dry-run 통과 |
-| 신곡 결과 인계 Pages 배포 확인 | `6a772fc`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/43235808484) 성공 |
+| 최신 신곡 Pages 배포 확인 | `9de4851`의 [Pages CI·배포](https://github.com/LKH1134/BDON_Record/actions/runs/44542760027) 성공 |
 
 Workers의 Git 자동 배포 연결 여부는 확인되지 않았습니다. 실제 운영 업데이트는 CLI 배포로 완료했으며, `main` 푸시는 Pages workflow를 실행합니다.
 
